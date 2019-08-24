@@ -1,0 +1,34 @@
+﻿@using TP_DSCCR.Models.Data;
+@model Main.SidebarRes
+@{
+    Layout = null;
+}
+<ul class="list-unstyled sidebar-body">
+    @ConstructSidebar(Model.SidebarItem, 0, 0)
+</ul>
+@helper ConstructSidebar(List<Main.SidebarItem> SidebarItem, Int16? Parent, Int16 Level)
+{
+    List<Main.SidebarItem> items = SidebarItem.Where(a => a.FUNCTIONS.PARENT_SN == Parent && (a.ALLOW == 1 || a.FUNCTIONS.CATEGORY == "S" || a.FUNCTIONS.CATEGORY == "D")).ToList();
+    if (items.Count() > 0)
+    {
+        //Level += 2;
+        foreach (var item in items)
+        {
+            if (item.FUNCTIONS.CATEGORY == "P")
+            {
+                <li>
+                    <a href="#"><i class="fas @(item.FUNCTIONS.IMG ==null ? "fas fa-file" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="#F@(item.FUNCTIONS.SN)" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas @(item.FUNCTIONS.IMG ==null ? "fas fa-folder" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
+                    <ul class="collapse list-unstyled" id="F@(item.FUNCTIONS.SN)">
+                        @ConstructSidebar(SidebarItem, item.FUNCTIONS.SN, Level)
+                    </ul>
+                </li>
+            }
+        }
+    }
+}

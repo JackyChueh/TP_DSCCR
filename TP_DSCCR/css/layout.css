@@ -1,0 +1,133 @@
+﻿@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #fff;
+    color: #72777a;
+    transition: all 0.3s;
+}
+
+    #sidebar.active {
+        margin-left: -250px;
+    }
+
+    #sidebar .sidebar-header {
+        height: 70px;
+        line-height: 70px;
+        /*text-align: left;*/
+        padding-left: 35px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        /*border: 1px dashed #f69c55;*/
+    }
+
+    #sidebar .sidebar-body {
+        margin-top: 20px;
+        /*border: 1px dashed #f69c55;*/
+    }
+
+    #sidebar .sidebar-icon {
+        width: 50px;
+    }
+
+    #sidebar > ul > li > a {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 5px 15px;
+    }
+
+        #sidebar > ul > li > a > i {
+            display: inline-block;
+            height: 35px;
+            width: 35px;
+            line-height: 35px;
+            margin-right: 5px;
+            /*border: 1px dashed #f69c55;*/
+            text-align: center;
+        }
+
+    #sidebar > ul > li > ul {
+        padding-left: 55px;
+    }
+
+        #sidebar > ul > li > ul > li > a {
+            display: block;
+            height: 35px;
+            line-height: 35px;
+            margin-right: 5px;
+            /*border: 1px dashed #f69c55;*/
+            text-align: left;
+        }
+
+
+#content {
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+    #content main {
+        padding: 10px;
+    }
+
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin: 0px;
+}
+
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+
+        #sidebar.active {
+            margin-left: 0;
+        }
+
+    /*#sidebarCollapse span {
+        display: none;
+    }*/
+}
