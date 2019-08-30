@@ -81,23 +81,45 @@ a, a:hover, a:focus {
             width: 35px;
             line-height: 35px;
             margin-right: 5px;
-            /*border: 1px dashed #f69c55;*/
             text-align: center;
         }
 
-    #sidebar > ul > li > ul {
-        padding-left: 55px;
-    }
+    /*#sidebar > ul > li > ul {
+        padding-left: 10px;
+    }*/
 
         #sidebar > ul > li > ul > li > a {
             display: block;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 5px 30px;
+        }
+            #sidebar > ul > li > ul > li > a > i {
+                display: inline-block;
+                height: 35px;
+                width: 35px;
+                line-height: 35px;
+                margin-right: 5px;
+                text-align: center;
+            }
+
+        /*#sidebar > ul > li > ul > li > ul {
+            padding-left: 10px;
+        }*/
+    #sidebar > ul > li > ul > li > ul > li > a {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 5px 45px;
+    }
+        #sidebar > ul > li > ul > li > ul > li > a > i {
+            display: inline-block;
             height: 35px;
+            width: 35px;
             line-height: 35px;
             margin-right: 5px;
-            /*border: 1px dashed #f69c55;*/
-            text-align: left;
+            text-align: center;
         }
-
 
 #content {
     width: 100%;
