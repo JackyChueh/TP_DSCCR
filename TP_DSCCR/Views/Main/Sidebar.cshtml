@@ -17,13 +17,13 @@
             if (item.FUNCTIONS.CATEGORY == "P")
             {
                 <li>
-                    <a href="#"><i class="fas @(item.FUNCTIONS.IMG ==null ? "fas fa-file" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
+                    <a href="#"><i class="@(string.IsNullOrEmpty(item.FUNCTIONS.IMG) ? "fas fa-file" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
                 </li>
             }
             else
             {
                 <li>
-                    <a href="#F@(item.FUNCTIONS.SN)" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas @(item.FUNCTIONS.IMG ==null ? "fas fa-folder" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
+                    <a href="#F@(item.FUNCTIONS.SN)" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="@(string.IsNullOrEmpty(item.FUNCTIONS.IMG) ? "fas fa-folder" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
                     <ul class="collapse list-unstyled" id="F@(item.FUNCTIONS.SN)">
                         @ConstructSidebar(SidebarItem, item.FUNCTIONS.SN, Level)
                     </ul>
