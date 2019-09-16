@@ -1,5 +1,7 @@
+--SELECT CONVERT(int, right(left(replace(replace(replace(replace(CONVERT(varchar(50),GETDATE(),126),'-',''),':',''),'T',''),'.',''),12),10))
+
 UPDATE [dbo].[AHU_0B1]
-   SET [AUTOID] = 1
+   SET [AUTOID] = CONVERT(int, right(left(replace(replace(replace(replace(CONVERT(varchar(50),GETDATE(),126),'-',''),':',''),'T',''),'.',''),12),10))
       ,[DATETIME] = GETDATE()
       ,[AHU01_0B1F01] = ROUND(RAND() * 1, 0)
       ,[AHU02_0B1F01] = ROUND(RAND() * 1, 0)
