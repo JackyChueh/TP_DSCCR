@@ -17,7 +17,7 @@
             if (item.FUNCTIONS.CATEGORY == "P")
             {
                 <li>
-                    <a href="#"><i class="@(string.IsNullOrEmpty(item.FUNCTIONS.IMG) ? "fas fa-file" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
+                    <a href="@item.FUNCTIONS.URL"><i class="@(string.IsNullOrEmpty(item.FUNCTIONS.IMG) ? "far fa-file-alt" : item.FUNCTIONS.IMG )"></i>@item.FUNCTIONS.NAME</a>
                 </li>
             }
             else

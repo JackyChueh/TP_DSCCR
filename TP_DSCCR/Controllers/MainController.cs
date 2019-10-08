@@ -18,7 +18,7 @@ namespace TP_DSCCR.Controllers
         public ActionResult Sidebar()
         {
             Main.SidebarRes res = new Main.SidebarRes();
-            res.SidebarItem= new Authority("TP_SCC").UserFunctionAuthority();
+            res.SidebarItem= new AuthorityImplement("TP_SCC").UserFunctionAuthority();
             return View(res);
         }
     }

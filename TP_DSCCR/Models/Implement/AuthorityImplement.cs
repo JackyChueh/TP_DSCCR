@@ -8,9 +8,9 @@ using TP_DSCCR.Models.Data;
 
 namespace TP_DSCCR.Models.Implement
 {
-    public class Authority : EnterpriseLibrary
+    public class AuthorityImplement : EnterpriseLibrary
     {
-        public Authority(string connectionStringName) : base(connectionStringName) { }
+        public AuthorityImplement(string connectionStringName) : base(connectionStringName) { }
 
         public List<Main.SidebarItem> UserFunctionAuthority()
         {
