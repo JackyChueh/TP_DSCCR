@@ -6,7 +6,8 @@ using System.Web.Mvc;
 using TP_DSCCR.ViewModels;
 using TP_DSCCR.Models.Implement;
 using Newtonsoft.Json;
-using TP_DSCCR.Models.Enumsl;
+using TP_DSCCR.Models.Enums;
+
 namespace TP_DSCCR.Controllers
 {
     public class AHUController : BaseController
@@ -18,7 +19,7 @@ namespace TP_DSCCR.Controllers
         }
 
         [AcceptVerbs("POST")]
-        public string AHU(AHUReq req)
+        public string AHURetrieve(AHUReq req)
         {
             AHURes res = new AHURes();
             try
@@ -26,8 +27,7 @@ namespace TP_DSCCR.Controllers
                 Log("Req=" + JsonConvert.SerializeObject(req));
 
                 res = new AHUImplement("TP_DSCCR").PaginationRetrieve(req);
-                //res.ReturnStatus = new ReturnStatus(ReturnCode.SUCCESS);
-                res.State = ResultEnum.SUCCESS;
+                res.Result.State = ResultEnum.SUCCESS;
             }
             catch (Exception ex)
             {

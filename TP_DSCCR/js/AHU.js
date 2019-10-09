@@ -14,12 +14,12 @@
 
     EventBinding: function () {
         $('#query').click(function () {
-            AHUIndex.CaseRetrieve();
+            AHUIndex.AHURetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
             if ($('#section_retrieve').valid()) {
-                AHUIndex.CaseRetrieve();
+                AHUIndex.AHURetrieve();
             }
         });
 
@@ -275,34 +275,14 @@
         });
     },
 
-    CaseRetrieve: function () {
-        var url = 'CaseRetrieve';
+    AHURetrieve: function () {
+        var url = 'AHURetrieve';
         var request = {
-            CASE: {
-                SN: $('#section_retrieve #SN').val(),
-                NAME1: $('#section_retrieve #NAME1').val(),
-                TEL1: $('#section_retrieve #TEL1').val(),
-                TEACHER1: $('#section_retrieve #TEACHER1').val(),
-                YEARS_OLD: $('#section_retrieve #YEARS_OLD').val(),
-                ADDRESS: $('#section_retrieve #ADDRESS').val(),
-                FAMILY: $('#section_retrieve #FAMILY').val(),
-                RESIDENCE: $('#section_retrieve #RESIDENCE').val(),
-                NOTE: $('#section_retrieve #NOTE').val(),
-                PROBLEM: $('#section_retrieve #PROBLEM').val(),
-                EXPERIENCE: $('#section_retrieve #EXPERIENCE').val(),
-                SUGGEST: $('#section_retrieve #SUGGEST').val(),
-                CASE_STATUS: $('#section_retrieve #CASE_STATUS').val(),
-                CONTACT_TIME: $('#section_retrieve #CONTACT_TIME').val(),
-                START_DATE: AHUIndex.QueryStartDate,
-                END_DATE: AHUIndex.QueryEndDate,
-                NAME: $('#section_retrieve #NAME').val(),
-                TEL: $('#section_retrieve #TEL').val(),
-                VOLUNTEER_SN: $('#section_retrieve #VOLUNTEER_SN').val(),
-                ORDER_BY: $('#section_retrieve #ORDER_BY').val(),
-                ASC_DESC: $('#section_retrieve #ASC_DESC').val()
+            AHU: {
+                SID: $('#SID').val()
             },
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 1
+            PageSize: $('#page_size').val() ? $('#page_size').val() : 10
         };
 
         $.ajax({
@@ -312,7 +292,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                if (response.ReturnStatus.Code === 0) {
+                if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
                     $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
@@ -327,51 +307,26 @@
                     var htmlRow = '';
                     var temp = '';
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.CASE, function (idx, row) {
+                        $.each(response.AHU, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="AHUIndex.RowSelected(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改" style="cursor: pointer;"></a></td>';
-                            htmlRow += '<td>' + row.SN + '</td>';
-                            temp = row.NAME1;
-                            temp += row.NAME2 ? ', ' + row.NAME2 : '';
-                            temp += row.NAME3 ? ', ' + row.NAME3 : '';
-                            temp += row.NAME4 ? ', ' + row.NAME4 : '';
-                            temp += row.NAME5 ? ', ' + row.NAME5 : '';
-                            temp += row.NAME6 ? ', ' + row.NAME6 : '';
-                            htmlRow += '<td>' + temp + '</td>';
-                            //                     htmlRow += '<td>' + row.NAME1 + '</td>';
-                            //htmlRow += '<td>' + row.NAME2 + '</td>';
-                            //htmlRow += '<td>' + row.NAME3 + '</td>';
-                            //htmlRow += '<td>' + row.NAME4 + '</td>';
-                            //htmlRow += '<td>' + row.NAME5 + '</td>';
-                            //htmlRow += '<td>' + row.NAME6 + '</td>';
-                            temp = row.TEL1;
-                            temp += row.TEL2 ? ', ' + row.TEL2 : '';
-                            temp += row.TEL3 ? ', ' + row.TEL3 : '';
-                            temp += row.TEL4 ? ', ' + row.TEL4 : '';
-                            temp += row.TEL5 ? ', ' + row.TEL5 : '';
-                            temp += row.TEL6 ? ', ' + row.TEL6 : '';
-                            htmlRow += '<td>' + temp + '</td>';
-                            //                     htmlRow += '<td>' + row.TEL1 + '</td>';
-                            //htmlRow += '<td>' + row.TEL2 + '</td>';
-                            //htmlRow += '<td>' + row.TEL3 + '</td>';
-                            //htmlRow += '<td>' + row.TEL4 + '</td>';
-                            //htmlRow += '<td>' + row.TEL5 + '</td>';
-                            //htmlRow += '<td>' + row.TEL6 + '</td>';
-                            temp = row.TEACHER1;
-                            temp += row.TEACHER2 ? ', ' + row.TEACHER2 : '';
-                            temp += row.TEACHER3 ? ', ' + row.TEACHER3 : '';
-                            htmlRow += '<td>' + temp + '</td>';
-                            //htmlRow += '<td>' + row.TEACHER1 + '</td>';
-                            //htmlRow += '<td>' + row.TEACHER2 + '</td>';
-                            //htmlRow += '<td>' + row.TEACHER3 + '</td>';
-                            htmlRow += '<td>' + row.YEARS_OLD + '</td>';
-                            htmlRow += '<td>' + row.ADDRESS + '</td>';
-                            htmlRow += '<td>' + row.FAMILY + '</td>';
-                            htmlRow += '<td>' + row.RESIDENCE + '</td>';
-                            htmlRow += '<td>' + row.NOTE + '</td>';
-                            htmlRow += '<td>' + row.PROBLEM + '</td>';
-                            htmlRow += '<td>' + row.EXPERIENCE + '</td>';
-                            htmlRow += '<td>' + row.SUGGEST + '</td>';
+                            //htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="AHUIndex.RowSelected(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改" style="cursor: pointer;"></a></td>';
+                            //htmlRow += '<td>' + row.SID + '</td>';
+                            htmlRow += '<td>' + row.CDATE + '</td>';
+                            //htmlRow += '<td>' + row.AUTOID + '</td>';
+                            //htmlRow += '<td>' + row.DATETIME + '</td>';
+                            htmlRow += '<td>' + row.LOCATION + '</td>';
+                            htmlRow += '<td>' + row.DEVICE_ID + '</td>';
+                            htmlRow += '<td>' + row.AHU01 + '</td>';
+                            htmlRow += '<td>' + row.AHU02 + '</td>';
+                            htmlRow += '<td>' + row.AHU03 + '</td>';
+                            htmlRow += '<td>' + row.AHU04 + '</td>';
+                            htmlRow += '<td>' + row.AHU05 + '</td>';
+                            htmlRow += '<td>' + row.AHU06 + '</td>';
+                            htmlRow += '<td>' + row.AHU07 + '</td>';
+                            htmlRow += '<td>' + row.AHU08 + '</td>';
+                            htmlRow += '<td>' + row.AHU09 + '</td>';
+                            htmlRow += '<td>' + row.AHU10 + '</td>';
+                            htmlRow += '<td>' + row.AHU11 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
                         });
