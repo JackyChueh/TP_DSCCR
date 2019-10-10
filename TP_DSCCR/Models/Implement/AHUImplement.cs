@@ -131,5 +131,63 @@ SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,
             return res;
         }
 
+        public AHURes GraphRetrieve(AHUReq req)
+        {
+            AHURes res = new AHURes()
+            {
+                AHUChartJS = new List<AHUChartJS>(),
+            };
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+                string sql = @"
+ SELECT TOP(@TOP) CONVERT(VARCHAR(13),CDATE,120) AS CDATE
+    ,CONVERT(DECIMAL(28,2),AVG(AHU01)) AS AHU01
+    ,CONVERT(DECIMAL(28,2),AVG(AHU02)) AS AHU02
+    ,CONVERT(DECIMAL(28,2),AVG(AHU03)) AS AHU03
+    ,CONVERT(DECIMAL(28,2),AVG(AHU04)) AS AHU04
+    ,CONVERT(DECIMAL(28,2),AVG(AHU05)) AS AHU05
+    ,CONVERT(DECIMAL(28,2),AVG(AHU06)) AS AHU06
+    ,CONVERT(DECIMAL(28,2),AVG(AHU07)) AS AHU07
+    ,CONVERT(DECIMAL(28,2),AVG(AHU08)) AS AHU08
+    ,CONVERT(DECIMAL(28,2),AVG(AHU09)) AS AHU09
+    ,CONVERT(DECIMAL(28,2),AVG(AHU10)) AS AHU10
+    ,CONVERT(DECIMAL(28,2),AVG(AHU11)) AS AHU11
+FROM AHU
+WHERE  CDATE>'2019-10-10'
+GROUP BY CONVERT(VARCHAR(13),CDATE,120)
+  ORDER BY CONVERT(VARCHAR(13),CDATE,120)
+";
+                Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
+
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+                using (IDataReader reader = Db.ExecuteReader(cmd))
+                {
+                    while (reader.Read())
+                    {
+                        var row = new AHUChartJS
+                        {
+                            CDATE = reader["CDATE"] as string ,
+                            AHU01 = (Decimal)reader["AHU01"],
+                            AHU02 = (Decimal)reader["AHU02"],
+                            AHU03 = (Decimal)reader["AHU03"],
+                            AHU04 = (Decimal)reader["AHU04"],
+                            AHU05 = (Decimal)reader["AHU05"],
+                            AHU06 = (Decimal)reader["AHU06"],
+                            AHU07 = (Decimal)reader["AHU07"],
+                            AHU08 = (Decimal)reader["AHU08"],
+                            AHU09 = (Decimal)reader["AHU09"],
+                            AHU10 = (Decimal)reader["AHU10"],
+                            AHU11 = (Decimal)reader["AHU11"]
+                        };
+                        res.AHUChartJS.Add(row);
+                    }
+
+                }
+            }
+
+            return res;
+        }
     }
 }

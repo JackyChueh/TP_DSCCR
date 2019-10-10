@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Title = "AHUGraph";
+}
+
+<div class="card">
+    <div class="card-header">
+        <div class="form-inline">
+            <div class="col">
+                空調箱
+            </div>
+            <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1"></i>查詢</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!--查詢區塊-->
+        <form id="section_retrieve" style="display: none;">
+            <div class="form-row">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="SN">位置</label>
+                    <input type="text" class="form-control form-control-sm fields" id="SN" name="SN">
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="NAME1">裝置</label>
+                    <input type="text" class="form-control form-control-sm fields" id="NAME1" name="NAME1">
+                </div>
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
+                    <label for="DATE_RANGE">日期區間</label>
+                    <input type="text" class="form-control form-control-sm" id="DATE_RANGE" name="DATE_RANGE">
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="CASE_STATUS">數據欄位</label>
+                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE">
+                        <option>回風溫度</option>
+                        <option>故障跳脫</option>
+                        <option>旋鈕檔位狀態</option>
+                        <option>外氣風門到位(%)</option>
+                        <option>回風風門到位(%)</option>
+                        <option>回風濕度</option>
+                        <option>出風溫度</option>
+                        <option>出風濕度</option>
+                        <option>回風溫度設定</option>
+                        <option>冰水閥實際開度顯示</option>
+                        <option>變頻器運轉輸出頻率(Hz)</option>
+                    </select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="CASE_STATUS">分組類型</label>
+                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE">
+                        <option>小時</option>
+                        <option>年</option>
+                        <option>月</option>
+                        <option>日</option>
+                    </select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="CASE_STATUS">圖表類型</label>
+                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE">
+                        <option>折線圖</option>
+                        <option>長條圖</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        @*<div class="form-row">
+            <div class="col-12">
+                <div class="card">
+                    <canvas id="chartLine"></canvas>
+                </div>
+            </div>
+        </div>*@
+    <div class="chart-container card" style="width:79vw">
+        <canvas id="chartLine"></canvas>
+    </div>
+        <!--/查詢區塊-->
+    </div>
+</div>
+
+<div class="modal" id="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">訊息標題</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>顯示訊息主體</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script src="~/js/AHUGraph.js"></script>
+    <script type="text/JavaScript">
+        $(document).ready(function () {
+            AHUGraph.Page_Init();
+        });
+    </script>
+}

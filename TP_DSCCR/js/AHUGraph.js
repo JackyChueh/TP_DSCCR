@@ -1,4 +1,4 @@
-﻿var AHUIndex = {
+﻿var AHUGraph = {
     Action: null,
     CASE: null,
     INTERVIEW: [],
@@ -7,31 +7,116 @@
     QueryEndDate: null,
 
     Page_Init: function () {
-        AHUIndex.EventBinding();
-        //AHUIndex.OptionRetrieve();
-        AHUIndex.ActionSwitch('R');
+        AHUGraph.EventBinding();
+        //AHUGraph.OptionRetrieve();
+        AHUGraph.ActionSwitch('R');
+
+        //var obj;
+        //obj = document.getElementById('chartLine').getContext('2d');
+        //obj.height = 200;
+        //var chartLines = new Chart(obj, {
+        //    // The type of chart we want to create
+        //    type: 'line',
+
+        //    // The data for our dataset
+        //    data: {
+        //        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        //        datasets: [{
+        //            label: '訂單查詢',
+        //            fill: false,
+        //            backgroundColor: 'rgb(255, 99, 132)',
+        //            borderColor: 'rgb(255, 99, 132)',
+        //            data: [0, 1000, 500, 200, 2000, 3000, 4500, 1000, 500, 200, 2000, 2200]
+        //        }, {
+        //            label: '意見反應',
+        //            fill: false,
+        //            borderDash: [5, 5],
+        //            backgroundColor: 'rgb(0, 255, 132)',
+        //            borderColor: 'rgb(0, 255, 132)',
+        //            data: [0, 2000, 1000, 1700, 500, 3400, 3500, 4000, 5000, 1700, 500, 3300]
+        //        }, {
+        //            label: '會員權益',
+        //            backgroundColor: 'rgb(54, 162, 235,0.3)',
+        //            borderColor: 'rgb(54, 162, 235,0,3)',
+        //            fill: true,
+        //            data: [0, 3000, 500, 1200, 1000, 3500, 5000, 1500, 1500, 1200, 200, 1828]
+        //        }]
+        //    },
+
+        //    // Configuration options go here
+        //    options: {
+        //        responsive: true,
+        //        maintainAspectRatio: false,
+        //        title: {
+        //            display: true,
+        //            text: '進線類型'
+        //        }
+        //    }
+        //});
+        //var ctx = document.getElementById('myChart').getContext('2d');
+        //obj = $('#chartLine');
+        //var chartLine = new Chart(obj, {
+        //    // The type of chart we want to create
+        //    type: 'line',
+
+        //    // The data for our dataset
+        //    data: {
+        //        labels: ['06/01', '06/02', '06/03', '06/04', '06/05', '06/06', '06/07'],
+        //        datasets: [{
+        //            label: '手機',
+        //            backgroundColor: 'rgb(255, 99, 132)',
+        //            borderColor: 'rgb(255, 99, 132)',
+        //            data: [0, 10000, 5000, 2000, 20000, 30000, 45000]
+        //        }, {
+        //            label: '電話',
+        //            backgroundColor: 'rgb(00, 255, 132)',
+        //            borderColor: 'rgb(00, 255, 132)',
+        //            data: [0, 40000, 50000, 17000, 5000, 34000, 40408]
+        //        }, {
+        //            label: '超商',
+        //            backgroundColor: 'rgb(54, 162, 235)',
+        //            borderColor: 'rgb(54, 162, 235)',
+        //            data: [0, 50000, 5000, 12000, 10000, 35000, 55000]
+        //        }]
+        //    },
+
+        //    // Configuration options go here
+        //    options: {
+        //        scales: {
+        //            yAxes: [{
+        //                stacked: true
+        //            }]
+        //        },
+        //        title: {
+        //            display: true,
+        //            text: '來源管道'
+        //        }
+        //    }
+        //});
+
+
     },
 
     EventBinding: function () {
         $('#query').click(function () {
-            AHUIndex.AHURetrieve();
+            AHUGraph.AHURetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
             if ($('#section_retrieve').valid()) {
-                AHUIndex.AHURetrieve();
+                AHUGraph.AHURetrieve();
             }
         });
 
         //var section_retrieve = $('#section_retrieve');
         //var obj = null;
         //obj = section_retrieve.find('[name=DATE_RANGE]');
-        //AHUIndex.DateRangePickerBind2(obj);
+        //AHUGraph.DateRangePickerBind2(obj);
 
         //obj.change(function () {
         //    if (!obj.val()) {
-        //        AHUIndex.QueryStartDate = null;
-        //        AHUIndex.QueryEndDate = null;
+        //        AHUGraph.QueryStartDate = null;
+        //        AHUGraph.QueryEndDate = null;
         //    }
         //});
 
@@ -58,7 +143,7 @@
             $('#add').show();
             $('#section_modify').show();
         }
-        AHUIndex.Action = action;
+        AHUGraph.Action = action;
 
     },
 
@@ -276,13 +361,10 @@
     },
 
     AHURetrieve: function () {
-        var url = 'AHURetrieve';
+        var url = 'AHUGraph';
         var request = {
             AHU: {
-                SID: $('#SID').val()
-            },
-            PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 10
+            }
         };
 
         $.ajax({
@@ -293,48 +375,10 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
-                    $('#gridview >  tbody').html('');
-                    $('#rows_count').text(response.Pagination.RowCount);
-                    $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
-                    $('#page_number option').remove();
-                    for (var i = 1; i <= response.Pagination.PageCount; i++) {
-                        $('#page_number').append($('<option></option>').attr('value', i).text(i));
-                    }
-                    $('#page_number').val(response.Pagination.PageNumber);
-                    $('#page_count').text(response.Pagination.PageCount);
-                    $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
-
-                    var htmlRow = '';
-                    var temp = '';
-                    if (response.Pagination.RowCount > 0) {
-                        $.each(response.AHU, function (idx, row) {
-                            htmlRow = '<tr>';
-                            //htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="AHUIndex.RowSelected(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改" style="cursor: pointer;"></a></td>';
-                            //htmlRow += '<td>' + row.SID + '</td>';
-                            htmlRow += '<td>' + row.CDATE + '</td>';
-                            //htmlRow += '<td>' + row.AUTOID + '</td>';
-                            //htmlRow += '<td>' + row.DATETIME + '</td>';
-                            htmlRow += '<td>' + row.LOCATION + '</td>';
-                            htmlRow += '<td>' + row.DEVICE_ID + '</td>';
-                            htmlRow += '<td>' + row.AHU01 + '</td>';
-                            htmlRow += '<td>' + row.AHU02 + '</td>';
-                            htmlRow += '<td>' + row.AHU03 + '</td>';
-                            htmlRow += '<td>' + row.AHU04 + '</td>';
-                            htmlRow += '<td>' + row.AHU05 + '</td>';
-                            htmlRow += '<td>' + row.AHU06 + '</td>';
-                            htmlRow += '<td>' + row.AHU07 + '</td>';
-                            htmlRow += '<td>' + row.AHU08 + '</td>';
-                            htmlRow += '<td>' + row.AHU09 + '</td>';
-                            htmlRow += '<td>' + row.AHU10 + '</td>';
-                            htmlRow += '<td>' + row.AHU11 + '</td>';
-                            htmlRow += '</tr>';
-                            $('#gridview >  tbody').append(htmlRow);
-                        });
-                    }
-                    else {
-                        htmlRow = '<tr><td colspan="13" style="text-align:center">data not found</td></tr>';
-                        $('#gridview >  tbody').append(htmlRow);
-                    }
+                    var obj;
+                    obj = document.getElementById('chartLine').getContext('2d');
+                    obj.height = 200;
+                    var chartLines = new Chart(obj, response.ChartLine);
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -350,5 +394,6 @@
             complete: function (xhr, status) {
             }
         });
-    },
+    }
+
 };
