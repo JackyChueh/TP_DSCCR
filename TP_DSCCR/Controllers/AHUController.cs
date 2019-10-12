@@ -57,36 +57,91 @@ namespace TP_DSCCR.Controllers
                 Log("Req=" + JsonConvert.SerializeObject(req));
 
                 res = new AHUImplement("TP_DSCCR").GraphRetrieve(req);
+
+                var query = from data in res.AHUChartJS
+                            group data by data.CDATE;
+
+
                 Data Data = new Data();
                 List<string> labels = new List<string>();
-                List<Dataset> Dataset = new List<Dataset>();
-                Dataset dsAHU05 = new Dataset()
+                foreach (var q in query)
                 {
-                    label = "回風溫度",
-                    fill = false,
-                    backgroundColor = "rgb(255, 99, 132)",
-                    borderColor = "rgb(255, 99, 132)",
-                    data = new List<Decimal> { }
-                };
+                    labels.Add(q.Key);
+                }
+
+                List<Dataset> Dataset = new List<Dataset>();
+                //Dataset ds004F01 = new Dataset()
+                //{
+                //    label = "004F,01",
+                //    fill = false,
+                //    backgroundColor = "rgb(255, 99, 132)",
+                //    borderColor = "rgb(255, 99, 132)",
+                //    data = new List<Decimal> { }
+                //};
+
+                string key = null;
+                Dataset ds = null;
+                Random random = new Random();
+                string rgb = null;
+
                 foreach (AHUChartJS AHUChartJS in res.AHUChartJS)
                 {
-                    labels.Add(AHUChartJS.CDATE.Substring(11, 2));
-                    dsAHU05.data.Add(AHUChartJS.AHU05);
+                    if (key == null )
+                    {
+                        key = AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID;
+                        rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
+                        ds = new Dataset()
+                        {
+                            label = key,
+                            fill = false,
+                            backgroundColor = rgb,
+                            borderColor = rgb,
+                            data = new List<Decimal> { }
+                        };
+                    }
+                    else if (key != AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID)
+                    {
+                        Dataset.Add(ds);
+                        key = AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID;
+                        rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
+                        ds = new Dataset()
+                        {
+                            label = key,
+                            fill = false,
+                            backgroundColor = rgb,
+                            borderColor = rgb,
+                            data = new List<Decimal> { }
+                        };
+
+                    }
+
+                    //if (key != AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID)
+                    //{
+                    //    key = AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID;
+
+
+                    //}
+                    //labels.Add(AHUChartJS.CDATE.Substring(11, 2));
+                    //ds.label = AHUChartJS.LOCATION + AHUChartJS.DEVICE_ID;
+                    ds.data.Add(AHUChartJS.AHU_VALUE);
+
+                 
                 }
-                Dataset.Add(dsAHU05);
+                Dataset.Add(ds);
+
                 Data.datasets = Dataset;
                 Data.labels = labels;
 
                 ChartLine ChartLine = new ChartLine()
                 {
-                    type = "line",
+                    type = req.GRAPH_TYPE,
                     data = Data,
                     options = new Options() {
                         responsive = true,
                         maintainAspectRatio = false,
                         title = new Title() {
                             display = true,
-                            text= "折線圖範例"
+                            text= "回風溫度"
                         }
                     }
                 };

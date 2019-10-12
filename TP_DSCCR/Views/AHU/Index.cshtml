@@ -1,6 +1,10 @@
 ﻿@{
     ViewBag.Title = "AHUIndex";
 }
+@section Styles
+{
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+}
 <div class="card">
     <div class="card-header">
         <div class="form-inline">
@@ -15,17 +19,25 @@
         <!--查詢區塊-->
         <form id="section_retrieve" style="display: none;">
             <div class="form-row">
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="SN">位置</label>
-                    <input type="text" class="form-control form-control-sm fields" id="SN" name="SN">
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="SDATE">日期時間(起)</label>
+                    <input type="text" class="form-control form-control-sm" id="SDATE" name="SDATE">
+                </div>
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="EDATE">日期時間(迄)</label>
+                    <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="NAME1">裝置</label>
-                    <input type="text" class="form-control form-control-sm fields" id="NAME1" name="NAME1">
+                    <label for="LOCATION">位置</label>
+                    <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
-                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4">
-                    <label for="DATE_RANGE">日期時間</label>
-                    <input type="text" class="form-control form-control-sm" id="DATE_RANGE" name="DATE_RANGE">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="DEVICE_ID">裝置</label>
+                    <input type="text" class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID">
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="GROUP_BY_DT">分組類型</label>
+                    <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
                 </div>
             </div>
             <div class="table-responsive">
@@ -108,6 +120,7 @@
 </div>
 
 @section Scripts{
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/js/AHUIndex.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
