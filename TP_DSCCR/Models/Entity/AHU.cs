@@ -25,4 +25,5 @@ namespace TP_DSCCR.Models.Entity
         public Single? AHU10 { get; set; }
         public Single? AHU11 { get; set; }
     }
+
 }

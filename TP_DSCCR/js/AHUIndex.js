@@ -8,16 +8,21 @@
     },
 
     EventBinding: function () {
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+
         $('#query').click(function () {
             AHUIndex.AHURetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
-                AHUIndex.AHURetrieve();
+            AHUIndex.AHURetrieve();
         });
 
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00'});
-        $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#LOCATION').change(function () {
+            AHUIndex.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+        });
+
 
     },
 
@@ -73,14 +78,14 @@
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
-                    $('#GROUP_BY_DT').append('<option value=""></option>');
+                    //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.ReturnStatus.Code + '<br/>交易說明:' + response.ReturnStatus.Message + '</p>');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
                     $('#modal').modal('show');
                 }
             },
@@ -93,6 +98,50 @@
         });
     },
 
+    SubOptionRetrieve: function (obj, parentKey) {
+        if (parentKey) {
+            var url = '/Main/SubItemListRetrieve';
+            var request = {
+                PhraseGroup: 'AHU_DEVICE_ID',
+                ParentKey: parentKey
+            };
+
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify(request),
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Result.State === 0) {
+                        $(obj).find('option').remove();
+                        $(obj).append('<option value=""></option>');
+                        $.each(response.SubItemList, function (idx, row) {
+                            $(obj).append($('<option></option>').attr('value', row.Key).text(row.Value));
+                        });
+                    }
+                    else {
+                        $('#modal .modal-title').text('交易訊息');
+                        $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                        $('#modal').modal('show');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+                },
+                complete: function (xhr, status) {
+                    //alert('' + xhr.status + ';' + status );
+                }
+            });
+        }
+        else {
+            $(obj).find('option').remove();
+            //$(obj).find('option').not(':first').remove();
+            //$(obj).append('<option value=""></option>');
+        }
+    },
+
     AHURetrieve: function () {
         var url = 'AHURetrieve';
         var request = {
@@ -102,6 +151,7 @@
             },
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
+            GROUP_BY_DT: $('#GROUP_BY_DT').val(),
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
             PageSize: $('#page_size').val() ? $('#page_size').val() : 10
         };
@@ -126,11 +176,13 @@
                     $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
 
                     var htmlRow = '';
-                    var temp = '';
+                    $("#gridview thead tr th").each(function () {
+                        //console.log($(this).text());
+                    });
                     if (response.Pagination.RowCount > 0) {
                         $.each(response.AHU, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td>' + row.CDATE.replace('T', ' ').substr(0,19) + '</td>';
+                            htmlRow += '<td>' + row.CDATE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             htmlRow += '<td>' + row.AHU01 + '</td>';
@@ -155,7 +207,7 @@
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.ReturnStatus.Code + '<br/>交易說明:' + response.ReturnStatus.Message + '</p>');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
                     $('#modal').modal('show');
                 }
             },
@@ -168,4 +220,53 @@
             }
         });
     },
+
+    AHUGraph: function () {
+        var url = 'AHUGraph';
+        var request = {
+            AHU: {
+                LOCATION: $('#LOCATION').val(),
+                DEVICE_ID: $('#DEVICE_ID').val()
+            },
+            SDATE: $('#SDATE').val(),
+            EDATE: $('#EDATE').val(),
+            FIELD: $('#FIELD').val(),
+            GROUP_BY_DT: $('#GROUP_BY_DT').val(),
+            //GRAPH_TYPE: $('#GRAPH_TYPE').val()
+        };
+
+        $.ajax({
+            type: 'post',
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Result.State === 0) {
+                    if (AHUGraph.ChartObj) {
+                        AHUGraph.ChartObj.clear();
+                        AHUGraph.ChartObj.reset();
+                        AHUGraph.ChartObj.destroy();
+                    }
+                    var obj;
+                    obj = document.getElementById('chartLine').getContext('2d');
+                    //obj.height = 200;
+                    ChartObj = new Chart(obj, response.ChartLine);
+                    //ChartObj.resize();
+                }
+                else {
+                    $('#modal .modal-title').text('交易訊息');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                    $('#modal').modal('show');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#modal .modal-title').text(ajaxOptions);
+                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+                $('#modal').modal('show');
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    }
 };

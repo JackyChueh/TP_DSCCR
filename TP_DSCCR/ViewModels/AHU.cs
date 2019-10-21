@@ -41,4 +41,25 @@ namespace TP_DSCCR.ViewModels
         //public Decimal AHU10 { get; set; }
         //public Decimal AHU11 { get; set; }
     }
+
+    public class AHU
+    {
+        //public int SID { get; set; }
+        public string CDATE { get; set; }
+        //public int AUTOID { get; set; }
+        //public DateTime? DATETIME { get; set; }
+        public string LOCATION { get; set; }
+        public string DEVICE_ID { get; set; }
+        public decimal? AHU01 { get; set; }
+        public decimal? AHU02 { get; set; }
+        public decimal? AHU03 { get; set; }
+        public decimal? AHU04 { get; set; }
+        public decimal? AHU05 { get; set; }
+        public decimal? AHU06 { get; set; }
+        public decimal? AHU07 { get; set; }
+        public decimal? AHU08 { get; set; }
+        public decimal? AHU09 { get; set; }
+        public decimal? AHU10 { get; set; }
+        public decimal? AHU11 { get; set; }
+    }
 }

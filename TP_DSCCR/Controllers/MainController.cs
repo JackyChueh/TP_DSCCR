@@ -48,5 +48,29 @@ namespace TP_DSCCR.Controllers
             Log("Res=" + json);
             return json;
         }
+
+        public string SubItemListRetrieve(SubItemListRetrieveReq req)
+        {
+            SubItemListRetrieveRes res = new SubItemListRetrieveRes();
+            try
+            {
+                res.SubItemList = new ItemListImplement("TP_SCC").SubItemListQuery(req.PhraseGroup, req.ParentKey);
+                res.Result.State = ResultEnum.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+                res.Result.State = ResultEnum.FAIL;
+            }
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+            };
+            var json = JsonConvert.SerializeObject(res, Formatting.Indented);
+            Log("Res=" + json);
+            return json;
+        }
     }
 }

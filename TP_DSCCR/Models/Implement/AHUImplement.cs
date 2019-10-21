@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using TP_DSCCR.Models.Access;
-using TP_DSCCR.Models.Entity;
+//using TP_DSCCR.Models.Entity;
 using TP_DSCCR.ViewModels;
 
 namespace TP_DSCCR.Models.Implement
@@ -116,23 +116,23 @@ WHERE  CDATE>'2019-10-10'
                             {
                                 var row = new AHU
                                 {
-                                    SID = (int)reader["SID"],
-                                    CDATE = (DateTime)reader["CDATE"],
-                                    AUTOID = (int)reader["AUTOID"],
-                                    DATETIME = reader["DATETIME"] as DateTime? ?? null,
+                                    //SID = (int)reader["SID"],
+                                    //CDATE = (DateTime)reader["CDATE"],
+                                    //AUTOID = (int)reader["AUTOID"],
+                                    //DATETIME = reader["DATETIME"] as DateTime? ?? null,
                                     LOCATION = reader["LOCATION"] as string,
                                     DEVICE_ID = reader["DEVICE_ID"] as string,
-                                    AHU01 = reader["AHU01"] as Single? ?? null,
-                                    AHU02 = reader["AHU02"] as Single? ?? null,
-                                    AHU03 = reader["AHU03"] as Single? ?? null,
-                                    AHU04 = reader["AHU04"] as Single? ?? null,
-                                    AHU05 = reader["AHU05"] as Single? ?? null,
-                                    AHU06 = reader["AHU06"] as Single? ?? null,
-                                    AHU07 = reader["AHU07"] as Single? ?? null,
-                                    AHU08 = reader["AHU08"] as Single? ?? null,
-                                    AHU09 = reader["AHU09"] as Single? ?? null,
-                                    AHU10 = reader["AHU10"] as Single? ?? null,
-                                    AHU11 = reader["AHU11"] as Single? ?? null
+                                    //AHU01 = reader["AHU01"] as Single? ?? null,
+                                    //AHU02 = reader["AHU02"] as Single? ?? null,
+                                    //AHU03 = reader["AHU03"] as Single? ?? null,
+                                    //AHU04 = reader["AHU04"] as Single? ?? null,
+                                    //AHU05 = reader["AHU05"] as Single? ?? null,
+                                    //AHU06 = reader["AHU06"] as Single? ?? null,
+                                    //AHU07 = reader["AHU07"] as Single? ?? null,
+                                    //AHU08 = reader["AHU08"] as Single? ?? null,
+                                    //AHU09 = reader["AHU09"] as Single? ?? null,
+                                    //AHU10 = reader["AHU10"] as Single? ?? null,
+                                    //AHU11 = reader["AHU11"] as Single? ?? null
 
                                 };
                                 res.AHU.Add(row);
@@ -173,26 +173,68 @@ WHERE  CDATE>'2019-10-10'
                 //SELECT TOP(@TOP) SN,NAME1,NAME2,NAME3,NAME4,NAME5,NAME6,TEL1,TEL2,TEL3,TEL4,TEL5,TEL6,YEARS_OLD,ADDRESS,TEACHER1,TEACHER2,TEACHER3,FAMILY,FAMILY_FILE,RESIDENCE,NOTE,PROBLEM,EXPERIENCE,SUGGEST,MERGE_REASON
                 //    FROM CASE_OWNER{ 0}
                 //{ 1};
+                //SELECT COUNT(1) FROM(SELECT TOP(@TOP) NULL AS N FROM AHU{0}) A;
+                //            SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,AHU04,AHU05,AHU06,AHU07,AHU08,AHU09,AHU10,AHU11
+                //                FROM AHU
+                //                  { 0}
+                string fields = "";
+                string groupByDT = null;
+                string group = null;
+                switch (req.GROUP_BY_DT)
+                {
+                    case "DETAIL":
+                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        group = "";
+                        break;
+                    case "YEAR":
+                        groupByDT = "CONVERT(VARCHAR(4),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "MONTH":
+                        groupByDT = "CONVERT(VARCHAR(7),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "DAY":
+                        groupByDT = "CONVERT(VARCHAR(10),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "HOUR":
+                        groupByDT = "CONVERT(VARCHAR(13),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                }
+
+                switch (req.GROUP_BY_DT)
+                {
+                    //CONVERT(DECIMAL(28,2),AVG({1})) AS AHU_VALUE
+                    case "DETAIL":
+                        for (int i = 1; i < 12; i++)
+                        {
+                            //fields += "AHU" + i.ToString("00") + ",";
+                            fields += "CONVERT(DECIMAL(28,1),(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                        }
+                        break;
+                    case "YEAR":
+                    case "MONTH":
+                    case "DAY":
+                    case "HOUR":
+                        for (int i = 1; i < 12; i++)
+                        {
+                            //fields += "AVG(AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                            fields += "CONVERT(DECIMAL(28,1),AVG((AHU" + i.ToString("00") + "))) AS AHU" + i.ToString("00") + ",";
+                        }
+                        break;
+                }
 
                 string sql = @"
-SELECT COUNT(1) FROM(SELECT TOP(@TOP) NULL AS N FROM AHU{0}) A;
-SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,AHU04,AHU05,AHU06,AHU07,AHU08,AHU09,AHU10,AHU11
+SELECT {0} AS CDATE,LOCATION,DEVICE_ID,{1}
     FROM AHU
-    {0}
+    {2}
+    {3}
 ";
-                Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
+                //Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
 
                 string where = "";
-                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
-                {
-                    where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
-                }
-                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
-                {
-                    where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
-                }
                 if (req.SDATE != null)
                 {
                     where += " AND CDATE>=@SDATE";
@@ -203,63 +245,59 @@ SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
+                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
+                {
+                    where += " AND LOCATION=@LOCATION";
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
+                }
+                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
+                {
+                    where += " AND DEVICE_ID=@DEVICE_ID";
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
+                }
                 if (where.Length > 0)
                 {
                     where = " WHERE" + where.Substring(4);
                 }
 
-                sql = String.Format(sql, where);
+                sql = String.Format(sql, groupByDT, fields.TrimEnd(','), where, group);
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
-                using (IDataReader reader = Db.ExecuteReader(cmd))
+                using (DataTable dt = Db.ExecuteDataSet(cmd).Tables[0])
                 {
-                    reader.Read();
-                    int.TryParse(reader[0].ToString(), out res.Pagination.RowCount);
-                    if (res.Pagination.RowCount > 0)
+                    res.Pagination.RowCount = dt.Rows.Count;
+                    res.Pagination.PageCount = Convert.ToInt32(Math.Ceiling(1.0 * res.Pagination.RowCount / req.PageSize));
+                    res.Pagination.PageNumber = req.PageNumber < 1 ? 1 : req.PageNumber;
+                    res.Pagination.PageNumber = req.PageNumber > res.Pagination.PageCount ? res.Pagination.PageCount : res.Pagination.PageNumber;
+                    res.Pagination.MinNumber = (res.Pagination.PageNumber - 1) * req.PageSize + 1;
+                    res.Pagination.MaxNumber = res.Pagination.PageNumber * req.PageSize;
+                    res.Pagination.MaxNumber = res.Pagination.MaxNumber > res.Pagination.RowCount ? res.Pagination.RowCount : res.Pagination.MaxNumber;
+
+                    if (dt.Rows.Count > 0)
                     {
-                        reader.NextResult();
-
-                        res.Pagination.PageCount = Convert.ToInt32(Math.Ceiling(1.0 * res.Pagination.RowCount / req.PageSize));
-                        res.Pagination.PageNumber = req.PageNumber < 1 ? 1 : req.PageNumber;
-                        res.Pagination.PageNumber = req.PageNumber > res.Pagination.PageCount ? res.Pagination.PageCount : res.Pagination.PageNumber;
-                        res.Pagination.MinNumber = (res.Pagination.PageNumber - 1) * req.PageSize + 1;
-                        res.Pagination.MaxNumber = res.Pagination.PageNumber * req.PageSize;
-                        res.Pagination.MaxNumber = res.Pagination.MaxNumber > res.Pagination.RowCount ? res.Pagination.RowCount : res.Pagination.MaxNumber;
-
-                        int i = 0;
-                        while (reader.Read())
+                        for (int i = res.Pagination.MinNumber - 1; i < res.Pagination.MaxNumber; i++)
                         {
-                            i++;
-                            if (i >= res.Pagination.MinNumber && i <= res.Pagination.MaxNumber)
+                            var row = new AHU
                             {
-                                var row = new AHU
-                                {
-                                    SID = (int)reader["SID"],
-                                    CDATE = (DateTime)reader["CDATE"],
-                                    AUTOID = (int)reader["AUTOID"],
-                                    DATETIME = reader["DATETIME"] as DateTime? ?? null,
-                                    LOCATION = reader["LOCATION"] as string,
-                                    DEVICE_ID = reader["DEVICE_ID"] as string,
-                                    AHU01 = reader["AHU01"] as Single? ?? null,
-                                    AHU02 = reader["AHU02"] as Single? ?? null,
-                                    AHU03 = reader["AHU03"] as Single? ?? null,
-                                    AHU04 = reader["AHU04"] as Single? ?? null,
-                                    AHU05 = reader["AHU05"] as Single? ?? null,
-                                    AHU06 = reader["AHU06"] as Single? ?? null,
-                                    AHU07 = reader["AHU07"] as Single? ?? null,
-                                    AHU08 = reader["AHU08"] as Single? ?? null,
-                                    AHU09 = reader["AHU09"] as Single? ?? null,
-                                    AHU10 = reader["AHU10"] as Single? ?? null,
-                                    AHU11 = reader["AHU11"] as Single? ?? null
-
-                                };
-                                res.AHU.Add(row);
-                            }
-                            else if (i > res.Pagination.MaxNumber)
-                            {
-                                reader.Close();
-                                break;
-                            }
+                                //SID = (int)dt.Rows[i]["SID"],
+                                CDATE = dt.Rows[i]["CDATE"] as string,
+                                //AUTOID = (int)dt.Rows[i]["AUTOID"],
+                                //DATETIME = dt.Rows[i]["DATETIME"] as DateTime? ?? null,
+                                LOCATION = dt.Rows[i]["LOCATION"] as string,
+                                DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
+                                AHU01 = dt.Rows[i]["AHU01"] as decimal? ?? null,
+                                AHU02 = dt.Rows[i]["AHU02"] as decimal? ?? null,
+                                AHU03 = dt.Rows[i]["AHU03"] as decimal? ?? null,
+                                AHU04 = dt.Rows[i]["AHU04"] as decimal? ?? null,
+                                AHU05 = dt.Rows[i]["AHU05"] as decimal? ?? null,
+                                AHU06 = dt.Rows[i]["AHU06"] as decimal? ?? null,
+                                AHU07 = dt.Rows[i]["AHU07"] as decimal? ?? null,
+                                AHU08 = dt.Rows[i]["AHU08"] as decimal? ?? null,
+                                AHU09 = dt.Rows[i]["AHU09"] as decimal? ?? null,
+                                AHU10 = dt.Rows[i]["AHU10"] as decimal? ?? null,
+                                AHU11 = dt.Rows[i]["AHU11"] as decimal? ?? null
+                            };
+                            res.AHU.Add(row);
                         }
                     }
                 }
@@ -303,6 +341,7 @@ SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,
     ORDER BY LOCATION,DEVICE_ID,{2}
 ";
 
+                
                 Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
 
                 string where = "";
@@ -341,8 +380,8 @@ SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,
                     {
                         var row = new AHUChartJS
                         {
-                            CDATE = reader["CDATE"] as string ,
-                            LOCATION= reader["LOCATION"] as string,
+                            CDATE = reader["CDATE"] as string,
+                            LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
                             AHU_VALUE = (Decimal)reader["AHU_VALUE"]
                             //AHU02 = (Decimal)reader["AHU02"],
