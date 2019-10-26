@@ -32,8 +32,12 @@
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="DEVICE_ID">裝置</label>
-                    <input type="text" class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID">
+                    <label for="DEVICE_ID">設備名稱</label>
+                    <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="GROUP_BY_DT">分組類型</label>
+                    <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="FIELD">數據欄位</label>
@@ -52,25 +56,25 @@
                     </select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="GROUP_BY_DT">分組類型</label>
-                    <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
-                </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="GRAPH_TYPE">圖表類型</label>
                     <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE"></select>
                 </div>
             </div>
         </form>
         @*<div class="form-row">
-                <div class="col-12">
-                    <div class="card">
-                        <canvas id="chartLine"></canvas>
-                    </div>
+            <div class="col-12">
+                <div class="card" style="width:79vw;height:90vh;">
+                    <canvas id="chartLine"></canvas>
                 </div>
-            </div>*@
-        <div class="chart-container card" style="width:79vw;height:90vh;">
+            </div>
+        </div>*@
+        @*<div class="chart-container card">
+            <canvas id="chartLine"></canvas>
+        </div>*@
+        <div style="width:100%">
             <canvas id="chartLine"></canvas>
         </div>
+
         <!--/查詢區塊-->
     </div>
 </div>

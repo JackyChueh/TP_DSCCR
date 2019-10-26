@@ -5,6 +5,7 @@
 {
     <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
 }
+
 <div class="card">
     <div class="card-header">
         <div class="form-inline">
@@ -32,7 +33,7 @@
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="DEVICE_ID">裝置名稱</label>
+                    <label for="DEVICE_ID">設備名稱</label>
                     <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -46,12 +47,12 @@
                         <tr>
                             <th>日期時間</th>
                             <th>位置</th>
-                            <th>裝置</th>
+                            <th>設備名稱</th>
                             <th>故障跳脫</th>
                             <th>旋鈕檔位狀態</th>
                             <th>外氣風門到位(%)</th>
                             <th>回風風門到位(%)</th>
-                            <th>回風溫度(&deg;C)</th>
+                            <th onclick="AHUIndex.ShowChart('AHU05');">回風溫度(&deg;C)</th>
                             <th>回風濕度(%RH)</th>
                             <th>出風溫度(&deg;C)</th>
                             <th>出風濕度(%RH)</th>
@@ -63,7 +64,6 @@
                     <tbody></tbody>
                 </table>
             </div>
-
             <div id="paging_block" class="form-inline">
                 <div class="input-group input-group-sm mr-1">
                     <div class="input-group-prepend">
@@ -119,8 +119,31 @@
     </div>
 </div>
 
+<div class="modal" id="modal-chart" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h5 class="modal-title">訊息標題</h5>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="chart-container card">
+                    <canvas id="chart-line"></canvas>
+                </div>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
     <script src="~/js/AHUIndex.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {

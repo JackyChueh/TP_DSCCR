@@ -1,5 +1,6 @@
 ﻿var AHUIndex = {
     Action: null,
+    ChartObj: null,
 
     Page_Init: function () {
         AHUIndex.EventBinding();
@@ -23,7 +24,11 @@
             AHUIndex.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
-
+        $('#modal-chart').on('show', function () {
+            $(this).find('.modal-body').css({
+                'max-height': '100%'
+            });
+        });
     },
 
     ActionSwitch: function (action) {
@@ -185,7 +190,11 @@
                             htmlRow += '<td>' + row.CDATE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
-                            htmlRow += '<td>' + row.AHU01 + '</td>';
+                            var css = '';
+                            if (row.AHU01 === "停止") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.AHU01 + '</td>';
                             htmlRow += '<td>' + row.AHU02 + '</td>';
                             htmlRow += '<td>' + row.AHU03 + '</td>';
                             htmlRow += '<td>' + row.AHU04 + '</td>';
@@ -221,7 +230,15 @@
         });
     },
 
-    AHUGraph: function () {
+    ShowChart: function () {
+        $('#modal-chart .modal-title').text('交易訊息');
+        //$('#modal-chart .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+        $('#modal-chart').modal('show');
+        AHUIndex.AHUGraph('AHU05');
+        
+    },
+
+    AHUGraph: function (fieldName) {
         var url = 'AHUGraph';
         var request = {
             AHU: {
@@ -230,9 +247,9 @@
             },
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
-            FIELD: $('#FIELD').val(),
+            FIELD: fieldName,
             GROUP_BY_DT: $('#GROUP_BY_DT').val(),
-            //GRAPH_TYPE: $('#GRAPH_TYPE').val()
+            GRAPH_TYPE: 'line'
         };
 
         $.ajax({
@@ -243,13 +260,13 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
-                    if (AHUGraph.ChartObj) {
-                        AHUGraph.ChartObj.clear();
-                        AHUGraph.ChartObj.reset();
-                        AHUGraph.ChartObj.destroy();
+                    if (AHUIndex.ChartObj) {
+                        AHUIndex.ChartObj.clear();
+                        AHUIndex.ChartObj.reset();
+                        AHUIndex.ChartObj.destroy();
                     }
                     var obj;
-                    obj = document.getElementById('chartLine').getContext('2d');
+                    obj = document.getElementById('chart-line').getContext('2d');
                     //obj.height = 200;
                     ChartObj = new Chart(obj, response.ChartLine);
                     //ChartObj.resize();

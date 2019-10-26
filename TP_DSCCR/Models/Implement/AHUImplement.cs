@@ -169,17 +169,23 @@ WHERE  CDATE>'2019-10-10'
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
-                //SELECT COUNT(1) FROM(SELECT TOP(@TOP) NULL AS N FROM CASE_OWNER{ 0}) A;
-                //SELECT TOP(@TOP) SN,NAME1,NAME2,NAME3,NAME4,NAME5,NAME6,TEL1,TEL2,TEL3,TEL4,TEL5,TEL6,YEARS_OLD,ADDRESS,TEACHER1,TEACHER2,TEACHER3,FAMILY,FAMILY_FILE,RESIDENCE,NOTE,PROBLEM,EXPERIENCE,SUGGEST,MERGE_REASON
-                //    FROM CASE_OWNER{ 0}
-                //{ 1};
                 //SELECT COUNT(1) FROM(SELECT TOP(@TOP) NULL AS N FROM AHU{0}) A;
                 //            SELECT TOP(@TOP) SID,CDATE,AUTOID,DATETIME,LOCATION,DEVICE_ID,AHU01,AHU02,AHU03,AHU04,AHU05,AHU06,AHU07,AHU08,AHU09,AHU10,AHU11
                 //                FROM AHU
                 //                  { 0}
-                string fields = "";
+                string sql = @"
+SELECT {0} AS CDATE
+    ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,{1}
+    FROM AHU
+    {2}
+    {3}
+";
+                
                 string groupByDT = null;
                 string group = null;
+                string fields = "";
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
@@ -202,16 +208,25 @@ WHERE  CDATE>'2019-10-10'
                         groupByDT = "CONVERT(VARCHAR(13),CDATE,120)";
                         group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
                         break;
+                    default:
+                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        group = "";
+                        break;
                 }
 
                 switch (req.GROUP_BY_DT)
                 {
-                    //CONVERT(DECIMAL(28,2),AVG({1})) AS AHU_VALUE
                     case "DETAIL":
                         for (int i = 1; i < 12; i++)
                         {
-                            //fields += "AHU" + i.ToString("00") + ",";
-                            fields += "CONVERT(DECIMAL(28,1),(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                            if (i == 1)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('AHU_AHU01', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                            }
                         }
                         break;
                     case "YEAR":
@@ -220,18 +235,27 @@ WHERE  CDATE>'2019-10-10'
                     case "HOUR":
                         for (int i = 1; i < 12; i++)
                         {
-                            //fields += "AVG(AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
-                            fields += "CONVERT(DECIMAL(28,1),AVG((AHU" + i.ToString("00") + "))) AS AHU" + i.ToString("00") + ",";
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                            }
+                            
+                        }
+                        break;
+                    default:
+                        for (int i = 1; i < 12; i++)
+                        {
+                            if (i == 1)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('AHU_AHU01', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                            }
                         }
                         break;
                 }
-
-                string sql = @"
-SELECT {0} AS CDATE,LOCATION,DEVICE_ID,{1}
-    FROM AHU
-    {2}
-    {3}
-";
+         
                 //Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
 
                 string where = "";
@@ -285,7 +309,7 @@ SELECT {0} AS CDATE,LOCATION,DEVICE_ID,{1}
                                 //DATETIME = dt.Rows[i]["DATETIME"] as DateTime? ?? null,
                                 LOCATION = dt.Rows[i]["LOCATION"] as string,
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
-                                AHU01 = dt.Rows[i]["AHU01"] as decimal? ?? null,
+                                AHU01 = dt.Rows[i]["AHU01"].ToString(),
                                 AHU02 = dt.Rows[i]["AHU02"] as decimal? ?? null,
                                 AHU03 = dt.Rows[i]["AHU03"] as decimal? ?? null,
                                 AHU04 = dt.Rows[i]["AHU04"] as decimal? ?? null,

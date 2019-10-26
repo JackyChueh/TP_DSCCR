@@ -50,7 +50,7 @@ namespace TP_DSCCR.ViewModels
         //public DateTime? DATETIME { get; set; }
         public string LOCATION { get; set; }
         public string DEVICE_ID { get; set; }
-        public decimal? AHU01 { get; set; }
+        public string AHU01 { get; set; }
         public decimal? AHU02 { get; set; }
         public decimal? AHU03 { get; set; }
         public decimal? AHU04 { get; set; }

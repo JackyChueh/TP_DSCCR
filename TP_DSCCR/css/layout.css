@@ -38,15 +38,15 @@ a, a:hover, a:focus {
 }
 
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 211px;
+    max-width: 211px;
     background: #fff;
     color: #72777a;
     transition: all 0.3s;
 }
 
     #sidebar.active {
-        margin-left: -250px;
+        margin-left: -211px;
     }
 
     #sidebar .sidebar-header {
@@ -138,7 +138,7 @@ a, a:hover, a:focus {
 
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -250px;
+        margin-left: -211px;
     }
 
         #sidebar.active {

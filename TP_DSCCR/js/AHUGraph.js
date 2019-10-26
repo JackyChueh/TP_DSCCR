@@ -9,11 +9,12 @@
         $('#FIELD option[value="AHU05"]').attr("selected", true);   //test
 
         AHUGraph.ActionSwitch('R');
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
-        $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
     },
 
     EventBinding: function () {
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+
         $('#query').click(function () {
             AHUGraph.AHURetrieve();
         });
@@ -24,6 +25,9 @@
             }
         });
 
+        $('#LOCATION').change(function () {
+            AHUGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+        });
         //var section_retrieve = $('#section_retrieve');
         //var obj = null;
         //obj = section_retrieve.find('[name=DATE_RANGE]');
@@ -89,23 +93,20 @@
                     $.each(response.ItemList.AHU_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#LOCATION option[value="0B1F"]').attr("selected", true);
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#GROUP_BY_DT option[value="DAY"]').attr("selected", true);
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
                         $('#GRAPH_TYPE').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.ReturnStatus.Code + '<br/>交易說明:' + response.ReturnStatus.Message + '</p>');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
                     $('#modal').modal('show');
                 }
             },
@@ -116,6 +117,50 @@
                 //alert('' + xhr.status + ';' + status );
             }
         });
+    },
+
+    SubOptionRetrieve: function (obj, parentKey) {
+        if (parentKey) {
+            var url = '/Main/SubItemListRetrieve';
+            var request = {
+                PhraseGroup: 'AHU_DEVICE_ID',
+                ParentKey: parentKey
+            };
+
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify(request),
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Result.State === 0) {
+                        $(obj).find('option').remove();
+                        $(obj).append('<option value=""></option>');
+                        $.each(response.SubItemList, function (idx, row) {
+                            $(obj).append($('<option></option>').attr('value', row.Key).text(row.Value));
+                        });
+                    }
+                    else {
+                        $('#modal .modal-title').text('交易訊息');
+                        $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                        $('#modal').modal('show');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+                },
+                complete: function (xhr, status) {
+                    //alert('' + xhr.status + ';' + status );
+                }
+            });
+        }
+        else {
+            $(obj).find('option').remove();
+            //$(obj).find('option').not(':first').remove();
+            //$(obj).append('<option value=""></option>');
+        }
     },
 
     AHURetrieve: function () {

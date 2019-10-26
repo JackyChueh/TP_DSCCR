@@ -24,11 +24,10 @@ namespace TP_DSCCR.Controllers
             return View();
         }
 
-
         [AcceptVerbs("POST")]
         public string AHURetrieve(AHUReq req)
         {
-            //System.Threading.Thread.Sleep(1000);
+            //System.Threading.Thread.Sleep(2000);
             AHURes res = new AHURes();
             try
             {
@@ -138,7 +137,7 @@ namespace TP_DSCCR.Controllers
                     data = Data,
                     options = new Options() {
                         responsive = true,
-                        maintainAspectRatio = false,
+                        maintainAspectRatio = true,
                         title = new Title() {
                             display = true,
                             text= "回風溫度"

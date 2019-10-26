@@ -178,12 +178,11 @@
     <Content Include="Content\v4-shims.css" />
     <Content Include="Content\v4-shims.min.css" />
     <Content Include="css\layout.css" />
-    <Content Include="db\CREATE_TABLE_AHU_0B1.sql" />
     <Content Include="db\CREATE_DATABASE_TP_SCC.sql" />
-    <Content Include="db\UPDATE_AHU_0B1.sql" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
     <Content Include="js\AHUGraph.js" />
     <Content Include="js\AHUIndex.js" />
