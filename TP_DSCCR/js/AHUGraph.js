@@ -191,12 +191,10 @@
                     if (AHUGraph.ChartObj) {
                         AHUGraph.ChartObj.destroy();
                     }
-                    //$('chartLine').html('');
                     var obj;
                     obj = document.getElementById('chartLine').getContext('2d');
-                    //obj.height = 200;
                     AHUGraph.ChartObj = new Chart(obj, response.Chart);
-                    //ChartObj.resize();
+                    //AHUGraph.ChartObj.resize();
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');

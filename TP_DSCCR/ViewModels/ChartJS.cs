@@ -31,6 +31,7 @@ namespace TP_DSCCR.ViewModels
     public class Options
     {
         public bool responsive { get; set; }
+        public bool maintainAspectRatio { get; set; }
         public Title title { get; set; }
     }
 

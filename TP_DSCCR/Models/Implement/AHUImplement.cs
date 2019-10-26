@@ -365,6 +365,7 @@ SELECT {0} AS CDATE
             Options Options = new Options()
             {
                 responsive = true,
+                maintainAspectRatio = false,
                 title = new Title()
                 {
                     display = true,
