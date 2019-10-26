@@ -12,7 +12,7 @@
     },
 
     EventBinding: function () {
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(2019, 9, 15, 0, 0) });
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
@@ -98,6 +98,8 @@
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
+                    $("#GROUP_BY_DT").trigger("change");
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
@@ -173,6 +175,7 @@
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
             FIELD: $('#FIELD').val(),
+            FIELD_NAME: $('#FIELD :selected').text(),
             GROUP_BY_DT: $('#GROUP_BY_DT').val(),
             GRAPH_TYPE: $('#GRAPH_TYPE').val()
         };
@@ -186,14 +189,13 @@
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
                     if (AHUGraph.ChartObj) {
-                        AHUGraph.ChartObj.clear();
-                        AHUGraph.ChartObj.reset();
                         AHUGraph.ChartObj.destroy();
                     }
+                    //$('chartLine').html('');
                     var obj;
                     obj = document.getElementById('chartLine').getContext('2d');
                     //obj.height = 200;
-                    ChartObj = new Chart(obj, response.ChartLine);
+                    AHUGraph.ChartObj = new Chart(obj, response.Chart);
                     //ChartObj.resize();
                 }
                 else {

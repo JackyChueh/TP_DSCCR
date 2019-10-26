@@ -31,11 +31,10 @@ namespace TP_DSCCR.ViewModels
     public class Options
     {
         public bool responsive { get; set; }
-        public bool maintainAspectRatio { get; set; }
         public Title title { get; set; }
     }
 
-    public class ChartLine
+    public class Chart
     {
         public string type { get; set; }
         public Data data { get; set; }

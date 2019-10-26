@@ -1,34 +1,37 @@
-﻿var AHUIndex = {
-    Action: null,
-    ChartObj: null,
+﻿var AHUData = {
 
     Page_Init: function () {
-        AHUIndex.EventBinding();
-        AHUIndex.OptionRetrieve();
-        AHUIndex.ActionSwitch('R');
+        AHUData.EventBinding();
+        AHUData.OptionRetrieve();
+        AHUData.ActionSwitch('R');
     },
 
     EventBinding: function () {
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(2019, 9, 15, 0, 0) });
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            AHUIndex.AHURetrieve();
+            AHUData.AHURetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
-            AHUIndex.AHURetrieve();
+            AHUData.AHURetrieve();
         });
 
         $('#LOCATION').change(function () {
-            AHUIndex.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+            AHUData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
-        $('#modal-chart').on('show', function () {
-            $(this).find('.modal-body').css({
-                'max-height': '100%'
-            });
+        $('#GRAPH_TYPE').change(function () {
+            AHUData.AHUGraph('AHU05', $(this).val());
         });
+
+
+        //$('#modal-chart').on('show', function () {
+        //    $(this).find('.modal-body').css({
+        //        'max-height': '100%'
+        //    });
+        //});
     },
 
     ActionSwitch: function (action) {
@@ -38,29 +41,14 @@
             $('#query').show();
             $('#excel').show();
             $('#section_retrieve').show();
-        } else if (action === 'U') {
-            $('#save').show();
-            $('#delete').show();
-            $('#return').show();
-            $('#undo').show();
-            $('#add').show();
-            $('#section_modify').show();
-        } else if (action === 'C') {
-            $('#save').show();
-            $('#return').show();
-            $('#undo').show();
-            $('#add').show();
-            $('#section_modify').show();
         }
-        AHUIndex.Action = action;
-
     },
 
     OptionRetrieve: function () {
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'AHU_LOCATION','GROUP_BY_DT']
+            PhraseGroup: ['page_size', 'AHU_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE']
         };
 
         $.ajax({
@@ -82,11 +70,22 @@
                     $.each(response.ItemList.AHU_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#LOCATION option[value="0B1F"]').attr("selected", true);
+                    $("#LOCATION").trigger("change");
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
+
+
+                    //$('#GRAPH_TYPE').append('<option value=""></option>');
+                    $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
+                        $('#GRAPH_TYPE').append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    });
+
+
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -142,8 +141,6 @@
         }
         else {
             $(obj).find('option').remove();
-            //$(obj).find('option').not(':first').remove();
-            //$(obj).append('<option value=""></option>');
         }
     },
 
@@ -181,11 +178,8 @@
                     $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
 
                     var htmlRow = '';
-                    $("#gridview thead tr th").each(function () {
-                        //console.log($(this).text());
-                    });
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.AHU, function (idx, row) {
+                        $.each(response.AHUData, function (idx, row) {
                             htmlRow = '<tr>';
                             htmlRow += '<td>' + row.CDATE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
@@ -228,62 +222,6 @@
             complete: function (xhr, status) {
             }
         });
-    },
-
-    ShowChart: function () {
-        $('#modal-chart .modal-title').text('交易訊息');
-        //$('#modal-chart .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-        $('#modal-chart').modal('show');
-        AHUIndex.AHUGraph('AHU05');
-        
-    },
-
-    AHUGraph: function (fieldName) {
-        var url = 'AHUGraph';
-        var request = {
-            AHU: {
-                LOCATION: $('#LOCATION').val(),
-                DEVICE_ID: $('#DEVICE_ID').val()
-            },
-            SDATE: $('#SDATE').val(),
-            EDATE: $('#EDATE').val(),
-            FIELD: fieldName,
-            GROUP_BY_DT: $('#GROUP_BY_DT').val(),
-            GRAPH_TYPE: 'line'
-        };
-
-        $.ajax({
-            type: 'post',
-            url: url,
-            contentType: 'application/json',
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                if (response.Result.State === 0) {
-                    if (AHUIndex.ChartObj) {
-                        AHUIndex.ChartObj.clear();
-                        AHUIndex.ChartObj.reset();
-                        AHUIndex.ChartObj.destroy();
-                    }
-                    var obj;
-                    obj = document.getElementById('chart-line').getContext('2d');
-                    //obj.height = 200;
-                    ChartObj = new Chart(obj, response.ChartLine);
-                    //ChartObj.resize();
-                }
-                else {
-                    $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-                    $('#modal').modal('show');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
     }
+
 };

@@ -46,12 +46,12 @@
                         <option value="AHU02">旋鈕檔位狀態</option>
                         <option value="AHU03">外氣風門到位(%)</option>
                         <option value="AHU04">回風風門到位(%)</option>
-                        <option value="AHU05">回風溫度</option>
-                        <option value="AHU06">回風濕度</option>
-                        <option value="AHU07">出風溫度</option>
-                        <option value="AHU08">出風濕度</option>
-                        <option value="AHU09">回風溫度設定</option>
-                        <option value="AHU10">冰水閥實際開度顯示</option>
+                        <option value="AHU05">回風溫度(&deg;C)</option>
+                        <option value="AHU06">回風濕度(%RH)</option>
+                        <option value="AHU07">出風溫度(&deg;C)</option>
+                        <option value="AHU08">出風濕度(%RH)</option>
+                        <option value="AHU09">回風溫度設定(&deg;C)</option>
+                        <option value="AHU10">冰水閥實際開度顯示(%)</option>
                         <option value="AHU11">變頻器運轉輸出頻率(Hz)</option>
                     </select>
                 </div>
@@ -60,21 +60,14 @@
                     <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE"></select>
                 </div>
             </div>
-        </form>
-        @*<div class="form-row">
-            <div class="col-12">
-                <div class="card" style="width:79vw;height:90vh;">
-                    <canvas id="chartLine"></canvas>
+            <div class="form-row">
+                <div class="col-12">
+                    <div class="card" style="height:100vh;">
+                        <canvas id="chartLine"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>*@
-        @*<div class="chart-container card">
-            <canvas id="chartLine"></canvas>
-        </div>*@
-        <div style="width:100%">
-            <canvas id="chartLine"></canvas>
-        </div>
-
+        </form>
         <!--/查詢區塊-->
     </div>
 </div>
@@ -99,6 +92,34 @@
     </div>
 </div>
 
+<div class="modal" id="modal-chart" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">訊息標題</h5>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE"></select>
+                </div>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="col-12">
+                        <div class="card" style="height:90vh;">
+                            <canvas id="chart-line"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
