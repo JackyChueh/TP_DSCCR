@@ -1,18 +1,15 @@
 ﻿var AHUGraph = {
-    Action: null,
     ChartObj:null,
 
     Page_Init: function () {
         AHUGraph.EventBinding();
         AHUGraph.OptionRetrieve();
-
-        $('#FIELD option[value="AHU05"]').attr("selected", true);   //test
-
         AHUGraph.ActionSwitch('R');
     },
 
     EventBinding: function () {
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(2019, 9, 15, 0, 0) });
+        var now = new Date();
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0) });
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
@@ -28,18 +25,6 @@
         $('#LOCATION').change(function () {
             AHUGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
-        //var section_retrieve = $('#section_retrieve');
-        //var obj = null;
-        //obj = section_retrieve.find('[name=DATE_RANGE]');
-        //AHUGraph.DateRangePickerBind2(obj);
-
-        //obj.change(function () {
-        //    if (!obj.val()) {
-        //        AHUGraph.QueryStartDate = null;
-        //        AHUGraph.QueryEndDate = null;
-        //    }
-        //});
-
     },
 
     ActionSwitch: function (action) {
@@ -49,22 +34,7 @@
             $('#query').show();
             $('#create').show();
             $('#section_retrieve').show();
-        } else if (action === 'U') {
-            $('#save').show();
-            $('#delete').show();
-            $('#return').show();
-            $('#undo').show();
-            $('#add').show();
-            $('#section_modify').show();
-        } else if (action === 'C') {
-            $('#save').show();
-            $('#return').show();
-            $('#undo').show();
-            $('#add').show();
-            $('#section_modify').show();
         }
-        AHUGraph.Action = action;
-
     },
 
     OptionRetrieve: function () {
@@ -93,13 +63,14 @@
                     $.each(response.ItemList.AHU_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#LOCATION option:nth-child(2)').attr("selected", true);
+                    $("#LOCATION").trigger("change");
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
                     $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
-                    $("#GROUP_BY_DT").trigger("change");
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
@@ -188,13 +159,15 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
-                    if (AHUGraph.ChartObj) {
-                        AHUGraph.ChartObj.destroy();
+                    if (response.Chart) {
+                        if (AHUGraph.ChartObj) {
+                            AHUGraph.ChartObj.destroy();
+                        }
+                        var obj;
+                        obj = document.getElementById('chartLine').getContext('2d');
+                        AHUGraph.ChartObj = new Chart(obj, response.Chart);
+                        //AHUGraph.ChartObj.resize();
                     }
-                    var obj;
-                    obj = document.getElementById('chartLine').getContext('2d');
-                    AHUGraph.ChartObj = new Chart(obj, response.Chart);
-                    //AHUGraph.ChartObj.resize();
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');

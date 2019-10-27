@@ -12,7 +12,7 @@ namespace TP_DSCCR.ViewModels
         public bool fill { get; set; }
         public string backgroundColor { get; set; }
         public string borderColor { get; set; }
-        public List<Decimal> data { get; set; }
+        public List<Decimal?> data { get; set; }
         //public List<int?> borderDash { get; set; }
     }
 

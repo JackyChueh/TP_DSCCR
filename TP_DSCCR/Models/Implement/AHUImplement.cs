@@ -5,6 +5,11 @@ using System.Data.Common;
 using System.Linq;
 using TP_DSCCR.Models.Access;
 using TP_DSCCR.ViewModels;
+using System.IO;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 
 namespace TP_DSCCR.Models.Implement
 {
@@ -188,6 +193,340 @@ SELECT {0} AS CDATE
             return res;
         }
 
+        public MemoryStream ExcelRetrieve(AHUExcelReq req)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            List<AHUData> list = new List<AHUData>();
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+                string sql = @"
+SELECT {0} AS CDATE
+    ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,{1}
+    FROM AHU
+    {2}
+    {3}
+";
+                string fields = "";
+                switch (req.GROUP_BY_DT)
+                {
+                    case "DETAIL":
+                        for (int i = 1; i < 12; i++)
+                        {
+                            if (i == 1)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('AHU_AHU" + i.ToString("00") + "', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                            }
+                        }
+                        break;
+                    case "YEAR":
+                    case "MONTH":
+                    case "DAY":
+                    case "HOUR":
+                        for (int i = 1; i < 12; i++)
+                        {
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                            }
+
+                        }
+                        break;
+                    default:
+                        for (int i = 1; i < 12; i++)
+                        {
+                            if (i == 1)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('AHU_AHU" + i.ToString("00") + "', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else
+                            {
+                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                            }
+                        }
+                        break;
+                }
+
+                string groupByDT = null;
+                string group = null;
+                switch (req.GROUP_BY_DT)
+                {
+                    case "DETAIL":
+                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        group = "";
+                        break;
+                    case "YEAR":
+                        groupByDT = "CONVERT(VARCHAR(4),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "MONTH":
+                        groupByDT = "CONVERT(VARCHAR(7),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "DAY":
+                        groupByDT = "CONVERT(VARCHAR(10),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    case "HOUR":
+                        groupByDT = "CONVERT(VARCHAR(13),CDATE,120)";
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
+                        break;
+                    default:
+                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        group = "";
+                        break;
+                }
+
+                //Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
+
+                string where = "";
+                if (req.SDATE != null)
+                {
+                    where += " AND CDATE>=@SDATE";
+                    Db.AddInParameter(cmd, "SDATE", DbType.DateTime, req.SDATE);
+                }
+                if (req.EDATE != null)
+                {
+                    where += " AND CDATE<=@EDATE";
+                    Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
+                }
+                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
+                {
+                    where += " AND LOCATION=@LOCATION";
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
+                }
+                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
+                {
+                    where += " AND DEVICE_ID=@DEVICE_ID";
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
+                }
+                if (where.Length > 0)
+                {
+                    where = " WHERE" + where.Substring(4);
+                }
+
+                sql = String.Format(sql, groupByDT, fields.TrimEnd(','), where, group);
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+
+                
+                using (IDataReader reader = Db.ExecuteReader(cmd))
+                {
+                    while (reader.Read())
+                    {
+                        var row = new AHUData
+                        {
+                            CDATE = reader["CDATE"] as string,
+                            LOCATION = reader["LOCATION"] as string,
+                            DEVICE_ID = reader["DEVICE_ID"] as string,
+                            AHU01 = reader["AHU01"].ToString(),
+                            AHU02 = reader["AHU02"] as decimal? ?? null,
+                            AHU03 = reader["AHU03"] as decimal? ?? null,
+                            AHU04 = reader["AHU04"] as decimal? ?? null,
+                            AHU05 = reader["AHU05"] as decimal? ?? null,
+                            AHU06 = reader["AHU06"] as decimal? ?? null,
+                            AHU07 = reader["AHU07"] as decimal? ?? null,
+                            AHU08 = reader["AHU08"] as decimal? ?? null,
+                            AHU09 = reader["AHU09"] as decimal? ?? null,
+                            AHU10 = reader["AHU10"] as decimal? ?? null,
+                            AHU11 = reader["AHU11"] as decimal? ?? null
+                        };
+                        list.Add(row);
+                    }
+                }
+            }
+            if (list.Count > 0)
+            {
+                ms = ExcelProduce(list);
+            }
+            return ms;
+        }
+
+        private MemoryStream ExcelProduce(List<AHUData> List)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            using (SpreadsheetDocument SpreadsheetDocument = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook))
+            {
+                WorkbookPart WorkbookPart = SpreadsheetDocument.AddWorkbookPart();
+                WorkbookPart.Workbook = new Workbook();
+                WorksheetPart WorksheetPart = WorkbookPart.AddNewPart<WorksheetPart>();
+                //WorkbookStylesPart WorkbookStylesPart = WorkbookPart.AddNewPart<WorkbookStylesPart>();
+                WorksheetPart.Worksheet = new Worksheet(new SheetData());
+                Sheets Sheets = WorkbookPart.Workbook.AppendChild(new Sheets());
+
+                Sheets.Append(new Sheet()
+                {
+                    Id = WorkbookPart.GetIdOfPart(WorksheetPart),
+                    SheetId = 1,
+                    Name = "Sheet 1"
+                });
+
+                var sheetData = WorksheetPart.Worksheet.GetFirstChild<SheetData>();
+
+                var row = new Row();
+                row.Append(
+                    new Cell()
+                    {
+                        CellValue = new CellValue("日期時間"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("位置"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("設備名稱"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("故障跳脫"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("旋鈕檔位狀態"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("外氣風門到位(%)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("回風風門到位(%)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("回風溫度(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("回風濕度(%RH)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("出風溫度(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("出風濕度(%RH)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("回風溫度設定(°C)"),
+                        DataType = CellValues.String
+                    },
+                   new Cell()
+                   {
+                       CellValue = new CellValue("冰水閥實際開度顯示(%)"),
+                       DataType = CellValues.String
+                   },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("變頻器運轉輸出頻率(Hz)"),
+                        DataType = CellValues.String
+                    }
+                );
+                sheetData.AppendChild(row);
+
+                foreach(AHUData data in List)
+                {
+                    row = new Row();
+                    row.Append(
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.CDATE),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.LOCATION),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.DEVICE_ID),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU01),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU02.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU03.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU04.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU05.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU06.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU07.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU08.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU09.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU10.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.AHU11.ToString()),
+                            DataType = CellValues.Number
+                        }
+                    );
+                    sheetData.AppendChild(row);
+                }
+            }
+
+            return ms;
+        }
+
         public AHUGraphRes GraphRetrieve(AHUGraphReq req)
         {
             AHUGraphRes res = new AHUGraphRes();
@@ -200,20 +539,37 @@ SELECT {0} AS CDATE
 SELECT {0} AS CDATE
     ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
     ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
-    ,CONVERT(DECIMAL(28,1),AVG({1})) AS AHU_VALUE
+    ,{1}
     FROM AHU
     {2}
     {3}
     {4}
 ";
+                //string field = null;
+                //switch (req.GROUP_BY_DT)
+                //{
+                //    case "DETAIL":
+                //        field = req.FIELD + " AS AHU_VALUE";
+                //        break;
+                //    case "YEAR":
+                //    case "MONTH":
+                //    case "DAY":
+                //    case "HOUR":
+                //        field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS AHU_VALUE",req.FIELD);
+                //        break;
+                //    default:
+                //        field = req.FIELD + " AS AHU_VALUE";
+                //        break;
+                //}
+                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS AHU_VALUE", req.FIELD);
+
                 string groupByDT = null;
                 string group = null;
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
                         groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
-                        group = "";
-                        
+                        group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
                         break;
                     case "YEAR":
                         groupByDT = "CONVERT(VARCHAR(4),CDATE,120)";
@@ -268,7 +624,7 @@ SELECT {0} AS CDATE
                     where = " WHERE" + where.Substring(4);
                 }
 
-                sql = String.Format(sql, groupByDT, req.FIELD, where, group, order);
+                sql = String.Format(sql, groupByDT, field, where, group, order);
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
                 using (IDataReader reader = Db.ExecuteReader(cmd))
@@ -280,14 +636,17 @@ SELECT {0} AS CDATE
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            VALUE = (Decimal)reader["AHU_VALUE"]
+                            VALUE= reader["AHU_VALUE"] as decimal? ?? null
+                            //VALUE = (Decimal)reader["AHU_VALUE"]
                         };
                         list.Add(row);
                     }
                 }
             }
-
-            res.Chart = ChartProduce(req.GRAPH_TYPE, list, req.FIELD_NAME);
+            if (list.Count > 0)
+            {
+                res.Chart = ChartProduce(req.GRAPH_TYPE, list, req.FIELD_NAME);
+            }
             return res;
         }
 
@@ -314,8 +673,8 @@ SELECT {0} AS CDATE
             Data.labels = labels;
             #endregion
 
-            #region chart.data.dataset
-            List<Dataset> list = new List<Dataset>();
+            #region chart.data.datasets
+            List<Dataset> datasets = new List<Dataset>();
 
             Random random = new Random();
             string key = null;
@@ -333,12 +692,12 @@ SELECT {0} AS CDATE
                         fill = false,
                         backgroundColor = rgb,
                         borderColor = rgb,
-                        data = new List<Decimal> { }
+                        data = new List<Decimal?> { }
                     };
                 }
                 else if (key != AHUChartJS.LOCATION + "_" + AHUChartJS.DEVICE_ID)
                 {
-                    list.Add(ds);
+                    datasets.Add(ds);
                     key = AHUChartJS.LOCATION + "_" + AHUChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
@@ -347,14 +706,14 @@ SELECT {0} AS CDATE
                         fill = false,
                         backgroundColor = rgb,
                         borderColor = rgb,
-                        data = new List<Decimal> { }
+                        data = new List<Decimal?> { }
                     };
 
                 }
                 ds.data.Add(AHUChartJS.VALUE);
             }
-            list.Add(ds);
-            Data.datasets = list;
+            datasets.Add(ds);
+            Data.datasets = datasets;
 
             Chart.data = Data;
             #endregion

@@ -42,7 +42,7 @@ namespace TP_DSCCR.ViewModels
         public string CDATE { get; set; }
         public string LOCATION { get; set; }
         public string DEVICE_ID { get; set; }
-        public Decimal VALUE { get; set; }
+        public Decimal? VALUE { get; set; }
     }
     public class AHUGraphReq
     {
@@ -84,7 +84,20 @@ namespace TP_DSCCR.ViewModels
         public Chart Chart { get; set; }
     }
 
+    public class AHUExcelReq
+    {
+        public AHUData AHU { get; set; }
+        public DateTime? SDATE { get; set; }
+        public DateTime? EDATE { get; set; }
+        public string FIELD { get; set; }
+        public string GROUP_BY_DT { get; set; }
+    }
+    public class AHUExcelRes : BaseResponse
+    {
+        public string DataId { get; set; }
+        public string FileName { get; set; }
+
+    }
 
 
-    
 }

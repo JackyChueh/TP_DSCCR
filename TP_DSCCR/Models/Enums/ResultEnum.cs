@@ -20,8 +20,8 @@ namespace TP_DSCCR.Models.Enums
         SYSTEM_ERROR = -4,
         [Description("執行錯誤")]
         EXCEPTION_ERROR = -5,
-        [Description("帳號或密碼錯誤")]
-        LOGIN_ERROR = -6
+        [Description("查無資料")]
+        DATA_NOT_FOUND = -6
     }
 
 }

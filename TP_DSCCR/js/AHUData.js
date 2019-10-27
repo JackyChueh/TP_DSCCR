@@ -7,7 +7,8 @@
     },
 
     EventBinding: function () {
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(2019, 9, 15, 0, 0) });
+        var now = new Date();
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0) });
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
@@ -26,12 +27,9 @@
             AHUData.AHUGraph('AHU05', $(this).val());
         });
 
-
-        //$('#modal-chart').on('show', function () {
-        //    $(this).find('.modal-body').css({
-        //        'max-height': '100%'
-        //    });
-        //});
+        $('#excel').click(function () {
+            AHUData.AHUExcel();
+        });
     },
 
     ActionSwitch: function (action) {
@@ -70,21 +68,18 @@
                     $.each(response.ItemList.AHU_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#LOCATION option[value="0B1F"]').attr("selected", true);
+                    $('#LOCATION option:nth-child(2)').attr("selected", true);
                     $("#LOCATION").trigger("change");
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
-
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
                         $('#GRAPH_TYPE').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-
 
                 }
                 else {
@@ -97,7 +92,6 @@
                 alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
             },
             complete: function (xhr, status) {
-                //alert('' + xhr.status + ';' + status );
             }
         });
     },
@@ -207,6 +201,45 @@
                         htmlRow = '<tr><td colspan="14" style="text-align:center">data not found</td></tr>';
                         $('#gridview >  tbody').append(htmlRow);
                     }
+                }
+                else {
+                    $('#modal .modal-title').text('交易訊息');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                    $('#modal').modal('show');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#modal .modal-title').text(ajaxOptions);
+                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+                $('#modal').modal('show');
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    },
+
+    AHUExcel: function () {
+      var url = 'AHUExcel';
+        var request = {
+            AHU: {
+                LOCATION: $('#LOCATION').val(),
+                DEVICE_ID: $('#DEVICE_ID').val()
+            },
+            SDATE: $('#SDATE').val(),
+            EDATE: $('#EDATE').val(),
+            GROUP_BY_DT: $('#GROUP_BY_DT').val()
+        };
+
+        $.ajax({
+            cache: false,
+            type: 'post',
+            url: url,
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Result.State === 0) {
+                    window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
+                        + '&FileName=' + response.FileName;
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');

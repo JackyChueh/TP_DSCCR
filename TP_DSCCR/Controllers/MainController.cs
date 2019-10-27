@@ -72,5 +72,28 @@ namespace TP_DSCCR.Controllers
             Log("Res=" + json);
             return json;
         }
+
+        [HttpGet]
+        public ActionResult ExcelDownload(string DataId, string FileName)
+        {
+            try
+            {
+                if (TempData[DataId] != null)
+                {
+                    byte[] data = TempData[DataId] as byte[];
+                    return File(data, "application/vnd.ms-excel", FileName);
+                }
+                else
+                {
+                    Log("TempData[{0}] is null",DataId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+            }
+            return new EmptyResult();
+        }
     }
 }

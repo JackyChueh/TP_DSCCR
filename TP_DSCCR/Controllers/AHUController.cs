@@ -11,6 +11,7 @@ using TP_DSCCR.Models.Entity;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO;
 
 namespace TP_DSCCR.Controllers
 {
@@ -27,16 +28,60 @@ namespace TP_DSCCR.Controllers
         }
 
         [AcceptVerbs("POST")]
-        public string AHURetrieve(AHUDataReq req)
+        public string AHURetrieve()
         {
             //System.Threading.Thread.Sleep(2000);
             AHUDataRes res = new AHUDataRes();
             try
             {
-                Log("Req=" + JsonConvert.SerializeObject(req));
+                string input = RequestData();
+                Log("Req=" + input);
+                AHUDataReq req = new AHUDataReq();
+                JsonConvert.PopulateObject(input, req);
 
                 res = new AHUImplement("TP_DSCCR").PaginationRetrieve(req);
                 res.Result.State = ResultEnum.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                res.Result.State = ResultEnum.EXCEPTION_ERROR;
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+            }
+            var json = JsonConvert.SerializeObject(res);
+            Log("Res=" + json);
+            return json;
+        }
+
+        [AcceptVerbs("POST")]
+        public string AHUExcel()
+        {
+            //System.Threading.Thread.Sleep(2000);
+
+            AHUExcelRes res = new AHUExcelRes();
+            try
+            {
+                string input = RequestData();
+                Log("Req=" + input);
+                AHUExcelReq req = new AHUExcelReq();
+                JsonConvert.PopulateObject(input, req);
+
+                MemoryStream MemoryStream = new AHUImplement("TP_DSCCR").ExcelRetrieve(req);
+
+                if (MemoryStream.Length > 0)
+                {
+                    string DataId = Guid.NewGuid().ToString();
+                    TempData[DataId] = MemoryStream.ToArray();
+                    MemoryStream.Dispose();
+
+                    res.DataId = DataId;
+                    res.FileName = "空調箱.xlsx";
+                    res.Result.State = ResultEnum.SUCCESS;
+                }
+                else
+                {
+                    res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                }
             }
             catch (Exception ex)
             {
@@ -56,13 +101,20 @@ namespace TP_DSCCR.Controllers
             try
             {
                 string input = RequestData();
-                Log(input);
+                Log("Req=" + input);
                 AHUGraphReq req = new AHUGraphReq();
                 JsonConvert.PopulateObject(input, req);
 
                 res = new AHUImplement("TP_DSCCR").GraphRetrieve(req);
-
-                res.Result.State = ResultEnum.SUCCESS;
+                if (res.Chart == null)
+                {
+                    res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                }
+                else
+                {
+                    res.Result.State = ResultEnum.SUCCESS;
+                }
+                
             }
             catch (Exception ex)
             {
@@ -74,6 +126,8 @@ namespace TP_DSCCR.Controllers
             Log("Res=" + json);
             return json;
         }
+
+
 
     }
 }
