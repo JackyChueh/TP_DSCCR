@@ -5,6 +5,7 @@
         AHUGraph.EventBinding();
         AHUGraph.OptionRetrieve();
         AHUGraph.ActionSwitch('R');
+        $('#FIELD option:nth-child(3)').attr("selected", true);
     },
 
     EventBinding: function () {
