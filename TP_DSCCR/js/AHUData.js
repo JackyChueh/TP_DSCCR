@@ -1,4 +1,5 @@
 ﻿var AHUData = {
+    LoginUrl: null,
 
     Page_Init: function () {
         AHUData.EventBinding();
@@ -30,6 +31,11 @@
         $('#excel').click(function () {
             AHUData.AHUExcel();
         });
+
+        $('#login').click(function () {
+            window.location.href = AHUData.LoginUrl;
+        });
+
     },
 
     ActionSwitch: function (action) {
@@ -39,6 +45,15 @@
             $('#query').show();
             $('#excel').show();
             $('#section_retrieve').show();
+        }
+    },
+
+    ModalSwitch: function (state) {
+        $('#close').show();
+        $('#confirm').hide();
+        $('#login').hide();
+        if (state === -8) {
+            $('#login').show();
         }
     },
 
@@ -159,6 +174,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                AHUData.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -175,7 +191,8 @@
                     if (response.Pagination.RowCount > 0) {
                         $.each(response.AHUData, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td>' + row.CDATE + '</td>';
+                            htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
+                            htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             var css = '';
@@ -198,7 +215,7 @@
                         });
                     }
                     else {
-                        htmlRow = '<tr><td colspan="14" style="text-align:center">data not found</td></tr>';
+                        htmlRow = '<tr><td colspan="15" style="text-align:center">data not found</td></tr>';
                         $('#gridview >  tbody').append(htmlRow);
                     }
                 }
@@ -237,6 +254,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                AHUData.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
                         + '&FileName=' + response.FileName;
@@ -257,4 +275,5 @@
         });
     }
 
+    
 };

@@ -1,5 +1,6 @@
 ﻿var AHUGraph = {
-    ChartObj:null,
+    LoginUrl: null,
+    ChartObj: null,
 
     Page_Init: function () {
         AHUGraph.EventBinding();
@@ -14,17 +15,15 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            AHUGraph.AHURetrieve();
-        });
-
-        $('#page_number, #page_size').change(function () {
-            if ($('#section_retrieve').valid()) {
-                AHUGraph.AHURetrieve();
-            }
+            AHUGraph.GraphRetrieve();
         });
 
         $('#LOCATION').change(function () {
             AHUGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+        });
+
+        $('#login').click(function () {
+            window.location.href = AHUGraph.LoginUrl;
         });
     },
 
@@ -38,11 +37,20 @@
         }
     },
 
+    ModalSwitch: function (state) {
+        $('#close').show();
+        $('#confirm').hide();
+        $('#login').hide();
+        if (state === -8) {
+            $('#login').show();
+        }
+    },
+
     OptionRetrieve: function () {
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'AHU_LOCATION', 'GROUP_BY_DT','GRAPH_TYPE']
+            PhraseGroup: ['page_size', 'AHU_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE']
         };
 
         $.ajax({
@@ -137,7 +145,7 @@
         }
     },
 
-    AHURetrieve: function () {
+    GraphRetrieve: function () {
         var url = 'AHUGraph';
         var request = {
             AHU: {
@@ -149,6 +157,7 @@
             FIELD: $('#FIELD').val(),
             FIELD_NAME: $('#FIELD :selected').text(),
             GROUP_BY_DT: $('#GROUP_BY_DT').val(),
+            GROUP_BY_DT_NAME: $('#GROUP_BY_DT :selected').text(),
             GRAPH_TYPE: $('#GRAPH_TYPE').val()
         };
 
@@ -159,6 +168,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                AHUGraph.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     if (response.Chart) {
                         if (AHUGraph.ChartObj) {

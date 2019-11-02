@@ -60,6 +60,7 @@
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -198,6 +199,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
+    <Content Include="img\TaiwanPower2.png" />
     <Content Include="js\AHUGraph.js" />
     <Content Include="js\AHUData.js" />
     <Content Include="js\Layout.js" />
@@ -306,6 +308,7 @@
     <Content Include="Views\AHU\Graph.cshtml" />
     <Content Include="Views\Main\Dashboard.cshtml" />
     <Content Include="Views\Main\Login.cshtml" />
+    <Content Include="Views\Main\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

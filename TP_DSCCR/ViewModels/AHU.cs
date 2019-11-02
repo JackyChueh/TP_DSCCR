@@ -77,6 +77,7 @@ namespace TP_DSCCR.ViewModels
 
         public string FIELD_NAME { get; set; }
         public string GROUP_BY_DT { get; set; }
+        public string GROUP_BY_DT_NAME { get; set; }
         public string GRAPH_TYPE { get; set; }
     }
     public class AHUGraphRes : BaseResponse

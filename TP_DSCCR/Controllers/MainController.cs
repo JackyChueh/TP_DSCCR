@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using Newtonsoft.Json;
 using TP_DSCCR.Models.Implement;
 using TP_DSCCR.Models.Data;
 using TP_DSCCR.ViewModels;
 using TP_DSCCR.Models.Enums;
 using TP_DSCCR.Models.Entity;
 
-using Newtonsoft.Json;
 
 namespace TP_DSCCR.Controllers
 {
     public class MainController : BaseController
     {
+        public ActionResult Error()
+        {
+            return View();
+        }
+
         public ActionResult Login()
         {
+            Session["ID"] = null;
             return View();
         }
 
         public ActionResult Dashboard()
         {
+            if (Session["ID"] == null)
+            {
+                return View("Error");
+            }
             return View();
         }
 
@@ -35,7 +46,6 @@ namespace TP_DSCCR.Controllers
         [AcceptVerbs("POST")]
         public string LoginCheck()
         {
-            //System.Threading.Thread.Sleep(2000);
             LoginCheckRes res = new LoginCheckRes();
             try
             {
@@ -44,23 +54,20 @@ namespace TP_DSCCR.Controllers
                 LoginCheckReq req = new LoginCheckReq();
                 JsonConvert.PopulateObject(input, req);
 
-                USERS USERS;
-                if (string.IsNullOrEmpty(req.USERS.ID) || string.IsNullOrEmpty(req.USERS.PASSWORD))
+                if (!(string.IsNullOrEmpty(req.USERS.ID) || string.IsNullOrEmpty(req.USERS.PASSWORD)))
                 {
-                    USERS = null;
-                }
-                else
-                {
-                    USERS = new AuthorityImplement("SCC").UserLoginAuthority(req.USERS.ID, req.USERS.PASSWORD);
+                    res = new AuthorityImplement("TP_SCC").LoginCheck(req);
                 }
 
-                if (USERS == null)
+                if (res.USERS == null)
                 {
                     res.Result.State = ResultEnum.LOGIN_FAIL;
                 }
                 else
                 {
+                    Session["ID"] = res.USERS.ID;
                     res.Result.State = ResultEnum.SUCCESS;
+                    
                 }
             }
             catch (Exception ex)

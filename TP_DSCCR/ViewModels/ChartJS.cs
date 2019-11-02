@@ -28,11 +28,31 @@ namespace TP_DSCCR.ViewModels
         public string text { get; set; }
     }
 
+    public class ScaleLabel
+    {
+        public bool display { get; set; }
+        public string labelString { get; set; }
+    }
+
+    public class Axes
+    {
+        public ScaleLabel scaleLabel { get; set; }
+    }
+
+    public class Scales
+    {
+        public List<Axes> xAxes { get; set; }
+        public List<Axes> yAxes { get; set; }
+    }
+
     public class Options
     {
         public bool responsive { get; set; }
         public bool maintainAspectRatio { get; set; }
         public Title title { get; set; }
+        public Scales scales { get; set; }
+
+
     }
 
     public class Chart

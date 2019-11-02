@@ -19,11 +19,19 @@ namespace TP_DSCCR.Controllers
     {
         public ActionResult Data()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Main");
+            }
             return View();
         }
 
         public ActionResult Graph()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Main");
+            }
             return View();
         }
 
@@ -34,13 +42,20 @@ namespace TP_DSCCR.Controllers
             AHUDataRes res = new AHUDataRes();
             try
             {
-                string input = RequestData();
-                Log("AHUDataReq=" + input);
-                AHUDataReq req = new AHUDataReq();
-                JsonConvert.PopulateObject(input, req);
+                if (Session["ID"]==null)
+                {
+                    res.Result.State = ResultEnum.SESSION_TIMEOUT;
+                }
+                else
+                {
+                    string input = RequestData();
+                    Log("AHUDataReq=" + input);
+                    AHUDataReq req = new AHUDataReq();
+                    JsonConvert.PopulateObject(input, req);
 
-                res = new AHUImplement("TP_DSCCR").PaginationRetrieve(req);
-                res.Result.State = ResultEnum.SUCCESS;
+                    res = new AHUImplement("TP_DSCCR").PaginationRetrieve(req);
+                    res.Result.State = ResultEnum.SUCCESS;
+                }
             }
             catch (Exception ex)
             {
@@ -56,31 +71,36 @@ namespace TP_DSCCR.Controllers
         [AcceptVerbs("POST")]
         public string AHUExcel()
         {
-            //System.Threading.Thread.Sleep(2000);
-
             AHUExcelRes res = new AHUExcelRes();
             try
             {
-                string input = RequestData();
-                Log("AHUExcelReq=" + input);
-                AHUExcelReq req = new AHUExcelReq();
-                JsonConvert.PopulateObject(input, req);
-
-                MemoryStream MemoryStream = new AHUImplement("TP_DSCCR").ExcelRetrieve(req);
-
-                if (MemoryStream.Length > 0)
+                if (Session["ID"] == null)
                 {
-                    string DataId = Guid.NewGuid().ToString();
-                    TempData[DataId] = MemoryStream.ToArray();
-                    MemoryStream.Dispose();
-
-                    res.DataId = DataId;
-                    res.FileName = "空調箱.xlsx";
-                    res.Result.State = ResultEnum.SUCCESS;
+                    res.Result.State = ResultEnum.SESSION_TIMEOUT;
                 }
                 else
                 {
-                    res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    string input = RequestData();
+                    Log("AHUExcelReq=" + input);
+                    AHUExcelReq req = new AHUExcelReq();
+                    JsonConvert.PopulateObject(input, req);
+
+                    MemoryStream MemoryStream = new AHUImplement("TP_DSCCR").ExcelRetrieve(req);
+
+                    if (MemoryStream.Length > 0)
+                    {
+                        string DataId = Guid.NewGuid().ToString();
+                        TempData[DataId] = MemoryStream.ToArray();
+                        MemoryStream.Dispose();
+
+                        res.DataId = DataId;
+                        res.FileName = "空調箱.xlsx";
+                        res.Result.State = ResultEnum.SUCCESS;
+                    }
+                    else
+                    {
+                        res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    }
                 }
             }
             catch (Exception ex)
@@ -100,19 +120,26 @@ namespace TP_DSCCR.Controllers
             AHUGraphRes res = new AHUGraphRes();
             try
             {
-                string input = RequestData();
-                Log("AHUGraphReq=" + input);
-                AHUGraphReq req = new AHUGraphReq();
-                JsonConvert.PopulateObject(input, req);
-
-                res = new AHUImplement("TP_DSCCR").GraphRetrieve(req);
-                if (res.Chart == null)
+                if (Session["ID"] == null)
                 {
-                    res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    res.Result.State = ResultEnum.SESSION_TIMEOUT;
                 }
                 else
                 {
-                    res.Result.State = ResultEnum.SUCCESS;
+                    string input = RequestData();
+                    Log("AHUGraphReq=" + input);
+                    AHUGraphReq req = new AHUGraphReq();
+                    JsonConvert.PopulateObject(input, req);
+
+                    res = new AHUImplement("TP_DSCCR").GraphRetrieve(req);
+                    if (res.Chart == null)
+                    {
+                        res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    }
+                    else
+                    {
+                        res.Result.State = ResultEnum.SUCCESS;
+                    }
                 }
                 
             }

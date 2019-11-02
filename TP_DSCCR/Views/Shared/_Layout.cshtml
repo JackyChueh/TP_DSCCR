@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewBag.Title</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/css/Layout.css" rel="stylesheet" />
     @RenderSection("Styles", false)
-    <title>@ViewBag.Title</title>
+
 </head>
 <body>
     <div class="wrapper">
@@ -96,13 +97,13 @@
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                王小明
+                                @Session["ID"].ToString()
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">個人資料</a>
+                                @*<a class="dropdown-item" href="#">個人資料</a>
                                 <a class="dropdown-item" href="#">喜好設定</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">登出</a>
+                                <div class="dropdown-divider"></div>*@
+                                <a class="dropdown-item" id="logout" href="#">登出</a>
                             </div>
                         </li>
                     </ul>

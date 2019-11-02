@@ -15,6 +15,10 @@
         //e.preventDefault();
         $("#sidebar").toggleClass("active");
     });
+
+    $('#logout').click(function () {
+        window.location.href = "/Main/Login";
+    });
 });
 
 

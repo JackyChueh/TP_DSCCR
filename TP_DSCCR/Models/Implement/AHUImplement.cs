@@ -10,7 +10,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-
 namespace TP_DSCCR.Models.Implement
 {
     public class AHUImplement : EnterpriseLibrary
@@ -117,7 +116,7 @@ SELECT {0} AS CDATE
                         break;
                 }
 
-        
+
                 //Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
 
                 string where = "";
@@ -315,7 +314,7 @@ SELECT {0} AS CDATE
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
 
-                
+
                 using (IDataReader reader = Db.ExecuteReader(cmd))
                 {
                     while (reader.Read())
@@ -343,12 +342,12 @@ SELECT {0} AS CDATE
             }
             if (list.Count > 0)
             {
-                ms = ExcelProduce(list);
+                ms = ExcelProduce(req.GROUP_BY_DT, list);
             }
             return ms;
         }
 
-        private MemoryStream ExcelProduce(List<AHUData> List)
+        private MemoryStream ExcelProduce(string GroupByDt, List<AHUData> List)
         {
             MemoryStream ms = new MemoryStream();
 
@@ -374,7 +373,12 @@ SELECT {0} AS CDATE
                 row.Append(
                     new Cell()
                     {
-                        CellValue = new CellValue("日期時間"),
+                        CellValue = new CellValue("日期"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("時間"),
                         DataType = CellValues.String
                     },
                     new Cell()
@@ -445,13 +449,43 @@ SELECT {0} AS CDATE
                 );
                 sheetData.AppendChild(row);
 
-                foreach(AHUData data in List)
+                foreach (AHUData data in List)
                 {
+                    //DateTime dt = DateTime.Parse(data.CDATE);
+                    string date = "";
+                    string time = "";
+                    switch (GroupByDt)
+                    {
+                        case "DETAIL":
+                            date = data.CDATE.Substring(0, 10);
+                            time = data.CDATE.Substring(11, 5);
+                            break;
+                        case "YEAR":
+                            date = data.CDATE.Substring(0, 4);
+                            break;
+                        case "MONTH":
+                            date = data.CDATE.Substring(0, 7);
+                            break;
+                        case "DAY":
+                            date = data.CDATE.Substring(0, 10);
+                            break;
+                        case "HOUR":
+                            date = data.CDATE.Substring(0, 10);
+                            time = data.CDATE.Substring(11, 2);
+                            break;
+                        default:
+                            break;
+                    }
                     row = new Row();
                     row.Append(
                         new Cell()
                         {
-                            CellValue = new CellValue(data.CDATE),
+                            CellValue = new CellValue(date),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(time),
                             DataType = CellValues.String
                         },
                         new Cell()
@@ -545,22 +579,6 @@ SELECT {0} AS CDATE
     {3}
     {4}
 ";
-                //string field = null;
-                //switch (req.GROUP_BY_DT)
-                //{
-                //    case "DETAIL":
-                //        field = req.FIELD + " AS AHU_VALUE";
-                //        break;
-                //    case "YEAR":
-                //    case "MONTH":
-                //    case "DAY":
-                //    case "HOUR":
-                //        field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS AHU_VALUE",req.FIELD);
-                //        break;
-                //    default:
-                //        field = req.FIELD + " AS AHU_VALUE";
-                //        break;
-                //}
                 string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS AHU_VALUE", req.FIELD);
 
                 string groupByDT = null;
@@ -568,7 +586,7 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        groupByDT = "CONVERT(VARCHAR(16),CDATE,120)";
                         group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
                         break;
                     case "YEAR":
@@ -588,7 +606,7 @@ SELECT {0} AS CDATE
                         group = string.Format("GROUP BY {0},LOCATION,DEVICE_ID", groupByDT);
                         break;
                     default:
-                        groupByDT = "CONVERT(VARCHAR(20),CDATE,120)";
+                        groupByDT = "CONVERT(VARCHAR(16),CDATE,120)";
                         group = "";
                         break;
                 }
@@ -643,7 +661,7 @@ SELECT {0} AS CDATE
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            VALUE= reader["AHU_VALUE"] as decimal? ?? null
+                            VALUE = reader["AHU_VALUE"] as decimal? ?? null
                             //VALUE = (Decimal)reader["AHU_VALUE"]
                         };
                         list.Add(row);
@@ -652,12 +670,12 @@ SELECT {0} AS CDATE
             }
             if (list.Count > 0)
             {
-                res.Chart = ChartProduce(req.GRAPH_TYPE, list, req.FIELD_NAME);
+                res.Chart = ChartProduce(req.GRAPH_TYPE, list, req.FIELD_NAME, req.GROUP_BY_DT_NAME);
             }
             return res;
         }
 
-        private Chart ChartProduce(string ChartType, List<AHUChartJsData> AHUChartJsData,string FieldName)
+        private Chart ChartProduce(string ChartType, List<AHUChartJsData> AHUChartJsData, string FieldName, string GroupName)
         {
             Chart Chart = new Chart();
 
@@ -667,7 +685,7 @@ SELECT {0} AS CDATE
 
             #region chart.data
             TP_DSCCR.ViewModels.Data Data = new TP_DSCCR.ViewModels.Data();
-            
+
             #region chart.data.labels
             var query = from data in AHUChartJsData
                         group data by data.CDATE;
@@ -728,6 +746,7 @@ SELECT {0} AS CDATE
             #endregion
 
             #region chart.options
+
             Options Options = new Options()
             {
                 responsive = true,
@@ -735,10 +754,37 @@ SELECT {0} AS CDATE
                 title = new Title()
                 {
                     display = true,
-                    text = FieldName
+                    text = FieldName + " - " + GroupName
+                },
+                scales = new Scales()
+                {
+                    xAxes = new List<Axes>()
+                    {
+                        new Axes()
+                        {
+                            scaleLabel= new ScaleLabel()
+                            {
+                                display = true,
+                                labelString = "分組類型(" + GroupName +")"
+                            }
+                        }
+                    },
+                    yAxes = new List<Axes>()
+                    {
+                        new Axes()
+                        {
+                            scaleLabel= new ScaleLabel()
+                            {
+                                display = true,
+                                labelString = FieldName
+                            }
+                        }
+                    }
                 }
             };
+
             Chart.options = Options;
+
             #endregion
 
             return Chart;

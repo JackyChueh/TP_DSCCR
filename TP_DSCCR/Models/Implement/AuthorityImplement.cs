@@ -5,6 +5,7 @@ using System.Data.Common;
 using TP_DSCCR.Models.Access;
 using TP_DSCCR.Models.Entity;
 using TP_DSCCR.Models.Data;
+using TP_DSCCR.ViewModels;
 
 namespace TP_DSCCR.Models.Implement
 {
@@ -12,31 +13,60 @@ namespace TP_DSCCR.Models.Implement
     {
         public AuthorityImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public USERS UserLoginAuthority(string UserId, string Password)
+        public LoginCheckRes LoginCheck(LoginCheckReq LoginCheckReq)
         {
-            USERS USERS = null;
-            string sql = @"
+            LoginCheckRes LoginCheckRes = new LoginCheckRes();
+            string sql;
+            sql = @"
 SELECT U.SN, U.NAME, U.PASSWORD
     FROM USERS U 
     WHERE U.ID=@ID AND U.MODE='Y'
 ";
             using (DbCommand cmd = Db.GetSqlStringCommand(sql))
             {
-                Db.AddInParameter(cmd, "ID", DbType.String, UserId);
+                Db.AddInParameter(cmd, "ID", DbType.String, LoginCheckReq.USERS.ID);
                 using (IDataReader reader = this.Db.ExecuteReader(cmd))
                 {
-                    if (reader.Read() && reader["PASSWORD"] as string == Password)
+                    if (reader.Read() && reader["PASSWORD"] as string == LoginCheckReq.USERS.PASSWORD)
                     {
-                        USERS = new USERS()
+                        USERS USERS = new USERS()
                         {
                             SN = reader["SN"] as Int16? ?? null,
-                            ID = UserId,
+                            ID = LoginCheckReq.USERS.ID,
                             NAME = reader["NAME"] as string
                         };
+                        LoginCheckRes.USERS = USERS;
                     }
                 }
             }
-            return USERS;
+
+//            if (LoginCheckRes.USERS != null)
+//            {
+//                sql = @"
+//INSERT INTO USERS_TOKEN (TOKEN,ID,EXPIRED)
+//    VALUES (@TOKEN,@ID,@EXPIRED)
+//";
+//                using (DbCommand cmd = Db.GetSqlStringCommand(sql))
+//                {
+//                    var token = Guid.NewGuid().ToString();
+//                    var expired = DateTime.Now.AddDays(1);
+//                    Db.AddInParameter(cmd, "TOKEN", DbType.String, token);
+//                    Db.AddInParameter(cmd, "ID", DbType.String, LoginCheckReq.USERS.ID);
+//                    Db.AddInParameter(cmd, "EXPIRED", DbType.DateTime, expired);
+//                    int effect = Db.ExecuteNonQuery(cmd);
+//                    if (effect == 1)
+//                    {
+//                        USERS_TOKEN USERS_TOKEN = new USERS_TOKEN()
+//                        {
+//                            TOKEN = token,
+//                            ID = LoginCheckReq.USERS.ID,
+//                            EXPIRED = expired
+//                        };
+//                        LoginCheckRes.USERS_TOKEN = USERS_TOKEN;
+//                    }
+//                }
+//            }
+            return LoginCheckRes;
         }
 
         public List<Main.SidebarItem> UserFunctionAuthority()

@@ -23,7 +23,9 @@ namespace TP_DSCCR.Models.Enums
         [Description("查無資料")]
         DATA_NOT_FOUND = -6,
         [Description("帳號或密碼錯誤")]
-        LOGIN_FAIL = -7
+        LOGIN_FAIL = -7,
+        [Description("連線逾時")]
+        SESSION_TIMEOUT = -8
 
     }
 

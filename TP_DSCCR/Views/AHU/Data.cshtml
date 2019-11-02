@@ -45,7 +45,8 @@
                 <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
                     <thead>
                         <tr>
-                            <th>日期時間</th>
+                            <th>日期</th>
+                            <th>時間</th>
                             <th>位置</th>
                             <th>設備名稱</th>
                             <th>故障跳脫</th>
@@ -114,6 +115,7 @@
             <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                <button type="button" id="login" class="btn btn-secondary" style="display: none;">重新登入</button>
             </div>
         </div>
     </div>
@@ -126,6 +128,7 @@
     <script type="text/JavaScript">
         $(document).ready(function () {
             AHUData.Page_Init();
+            AHUData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

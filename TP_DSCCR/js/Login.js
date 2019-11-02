@@ -1,4 +1,6 @@
 ﻿var Login = {
+    LoginCheckUrl: null,
+    DashboardUrl: null,
 
     Page_Init: function () {
         Login.EventBinding();
@@ -11,23 +13,22 @@
     },
 
     LoginCheck: function () {
-        var url = 'LoginCheck';
         var request = {
             USERS: {
                 ID: $('#ID').val(),
                 PASSWORD: $('#PASSWORD').val()
             }
         };
-        
+
         $.ajax({
             type: 'post',
-            url: url,
+            url: Login.LoginCheckUrl,
             contentType: 'application/json',
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
-                    //
+                    window.location.href = Login.DashboardUrl;
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -44,4 +45,5 @@
             }
         });
     }
+
 };
