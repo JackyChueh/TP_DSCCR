@@ -7,22 +7,71 @@ using TP_DSCCR.Models.Implement;
 using TP_DSCCR.Models.Data;
 using TP_DSCCR.ViewModels;
 using TP_DSCCR.Models.Enums;
+using TP_DSCCR.Models.Entity;
+
 using Newtonsoft.Json;
 
 namespace TP_DSCCR.Controllers
 {
     public class MainController : BaseController
     {
-        // GET: Main
-        public ActionResult Index()
+        public ActionResult Login()
         {
             return View();
         }
+
+        public ActionResult Dashboard()
+        {
+            return View();
+        }
+
         public ActionResult Sidebar()
         {
             Main.SidebarRes res = new Main.SidebarRes();
-            res.SidebarItem= new AuthorityImplement("TP_SCC").UserFunctionAuthority();
+            res.SidebarItem = new AuthorityImplement("TP_SCC").UserFunctionAuthority();
             return View(res);
+        }
+
+        [AcceptVerbs("POST")]
+        public string LoginCheck()
+        {
+            //System.Threading.Thread.Sleep(2000);
+            LoginCheckRes res = new LoginCheckRes();
+            try
+            {
+                string input = RequestData();
+                Log("LoginCheckReq=" + input);
+                LoginCheckReq req = new LoginCheckReq();
+                JsonConvert.PopulateObject(input, req);
+
+                USERS USERS;
+                if (string.IsNullOrEmpty(req.USERS.ID) || string.IsNullOrEmpty(req.USERS.PASSWORD))
+                {
+                    USERS = null;
+                }
+                else
+                {
+                    USERS = new AuthorityImplement("SCC").UserLoginAuthority(req.USERS.ID, req.USERS.PASSWORD);
+                }
+
+                if (USERS == null)
+                {
+                    res.Result.State = ResultEnum.LOGIN_FAIL;
+                }
+                else
+                {
+                    res.Result.State = ResultEnum.SUCCESS;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result.State = ResultEnum.EXCEPTION_ERROR;
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+            }
+            var json = JsonConvert.SerializeObject(res);
+            Log("LoginCheckRes=" + json);
+            return json;
         }
 
         public string ItemListRetrieve(ItemListRetrieveReq req)
@@ -39,12 +88,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
                 res.Result.State = ResultEnum.FAIL;
             }
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-            };
-            var json = JsonConvert.SerializeObject(res, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(res);
             Log("Res=" + json);
             return json;
         }
@@ -63,12 +107,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
                 res.Result.State = ResultEnum.FAIL;
             }
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-            };
-            var json = JsonConvert.SerializeObject(res, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(res);
             Log("Res=" + json);
             return json;
         }
@@ -85,7 +124,7 @@ namespace TP_DSCCR.Controllers
                 }
                 else
                 {
-                    Log("TempData[{0}] is null",DataId);
+                    Log("TempData[{0}] is null", DataId);
                 }
             }
             catch (Exception ex)
@@ -96,4 +135,5 @@ namespace TP_DSCCR.Controllers
             return new EmptyResult();
         }
     }
+
 }

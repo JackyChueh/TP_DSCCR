@@ -35,7 +35,7 @@ namespace TP_DSCCR.Controllers
             try
             {
                 string input = RequestData();
-                Log("Req=" + input);
+                Log("AHUDataReq=" + input);
                 AHUDataReq req = new AHUDataReq();
                 JsonConvert.PopulateObject(input, req);
 
@@ -49,7 +49,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("Res=" + json);
+            Log("AHUDataRes=" + json);
             return json;
         }
 
@@ -62,7 +62,7 @@ namespace TP_DSCCR.Controllers
             try
             {
                 string input = RequestData();
-                Log("Req=" + input);
+                Log("AHUExcelReq=" + input);
                 AHUExcelReq req = new AHUExcelReq();
                 JsonConvert.PopulateObject(input, req);
 
@@ -90,7 +90,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("Res=" + json);
+            Log("AHUExcelRes=" + json);
             return json;
         }
 
@@ -101,7 +101,7 @@ namespace TP_DSCCR.Controllers
             try
             {
                 string input = RequestData();
-                Log("Req=" + input);
+                Log("AHUGraphReq=" + input);
                 AHUGraphReq req = new AHUGraphReq();
                 JsonConvert.PopulateObject(input, req);
 
@@ -123,7 +123,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("Res=" + json);
+            Log("AHUGraphRes=" + json);
             return json;
         }
 

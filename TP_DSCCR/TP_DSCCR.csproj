@@ -142,7 +142,6 @@
     <Compile Include="Controllers\AHUController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ChillerController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -165,6 +164,7 @@
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
     <Compile Include="ViewModels\ItemListRetrieve.cs" />
+    <Compile Include="ViewModels\LoginCheck.cs" />
     <Compile Include="ViewModels\Pagination.cs" />
     <Compile Include="ViewModels\SubItemListRetrieve.cs" />
   </ItemGroup>
@@ -191,6 +191,7 @@
     <Content Include="Content\v4-shims.css" />
     <Content Include="Content\v4-shims.min.css" />
     <Content Include="css\layout.css" />
+    <Content Include="css\Login.css" />
     <Content Include="db\CREATE_DATABASE_TP_SCC.sql" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -200,6 +201,7 @@
     <Content Include="js\AHUGraph.js" />
     <Content Include="js\AHUData.js" />
     <Content Include="js\Layout.js" />
+    <Content Include="js\Login.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -275,7 +277,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -303,6 +304,8 @@
     <Content Include="webfonts\fa-brands-400.eot" />
     <Content Include="Views\AHU\Data.cshtml" />
     <Content Include="Views\AHU\Graph.cshtml" />
+    <Content Include="Views\Main\Dashboard.cshtml" />
+    <Content Include="Views\Main\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

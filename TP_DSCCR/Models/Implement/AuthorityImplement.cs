@@ -12,6 +12,33 @@ namespace TP_DSCCR.Models.Implement
     {
         public AuthorityImplement(string connectionStringName) : base(connectionStringName) { }
 
+        public USERS UserLoginAuthority(string UserId, string Password)
+        {
+            USERS USERS = null;
+            string sql = @"
+SELECT U.SN, U.NAME, U.PASSWORD
+    FROM USERS U 
+    WHERE U.ID=@ID AND U.MODE='Y'
+";
+            using (DbCommand cmd = Db.GetSqlStringCommand(sql))
+            {
+                Db.AddInParameter(cmd, "ID", DbType.String, UserId);
+                using (IDataReader reader = this.Db.ExecuteReader(cmd))
+                {
+                    if (reader.Read() && reader["PASSWORD"] as string == Password)
+                    {
+                        USERS = new USERS()
+                        {
+                            SN = reader["SN"] as Int16? ?? null,
+                            ID = UserId,
+                            NAME = reader["NAME"] as string
+                        };
+                    }
+                }
+            }
+            return USERS;
+        }
+
         public List<Main.SidebarItem> UserFunctionAuthority()
         {
             List<Main.SidebarItem> items = new List<Main.SidebarItem>();

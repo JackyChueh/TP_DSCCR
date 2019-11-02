@@ -625,6 +625,13 @@ SELECT {0} AS CDATE
                 }
 
                 sql = String.Format(sql, groupByDT, field, where, group, order);
+
+                string ClassName = this.GetType().Name;
+                System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
+                string CallerMethodName = stackTrace.GetFrame(1).GetMethod().Name;
+                //Log(ClassName + "\\" + CallerMethodName, Text);
+                TP_DSCCR.Models.Help.Logs.Write(ClassName + "\\" + CallerMethodName, sql);
+
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
                 using (IDataReader reader = Db.ExecuteReader(cmd))
