@@ -765,7 +765,7 @@ SELECT {0} AS CDATE
                             scaleLabel= new ScaleLabel()
                             {
                                 display = true,
-                                labelString = "分組類型(" + GroupName +")"
+                                labelString = "時間間隔(" + GroupName +")"
                             }
                         }
                     },
