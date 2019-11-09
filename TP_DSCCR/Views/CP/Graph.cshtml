@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "空調箱 - 統計圖表";
+    ViewBag.Title = "冰水泵 - 統計圖表";
 }
 @section Styles
 {
@@ -28,7 +28,7 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
@@ -43,17 +43,13 @@
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="FIELD">數據欄位</label>
                     <select class="form-control form-control-sm  fields" id="FIELD" name="FIELD">
-                        <option value="AHU01">故障跳脫</option>
-                        <option value="AHU02">旋鈕檔位狀態</option>
-                        <option value="AHU03">外氣風門到位(%)</option>
-                        <option value="AHU04">回風風門到位(%)</option>
-                        <option value="AHU05">回風溫度(&deg;C)</option>
-                        <option value="AHU06">回風濕度(%RH)</option>
-                        <option value="AHU07">出風溫度(&deg;C)</option>
-                        <option value="AHU08">出風濕度(%RH)</option>
-                        <option value="AHU09">回風溫度設定(&deg;C)</option>
-                        <option value="AHU10">冰水閥實際開度顯示(%)</option>
-                        <option value="AHU11">變頻器運轉輸出頻率(Hz)</option>
+                        <option value="CP01">運轉指示(On/OFF)</option>
+                        <option value="CP02">故障跳脫</option>
+                        <option value="CP03">旋鈕檔位狀態</option>
+                        <option value="CP04">壓差開關</option>
+                        <option value="CP05">旁通控制閥實際開度(%)</option>
+                        <option value="CP06">冰水水路壓差</option>
+                        <option value="CP07">變頻器運轉輸出 頻率(Hz)</option>
                     </select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -93,11 +89,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/AHUGraph.js"></script>
+    <script src="~/js/CPGraph.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            AHUGraph.Page_Init();
-            AHUGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+            CPGraph.Page_Init();
+            CPGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

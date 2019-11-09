@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "空調箱 - 數據查詢";
+    ViewBag.Title = "區域泵 - 數據查詢";
 }
 @section Styles
 {
@@ -28,7 +28,7 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
@@ -47,19 +47,19 @@
                         <tr>
                             <th>日期</th>
                             <th>時間</th>
-                            <th>位置</th>
+                            @*<th>位置</th>*@
                             <th>設備名稱</th>
+                            <th>冰水瞬間流量(lpm) (ZP1及ZP2總管)</th>
+                            <th>冰水水路壓差 (ZP1及ZP2總管)</th>
+                            @*<th>BTU (ZP1及ZP2總管)(&deg;C)</th>*@
+                            <th>*冰水總出水溫(&deg;C) (ZP1及ZP2總管)</th>
+                            <th>*冰水總回水溫(&deg;C) (ZP1及ZP2總管)(&deg;C)</th>
+                            <th>旁通控制閥閥位(%) (ZP1及ZP2總管)</th>
+                            <th>運轉指示(On/OFF)</th>
                             <th>故障跳脫</th>
                             <th>旋鈕檔位狀態</th>
-                            <th>外氣風門到位(%)</th>
-                            <th>回風風門到位(%)</th>
-                            <th>回風溫度(&deg;C)</th>
-                            <th>回風濕度(%RH)</th>
-                            <th>出風溫度(&deg;C)</th>
-                            <th>出風濕度(%RH)</th>
-                            <th>回風溫度設定(&deg;C)</th>
-                            <th>冰水閥實際開度顯示(%)</th>
-                            <th>變頻器運轉輸出頻率(Hz)</th>
+                            <th>*壓差開關(kg/cm3)</th>
+                            <th>*變頻器運轉指示頻率(Hz)</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -124,11 +124,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/AHUData.js"></script>
+    <script src="~/js/ZP1Data.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            AHUData.Page_Init();
-            AHUData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+            ZP1Data.Page_Init();
+            ZP1Data.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

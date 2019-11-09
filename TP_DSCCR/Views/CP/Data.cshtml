@@ -1,11 +1,11 @@
-﻿
-@{
-    ViewBag.Title = "空調箱 - 統計圖表";
+﻿@{
+    ViewBag.Title = "冰水泵 - 數據查詢";
 }
 @section Styles
 {
     <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
 }
+
 <div class="card">
     <div class="card-header">
         <div class="form-inline">
@@ -13,7 +13,7 @@
                 <b>@ViewBag.Title</b>
             </div>
             <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1 text-primary"></i>查詢</button>
-            <button type="button" id="print" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-print fa-lg mr-1 text-secondary"></i>列印</button>
+            <button type="button" id="excel" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-file-excel fa-lg mr-1 text-success"></i>匯出</button>
         </div>
     </div>
     <div class="card-body">
@@ -28,7 +28,7 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
@@ -40,31 +40,58 @@
                     <label for="GROUP_BY_DT">時間間隔</label>
                     <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="FIELD">數據欄位</label>
-                    <select class="form-control form-control-sm  fields" id="FIELD" name="FIELD">
-                        <option value="AHU01">故障跳脫</option>
-                        <option value="AHU02">旋鈕檔位狀態</option>
-                        <option value="AHU03">外氣風門到位(%)</option>
-                        <option value="AHU04">回風風門到位(%)</option>
-                        <option value="AHU05">回風溫度(&deg;C)</option>
-                        <option value="AHU06">回風濕度(%RH)</option>
-                        <option value="AHU07">出風溫度(&deg;C)</option>
-                        <option value="AHU08">出風濕度(%RH)</option>
-                        <option value="AHU09">回風溫度設定(&deg;C)</option>
-                        <option value="AHU10">冰水閥實際開度顯示(%)</option>
-                        <option value="AHU11">變頻器運轉輸出頻率(Hz)</option>
-                    </select>
+            </div>
+            <div class="table-responsive">
+                <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>時間</th>
+                            @*<th>位置</th>*@
+                            <th>設備名稱</th>
+                            <th>運轉指示(On/OFF)</th>
+                            <th>故障跳脫</th>
+                            <th>旋鈕檔位狀態</th>
+                            <th>壓差開關</th>
+                            <th>旁通控制閥實際開度(%)</th>
+                            <th>冰水水路壓差</th>
+                            <th>變頻器運轉輸出 頻率(Hz)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="paging_block" class="form-inline">
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">第<i id="interval">0-0</i>筆</span>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text">共<i id="rows_count">0</i>筆</span>
+                        <span class="input-group-text">耗時<i id="time_consuming">0</i>秒</span>
+                    </div>
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="GRAPH_TYPE">圖表類型</label>
-                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE"></select>
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">第</span>
+                    </div>
+                    <div class="input-group-append">
+                        <select id="page_number" class="form-control-sm rounded-0"></select>
+                        <span class="input-group-text">頁</span>
+                        <span class="input-group-text">共<i id="page_count">0</i>頁</span>
+                    </div>
+                </div>
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">每頁</span>
+                    </div>
+                    <div class="input-group-append">
+                        <select id="page_size" class="form-control-sm rounded-0"></select>
+                        <span class="input-group-text">筆</span>
+                    </div>
                 </div>
             </div>
         </form>
-        <div class="chart-container card" id="testContent" style="width:auto;height:100vh;">
-            <canvas id="chartCanvas" class="chart-canvas"></canvas>
-        </div>
         <!--/查詢區塊-->
     </div>
 </div>
@@ -93,11 +120,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/AHUGraph.js"></script>
+    <script src="~/js/CPData.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            AHUGraph.Page_Init();
-            AHUGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+            CPData.Page_Init();
+            CPData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

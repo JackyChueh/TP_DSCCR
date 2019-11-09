@@ -142,6 +142,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AHUController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CTController.cs" />
+    <Compile Include="Controllers\ZP1Controller.cs" />
+    <Compile Include="Controllers\CPController.cs" />
+    <Compile Include="Controllers\COPController.cs" />
     <Compile Include="Controllers\ChillerController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Global.asax.cs">
@@ -151,6 +155,10 @@
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
+    <Compile Include="Models\Entity\CT.cs" />
+    <Compile Include="Models\Entity\ZP1.cs" />
+    <Compile Include="Models\Entity\CP.cs" />
+    <Compile Include="Models\Entity\Chiller.cs" />
     <Compile Include="Models\Entity\FUNCTIONS.cs" />
     <Compile Include="Models\Entity\ROLES.cs" />
     <Compile Include="Models\Entity\USERS.cs" />
@@ -159,11 +167,21 @@
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
+    <Compile Include="Models\Implement\CTImplement.cs" />
+    <Compile Include="Models\Implement\ZP1Implement.cs" />
+    <Compile Include="Models\Implement\CPImplement.cs" />
+    <Compile Include="Models\Implement\COPImplement.cs" />
+    <Compile Include="Models\Implement\ChillerImplement.cs" />
     <Compile Include="Models\Implement\ItemListImplement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AHU.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
+    <Compile Include="ViewModels\CT.cs" />
+    <Compile Include="ViewModels\ZP1.cs" />
+    <Compile Include="ViewModels\CP.cs" />
+    <Compile Include="ViewModels\COP.cs" />
+    <Compile Include="ViewModels\Chiller.cs" />
     <Compile Include="ViewModels\ItemListRetrieve.cs" />
     <Compile Include="ViewModels\LoginCheck.cs" />
     <Compile Include="ViewModels\Pagination.cs" />
@@ -200,6 +218,16 @@
     <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
+    <Content Include="js\CTData.js" />
+    <Content Include="js\CTGraph.js" />
+    <Content Include="js\ZP1Data.js" />
+    <Content Include="js\ZP1Graph.js" />
+    <Content Include="js\CPData.js" />
+    <Content Include="js\CPGraph.js" />
+    <Content Include="js\COPData.js" />
+    <Content Include="js\ChillerData.js" />
+    <Content Include="js\COPGraph.js" />
+    <Content Include="js\ChillerGraph.js" />
     <Content Include="js\AHUGraph.js" />
     <Content Include="js\AHUData.js" />
     <Content Include="js\Layout.js" />
@@ -309,10 +337,19 @@
     <Content Include="Views\Main\Dashboard.cshtml" />
     <Content Include="Views\Main\Login.cshtml" />
     <Content Include="Views\Main\Error.cshtml" />
+    <Content Include="Views\Chiller\Data.cshtml" />
+    <Content Include="Views\Chiller\Graph.cshtml" />
+    <Content Include="Views\COP\Data.cshtml" />
+    <Content Include="Views\COP\Graph.cshtml" />
+    <Content Include="Views\CP\Data.cshtml" />
+    <Content Include="Views\CP\Graph.cshtml" />
+    <Content Include="Views\ZP1\Data.cshtml" />
+    <Content Include="Views\ZP1\Graph.cshtml" />
+    <Content Include="Views\CT\Data.cshtml" />
+    <Content Include="Views\CT\Graph.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Chiller\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

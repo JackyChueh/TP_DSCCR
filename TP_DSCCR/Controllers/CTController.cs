@@ -8,7 +8,7 @@ using TP_DSCCR.Models.Enums;
 
 namespace TP_DSCCR.Controllers
 {
-    public class ChillerController : BaseController
+    public class CTController : BaseController
     {
         public ActionResult Data()
         {
@@ -29,10 +29,10 @@ namespace TP_DSCCR.Controllers
         }
 
         [AcceptVerbs("POST")]
-        public string ChillerRetrieve()
+        public string CTRetrieve()
         {
             //System.Threading.Thread.Sleep(2000);
-            ChillerDataRes res = new ChillerDataRes();
+            CTDataRes res = new CTDataRes();
             try
             {
                 if (Session["ID"] == null)
@@ -42,11 +42,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("ChillerDataReq=" + input);
-                    ChillerDataReq req = new ChillerDataReq();
+                    Log("CTDataReq=" + input);
+                    CTDataReq req = new CTDataReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new ChillerImplement("TP_DSCCR").PaginationRetrieve(req);
+                    res = new CTImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
             }
@@ -57,14 +57,14 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("ChillerDataRes=" + json);
+            Log("CTDataRes=" + json);
             return json;
         }
 
         [AcceptVerbs("POST")]
-        public string ChillerExcel()
+        public string CTExcel()
         {
-            ChillerExcelRes res = new ChillerExcelRes();
+            CTExcelRes res = new CTExcelRes();
             try
             {
                 if (Session["ID"] == null)
@@ -74,11 +74,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("ChillerExcelReq=" + input);
-                    ChillerExcelReq req = new ChillerExcelReq();
+                    Log("CTExcelReq=" + input);
+                    CTExcelReq req = new CTExcelReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    MemoryStream MemoryStream = new ChillerImplement("TP_DSCCR").ExcelRetrieve(req);
+                    MemoryStream MemoryStream = new CTImplement("TP_DSCCR").ExcelRetrieve(req);
 
                     if (MemoryStream.Length > 0)
                     {
@@ -87,7 +87,7 @@ namespace TP_DSCCR.Controllers
                         MemoryStream.Dispose();
 
                         res.DataId = DataId;
-                        res.FileName = "冰機.xlsx";
+                        res.FileName = "水塔.xlsx";
                         res.Result.State = ResultEnum.SUCCESS;
                     }
                     else
@@ -103,14 +103,14 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("ChillerExcelRes=" + json);
+            Log("CTExcelRes=" + json);
             return json;
         }
 
         [AcceptVerbs("POST")]
-        public string ChillerGraph()
+        public string CTGraph()
         {
-            ChillerGraphRes res = new ChillerGraphRes();
+            CTGraphRes res = new CTGraphRes();
             try
             {
                 if (Session["ID"] == null)
@@ -120,11 +120,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("ChillerGraphReq=" + input);
-                    ChillerGraphReq req = new ChillerGraphReq();
+                    Log("CTGraphReq=" + input);
+                    CTGraphReq req = new CTGraphReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new ChillerImplement("TP_DSCCR").GraphRetrieve(req);
+                    res = new CTImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)
                     {
                         res.Result.State = ResultEnum.DATA_NOT_FOUND;
@@ -143,7 +143,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("ChillerGraphRes=" + json);
+            Log("CTGraphRes=" + json);
             return json;
         }
 

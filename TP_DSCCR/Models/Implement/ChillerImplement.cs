@@ -12,15 +12,15 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TP_DSCCR.Models.Implement
 {
-    public class AHUImplement : EnterpriseLibrary
+    public class ChillerImplement : EnterpriseLibrary
     {
-        public AHUImplement(string connectionStringName) : base(connectionStringName) { }
+        public ChillerImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public AHUDataRes PaginationRetrieve(AHUDataReq req)
+        public ChillerDataRes PaginationRetrieve(ChillerDataReq req)
         {
-            AHUDataRes res = new AHUDataRes()
+            ChillerDataRes res = new ChillerDataRes()
             {
-                AHUData = new List<AHUData>(),
+                ChillerData = new List<ChillerData>(),
                 Pagination = new Pagination
                 {
                     PageCount = 0,
@@ -36,10 +36,10 @@ namespace TP_DSCCR.Models.Implement
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM AHU
+    FROM Chiller
     {2}
     {3}
 ";
@@ -47,15 +47,19 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
-                            if (i == 1)
+                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -63,24 +67,27 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
                             }
-
                         }
                         break;
                     default:
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
-                            if (i == 1)
+                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -130,15 +137,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
+                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -162,7 +169,7 @@ SELECT {0} AS CDATE
                     {
                         for (int i = res.Pagination.MinNumber - 1; i < res.Pagination.MaxNumber; i++)
                         {
-                            var row = new AHUData
+                            var row = new ChillerData
                             {
                                 //SID = (int)dt.Rows[i]["SID"],
                                 CDATE = dt.Rows[i]["CDATE"] as string,
@@ -170,19 +177,18 @@ SELECT {0} AS CDATE
                                 //DATETIME = dt.Rows[i]["DATETIME"] as DateTime? ?? null,
                                 LOCATION = dt.Rows[i]["LOCATION"] as string,
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
-                                AHU01 = dt.Rows[i]["AHU01"].ToString(),
-                                AHU02 = dt.Rows[i]["AHU02"] as decimal? ?? null,
-                                AHU03 = dt.Rows[i]["AHU03"] as decimal? ?? null,
-                                AHU04 = dt.Rows[i]["AHU04"] as decimal? ?? null,
-                                AHU05 = dt.Rows[i]["AHU05"] as decimal? ?? null,
-                                AHU06 = dt.Rows[i]["AHU06"] as decimal? ?? null,
-                                AHU07 = dt.Rows[i]["AHU07"] as decimal? ?? null,
-                                AHU08 = dt.Rows[i]["AHU08"] as decimal? ?? null,
-                                AHU09 = dt.Rows[i]["AHU09"] as decimal? ?? null,
-                                AHU10 = dt.Rows[i]["AHU10"] as decimal? ?? null,
-                                AHU11 = dt.Rows[i]["AHU11"] as decimal? ?? null
+                                Chiller01 = dt.Rows[i]["Chiller01"] as decimal? ?? null,
+                                Chiller02 = dt.Rows[i]["Chiller02"] as decimal? ?? null,
+                                Chiller03 = dt.Rows[i]["Chiller03"] as decimal? ?? null,
+                                Chiller04 = dt.Rows[i]["Chiller04"] as decimal? ?? null,
+                                Chiller05 = dt.Rows[i]["Chiller05"] as decimal? ?? null,
+                                Chiller06 = dt.Rows[i]["Chiller06"] as decimal? ?? null,
+                                Chiller07 = dt.Rows[i]["Chiller07"].ToString(),
+                                Chiller08 = dt.Rows[i]["Chiller08"].ToString(),
+                                Chiller09 = dt.Rows[i]["Chiller09"] as decimal? ?? null,
+                                Chiller10 = dt.Rows[i]["Chiller10"] as decimal? ?? null,
                             };
-                            res.AHUData.Add(row);
+                            res.ChillerData.Add(row);
                         }
                     }
                 }
@@ -192,20 +198,20 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        public MemoryStream ExcelRetrieve(AHUExcelReq req)
+        public MemoryStream ExcelRetrieve(ChillerExcelReq req)
         {
             MemoryStream ms = new MemoryStream();
 
-            List<AHUData> list = new List<AHUData>();
+            List<ChillerData> list = new List<ChillerData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM AHU
+    FROM Chiller
     {2}
     {3}
 ";
@@ -213,15 +219,19 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
-                            if (i == 1)
+                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -229,24 +239,28 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
                             }
 
                         }
                         break;
                     default:
-                        for (int i = 1; i < 12; i++)
+                        for (int i = 1; i < 11; i++)
                         {
-                            if (i == 1)
+                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -295,15 +309,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
+                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -314,27 +328,25 @@ SELECT {0} AS CDATE
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
 
-
                 using (IDataReader reader = Db.ExecuteReader(cmd))
                 {
                     while (reader.Read())
                     {
-                        var row = new AHUData
+                        var row = new ChillerData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            AHU01 = reader["AHU01"].ToString(),
-                            AHU02 = reader["AHU02"] as decimal? ?? null,
-                            AHU03 = reader["AHU03"] as decimal? ?? null,
-                            AHU04 = reader["AHU04"] as decimal? ?? null,
-                            AHU05 = reader["AHU05"] as decimal? ?? null,
-                            AHU06 = reader["AHU06"] as decimal? ?? null,
-                            AHU07 = reader["AHU07"] as decimal? ?? null,
-                            AHU08 = reader["AHU08"] as decimal? ?? null,
-                            AHU09 = reader["AHU09"] as decimal? ?? null,
-                            AHU10 = reader["AHU10"] as decimal? ?? null,
-                            AHU11 = reader["AHU11"] as decimal? ?? null
+                            Chiller01 = reader["Chiller01"] as decimal? ?? null,
+                            Chiller02 = reader["Chiller02"] as decimal? ?? null,
+                            Chiller03 = reader["Chiller03"] as decimal? ?? null,
+                            Chiller04 = reader["Chiller04"] as decimal? ?? null,
+                            Chiller05 = reader["Chiller05"] as decimal? ?? null,
+                            Chiller06 = reader["Chiller06"] as decimal? ?? null,
+                            Chiller07 = reader["Chiller07"].ToString(),
+                            Chiller08 = reader["Chiller08"].ToString(),
+                            Chiller09 = reader["Chiller09"] as decimal? ?? null,
+                            Chiller10 = reader["Chiller10"] as decimal? ?? null,
                         };
                         list.Add(row);
                     }
@@ -347,7 +359,7 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        private MemoryStream ExcelProduce(string GroupByDt, List<AHUData> List)
+        private MemoryStream ExcelProduce(string GroupByDt, List<ChillerData> List)
         {
             MemoryStream ms = new MemoryStream();
 
@@ -381,14 +393,49 @@ SELECT {0} AS CDATE
                         CellValue = new CellValue("時間"),
                         DataType = CellValues.String
                     },
+                    //new Cell()
+                    //{
+                    //    CellValue = new CellValue("位置"),
+                    //    DataType = CellValues.String
+                    //},
                     new Cell()
                     {
-                        CellValue = new CellValue("位置"),
+                        CellValue = new CellValue("設備名稱"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("設備名稱"),
+                        CellValue = new CellValue("冰水流量(lpm)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("冰水出水溫(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("冰水入水溫(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("冷卻水流量(lpm)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("冷卻水出水溫(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("冷卻水入水溫(°C)"),
+                        DataType = CellValues.String
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
@@ -401,55 +448,15 @@ SELECT {0} AS CDATE
                         CellValue = new CellValue("旋鈕檔位狀態"),
                         DataType = CellValues.String
                     },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("外氣風門到位(%)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("回風風門到位(%)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("回風溫度(°C)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("回風濕度(%RH)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("出風溫度(°C)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("出風濕度(%RH)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("回風溫度設定(°C)"),
-                        DataType = CellValues.String
-                    },
                    new Cell()
                    {
-                       CellValue = new CellValue("冰水閥實際開度顯示(%)"),
+                       CellValue = new CellValue("變頻器運轉指示 頻率(Hz)/百分比(%)"),
                        DataType = CellValues.String
-                   },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("變頻器運轉輸出頻率(Hz)"),
-                        DataType = CellValues.String
-                    }
+                   }
                 );
                 sheetData.AppendChild(row);
 
-                foreach (AHUData data in List)
+                foreach (ChillerData data in List)
                 {
                     //DateTime dt = DateTime.Parse(data.CDATE);
                     string date = "";
@@ -488,11 +495,11 @@ SELECT {0} AS CDATE
                             CellValue = new CellValue(time),
                             DataType = CellValues.String
                         },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.LOCATION),
-                            DataType = CellValues.String
-                        },
+                        //new Cell()
+                        //{
+                        //    CellValue = new CellValue(data.LOCATION),
+                        //    DataType = CellValues.String
+                        //},
                         new Cell()
                         {
                             CellValue = new CellValue(data.DEVICE_ID),
@@ -500,57 +507,52 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.AHU01),
+                            CellValue = new CellValue(data.Chiller01.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller02.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller03.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller04.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller05.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller06.ToString()),
+                            DataType = CellValues.Number
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller07),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.AHU02.ToString()),
+                            CellValue = new CellValue(data.Chiller08),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.Chiller09.ToString()),
                             DataType = CellValues.Number
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.AHU03.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU04.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU05.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU06.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU07.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU08.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU09.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU10.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.AHU11.ToString()),
+                            CellValue = new CellValue(data.Chiller10.ToString()),
                             DataType = CellValues.Number
                         }
                     );
@@ -561,25 +563,25 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        public AHUGraphRes GraphRetrieve(AHUGraphReq req)
+        public ChillerGraphRes GraphRetrieve(ChillerGraphReq req)
         {
-            AHUGraphRes res = new AHUGraphRes();
+            ChillerGraphRes res = new ChillerGraphRes();
 
-            List<AHUChartJsData> list = new List<AHUChartJsData>();
+            List<ChillerChartJsData> list = new List<ChillerChartJsData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('AHU_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM AHU
+    FROM Chiller
     {2}
     {3}
     {4}
 ";
-                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS AHU_VALUE", req.FIELD);
+                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS Chiller_VALUE", req.FIELD);
 
                 string groupByDT = null;
                 string group = null;
@@ -627,15 +629,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.LOCATION))
+                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.AHU.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.AHU.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.AHU.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -656,13 +658,13 @@ SELECT {0} AS CDATE
                 {
                     while (reader.Read())
                     {
-                        var row = new AHUChartJsData
+                        var row = new ChillerChartJsData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            VALUE = reader["AHU_VALUE"] as decimal? ?? null
-                            //VALUE = (Decimal)reader["AHU_VALUE"]
+                            VALUE = reader["Chiller_VALUE"] as decimal? ?? null
+                            //VALUE = (Decimal)reader["Chiller_VALUE"]
                         };
                         list.Add(row);
                     }
@@ -675,7 +677,7 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        private Chart ChartProduce(string ChartType, List<AHUChartJsData> AHUChartJsData, string FieldName, string GroupName)
+        private Chart ChartProduce(string ChartType, List<ChillerChartJsData> ChillerChartJsData, string FieldName, string GroupName)
         {
             Chart Chart = new Chart();
 
@@ -687,7 +689,7 @@ SELECT {0} AS CDATE
             TP_DSCCR.ViewModels.Data Data = new TP_DSCCR.ViewModels.Data();
 
             #region chart.data.labels
-            var query = from data in AHUChartJsData
+            var query = from data in ChillerChartJsData
                         group data by data.CDATE;
 
             List<string> labels = new List<string>();
@@ -705,11 +707,12 @@ SELECT {0} AS CDATE
             string key = null;
             Dataset ds = null;
             string rgb = null;
-            foreach (AHUChartJsData AHUChartJS in AHUChartJsData)
+            foreach (ChillerChartJsData ChillerChartJS in ChillerChartJsData)
             {
                 if (key == null)
                 {
-                    key = AHUChartJS.LOCATION + "_" + AHUChartJS.DEVICE_ID;
+                    //key = ChillerChartJS.LOCATION + "_" + ChillerChartJS.DEVICE_ID;
+                    key = ChillerChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -720,10 +723,10 @@ SELECT {0} AS CDATE
                         data = new List<Decimal?> { }
                     };
                 }
-                else if (key != AHUChartJS.LOCATION + "_" + AHUChartJS.DEVICE_ID)
+                else if (key != ChillerChartJS.DEVICE_ID)
                 {
                     datasets.Add(ds);
-                    key = AHUChartJS.LOCATION + "_" + AHUChartJS.DEVICE_ID;
+                    key = ChillerChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -735,7 +738,7 @@ SELECT {0} AS CDATE
                     };
 
                 }
-                ds.data.Add(AHUChartJS.VALUE);
+                ds.data.Add(ChillerChartJS.VALUE);
             }
             datasets.Add(ds);
             Data.datasets = datasets;

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.IO;
+using Newtonsoft.Json;
 using TP_DSCCR.ViewModels;
 using TP_DSCCR.Models.Implement;
-using Newtonsoft.Json;
 using TP_DSCCR.Models.Enums;
-using TP_DSCCR.Models.Entity;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System.IO;
 
 namespace TP_DSCCR.Controllers
 {

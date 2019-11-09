@@ -1,10 +1,10 @@
-﻿var AHUData = {
+﻿var ZP1Data = {
     LoginUrl: null,
 
     Page_Init: function () {
-        AHUData.EventBinding();
-        AHUData.OptionRetrieve();
-        AHUData.ActionSwitch('R');
+        ZP1Data.EventBinding();
+        ZP1Data.OptionRetrieve();
+        ZP1Data.ActionSwitch('R');
     },
 
     EventBinding: function () {
@@ -13,27 +13,27 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            AHUData.AHURetrieve();
+            ZP1Data.ZP1Retrieve();
         });
 
         $('#page_number, #page_size').change(function () {
-            AHUData.AHURetrieve();
+            ZP1Data.ZP1Retrieve();
         });
 
         $('#LOCATION').change(function () {
-            AHUData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+            ZP1Data.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
         $('#GRAPH_TYPE').change(function () {
-            AHUData.AHUGraph('AHU05', $(this).val());
+            ZP1Data.ZP1Graph('ZP105', $(this).val());
         });
 
         $('#excel').click(function () {
-            AHUData.AHUExcel();
+            ZP1Data.ZP1Excel();
         });
 
         $('#login').click(function () {
-            window.location.href = AHUData.LoginUrl;
+            window.location.href = ZP1Data.LoginUrl;
         });
 
     },
@@ -61,7 +61,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'AHU_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE']
+            PhraseGroup: ['page_size', 'ZP1_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE']
         };
 
         $.ajax({
@@ -79,11 +79,11 @@
                         $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
-                    $('#LOCATION').append('<option value=""></option>');
-                    $.each(response.ItemList.AHU_LOCATION, function (idx, row) {
+                    //$('#LOCATION').append('<option value=""></option>');
+                    $.each(response.ItemList.ZP1_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#LOCATION option:nth-child(2)').attr("selected", true);
+                    //$('#LOCATION option:nth-child(2)').attr("selected", true);
                     $("#LOCATION").trigger("change");
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
@@ -115,7 +115,7 @@
         if (parentKey) {
             var url = '/Main/SubItemListRetrieve';
             var request = {
-                PhraseGroup: 'AHU_DEVICE_ID',
+                PhraseGroup: 'ZP1_DEVICE_ID',
                 ParentKey: parentKey
             };
 
@@ -153,10 +153,10 @@
         }
     },
 
-    AHURetrieve: function () {
-        var url = 'AHURetrieve';
+    ZP1Retrieve: function () {
+        var url = 'ZP1Retrieve';
         var request = {
-            AHU: {
+            ZP1: {
                 LOCATION: $('#LOCATION').val(),
                 DEVICE_ID: $('#DEVICE_ID').val()
             },
@@ -174,7 +174,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                AHUData.ModalSwitch(response.Result.State);
+                ZP1Data.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -189,27 +189,30 @@
 
                     var htmlRow = '';
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.AHUData, function (idx, row) {
+                        $.each(response.ZP1Data, function (idx, row) {
                             htmlRow = '<tr>';
                             htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
                             htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
-                            htmlRow += '<td>' + row.LOCATION + '</td>';
+                            //htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
+                            htmlRow += '<td>' + row.ZP101 + '</td>';
+                            htmlRow += '<td>' + row.ZP102 + '</td>';
+                            htmlRow += '<td>' + row.ZP104 + '</td>';
+                            htmlRow += '<td>' + row.ZP105 + '</td>';
+                            htmlRow += '<td>' + row.ZP106 + '</td>';
                             var css = '';
-                            if (row.AHU01 === "停止") {
+                            if (row.ZP107 === "Off") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.AHU01 + '</td>';
-                            htmlRow += '<td>' + row.AHU02 + '</td>';
-                            htmlRow += '<td>' + row.AHU03 + '</td>';
-                            htmlRow += '<td>' + row.AHU04 + '</td>';
-                            htmlRow += '<td>' + row.AHU05 + '</td>';
-                            htmlRow += '<td>' + row.AHU06 + '</td>';
-                            htmlRow += '<td>' + row.AHU07 + '</td>';
-                            htmlRow += '<td>' + row.AHU08 + '</td>';
-                            htmlRow += '<td>' + row.AHU09 + '</td>';
-                            htmlRow += '<td>' + row.AHU10 + '</td>';
-                            htmlRow += '<td>' + row.AHU11 + '</td>';
+                            htmlRow += '<td' + css + '>' + row.ZP107 + '</td>';
+                            css = '';
+                            if (row.ZP108 === "停止") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.ZP108 + '</td>';
+                            htmlRow += '<td>' + row.ZP109 + '</td>';
+                            htmlRow += '<td>' + row.ZP110 + '</td>';
+                            htmlRow += '<td>' + row.ZP111 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
                         });
@@ -235,10 +238,10 @@
         });
     },
 
-    AHUExcel: function () {
-      var url = 'AHUExcel';
+    ZP1Excel: function () {
+        var url = 'ZP1Excel';
         var request = {
-            AHU: {
+            ZP1: {
                 LOCATION: $('#LOCATION').val(),
                 DEVICE_ID: $('#DEVICE_ID').val()
             },
@@ -254,7 +257,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                AHUData.ModalSwitch(response.Result.State);
+                ZP1Data.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
                         + '&FileName=' + response.FileName;
@@ -275,5 +278,5 @@
         });
     }
 
-    
+
 };
