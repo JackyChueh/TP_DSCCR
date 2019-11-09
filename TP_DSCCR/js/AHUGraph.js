@@ -15,7 +15,11 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            AHUGraph.GraphRetrieve();
+            AHUGraph.AHUGraph();
+        });
+
+        $('#print').click(function () {
+            AHUGraph.AHUGraphPrint();
         });
 
         $('#LOCATION').change(function () {
@@ -32,7 +36,7 @@
         $('.card-header button').hide();
         if (action === 'R') {
             $('#query').show();
-            $('#create').show();
+            $('#print').show();
             $('#section_retrieve').show();
         }
     },
@@ -145,7 +149,7 @@
         }
     },
 
-    GraphRetrieve: function () {
+    AHUGraph: function () {
         var url = 'AHUGraph';
         var request = {
             AHU: {
@@ -175,7 +179,7 @@
                             AHUGraph.ChartObj.destroy();
                         }
                         var obj;
-                        obj = document.getElementById('chartLine').getContext('2d');
+                        obj = document.getElementById('chartCanvas').getContext('2d');
                         AHUGraph.ChartObj = new Chart(obj, response.Chart);
                         //AHUGraph.ChartObj.resize();
                     }
@@ -194,6 +198,23 @@
             complete: function (xhr, status) {
             }
         });
+    },
+
+    AHUGraphPrint: function () {
+        var win = window.open();
+        //win.document.open();
+        win.document.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        win.document.write('<head><title></title>');
+        win.document.write('</head><body style="padding:0;margin-top:0 !important;margin-bottom:0!important;"   onLoad="self.print();self.close();">');
+        //var content_vlue = document.getElementById("chartCanvas").innerHTML;
+        //win.document.write(content_vlue);
+        var canvas = document.getElementById("chartCanvas");
+        win.document.write("<img src='" + canvas.toDataURL("image/png", 1) + "'/>");
+        win.document.write('</body></html>');
+        //document.write(doct + divContent.innerHTML);
+        win.document.close();
+        win.focus();
     }
+
 
 };
