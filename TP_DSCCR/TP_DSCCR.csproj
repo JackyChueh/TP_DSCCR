@@ -155,6 +155,7 @@
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
+    <Compile Include="Models\Entity\COP.cs" />
     <Compile Include="Models\Entity\CT.cs" />
     <Compile Include="Models\Entity\ZP1.cs" />
     <Compile Include="Models\Entity\CP.cs" />

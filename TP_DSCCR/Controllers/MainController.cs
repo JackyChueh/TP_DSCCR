@@ -23,7 +23,10 @@ namespace TP_DSCCR.Controllers
 
         public ActionResult Login()
         {
-            Session["ID"] = null;
+            //Session["ID"] = null;
+            Session.Clear();
+            Session.Abandon();
+
             return View();
         }
 
@@ -39,7 +42,8 @@ namespace TP_DSCCR.Controllers
         public ActionResult Sidebar()
         {
             Main.SidebarRes res = new Main.SidebarRes();
-            res.SidebarItem = new AuthorityImplement("TP_SCC").UserFunctionAuthority();
+            short? id = Session["SN"] == null ? null : (short?)Session["SN"];
+            res.SidebarItem = new AuthorityImplement("TP_SCC").UserFunctionAuthority(id);
             return View(res);
         }
 
@@ -54,18 +58,20 @@ namespace TP_DSCCR.Controllers
                 LoginCheckReq req = new LoginCheckReq();
                 JsonConvert.PopulateObject(input, req);
 
+                USERS USERS = null;
                 if (!(string.IsNullOrEmpty(req.USERS.ID) || string.IsNullOrEmpty(req.USERS.PASSWORD)))
                 {
-                    res = new AuthorityImplement("TP_SCC").LoginCheck(req);
+                    USERS = new AuthorityImplement("TP_SCC").LoginCheck(req);
                 }
 
-                if (res.USERS == null)
+                if (USERS == null)
                 {
                     res.Result.State = ResultEnum.LOGIN_FAIL;
                 }
                 else
                 {
-                    Session["ID"] = res.USERS.ID;
+                    Session["SN"] = USERS.SN;
+                    Session["ID"] = USERS.ID;
                     res.Result.State = ResultEnum.SUCCESS;
                     
                 }

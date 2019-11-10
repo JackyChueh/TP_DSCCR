@@ -57,6 +57,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + ") AS COP" + i.ToString("00") + ",";
@@ -85,6 +89,10 @@ SELECT {0} AS CDATE
                             else if (i == 2)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -180,7 +188,7 @@ SELECT {0} AS CDATE
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
                                 COP01 = dt.Rows[i]["COP01"].ToString(),
                                 COP02 = dt.Rows[i]["COP02"].ToString(),
-                                COP03 = dt.Rows[i]["COP03"] as decimal? ?? null,
+                                COP03 = dt.Rows[i]["COP03"].ToString(),
                                 COP04 = dt.Rows[i]["COP04"] as decimal? ?? null,
                                 COP05 = dt.Rows[i]["COP05"] as decimal? ?? null
                             };
@@ -225,6 +233,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + ") AS COP" + i.ToString("00") + ",";
@@ -253,6 +265,10 @@ SELECT {0} AS CDATE
                             else if (i == 2)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -336,7 +352,7 @@ SELECT {0} AS CDATE
                             DEVICE_ID = reader["DEVICE_ID"] as string,
                             COP01 = reader["COP01"].ToString(),
                             COP02 = reader["COP02"].ToString(),
-                            COP03 = reader["COP03"] as decimal? ?? null,
+                            COP03 = reader["COP03"].ToString(),
                             COP04 = reader["COP04"] as decimal? ?? null,
                             COP05 = reader["COP05"] as decimal? ?? null
                         };

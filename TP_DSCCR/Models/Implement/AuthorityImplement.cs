@@ -13,9 +13,11 @@ namespace TP_DSCCR.Models.Implement
     {
         public AuthorityImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public LoginCheckRes LoginCheck(LoginCheckReq LoginCheckReq)
+        public USERS LoginCheck(LoginCheckReq LoginCheckReq)
         {
-            LoginCheckRes LoginCheckRes = new LoginCheckRes();
+            //LoginCheckRes LoginCheckRes = new LoginCheckRes();
+            USERS USERS = null;
+
             string sql;
             sql = @"
 SELECT U.SN, U.NAME, U.PASSWORD
@@ -29,13 +31,13 @@ SELECT U.SN, U.NAME, U.PASSWORD
                 {
                     if (reader.Read() && reader["PASSWORD"] as string == LoginCheckReq.USERS.PASSWORD)
                     {
-                        USERS USERS = new USERS()
+                        USERS = new USERS()
                         {
                             SN = reader["SN"] as Int16? ?? null,
                             ID = LoginCheckReq.USERS.ID,
                             NAME = reader["NAME"] as string
                         };
-                        LoginCheckRes.USERS = USERS;
+                        //LoginCheckRes.USERS = USERS;
                     }
                 }
             }
@@ -66,10 +68,10 @@ SELECT U.SN, U.NAME, U.PASSWORD
 //                    }
 //                }
 //            }
-            return LoginCheckRes;
+            return USERS;
         }
 
-        public List<Main.SidebarItem> UserFunctionAuthority()
+        public List<Main.SidebarItem> UserFunctionAuthority(short? SN)
         {
             List<Main.SidebarItem> items = new List<Main.SidebarItem>();
             try
@@ -77,13 +79,14 @@ SELECT U.SN, U.NAME, U.PASSWORD
                 string sql = @"
  SELECT DISTINCT F.SN, F.NAME, F.CATEGORY, F.URL, F.PARENT_SN, F.SORT, F.IMG,
 	CASE WHEN A.ROLES_SN IS NOT NULL THEN 1 WHEN A.USERS_SN IS NOT NULL THEN 1 ELSE 0 END AS ALLOW
-	FROM FUNCTIONS F LEFT JOIN AUTHORITY A ON F.SN=A.FUNCTIONS_SN AND (A.USERS_SN=0 OR A.ROLES_SN=1)
+	FROM FUNCTIONS F LEFT JOIN AUTHORITY A ON F.SN=A.FUNCTIONS_SN AND (A.USERS_SN=@USERS_SN)
         WHERE F.MODE='Y'
 	ORDER BY F.SORT
 ";
                 using (DbCommand cmd = Db.GetSqlStringCommand(sql))
                 {
-                    //Db.AddInParameter(cmd, "ROLES_SN", DbType.String, 0);
+                    Db.AddInParameter(cmd, "USERS_SN", DbType.String, SN);
+
                     using (IDataReader reader = this.Db.ExecuteReader(cmd))
                     {
                         while (reader.Read())

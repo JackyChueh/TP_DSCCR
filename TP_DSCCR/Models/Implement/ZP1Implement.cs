@@ -60,6 +60,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 10)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + ") AS ZP1" + i.ToString("00") + ",";
@@ -94,6 +98,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 10)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -195,7 +203,7 @@ SELECT {0} AS CDATE
                                 ZP107 = dt.Rows[i]["ZP107"].ToString(),
                                 ZP108 = dt.Rows[i]["ZP108"].ToString(),
                                 ZP109 = dt.Rows[i]["ZP109"] as decimal? ?? null,
-                                ZP110 = dt.Rows[i]["ZP110"] as decimal? ?? null,
+                                ZP110 = dt.Rows[i]["ZP110"].ToString(),
                                 ZP111 = dt.Rows[i]["ZP111"] as decimal? ?? null,
                             };
                             res.ZP1Data.Add(row);
@@ -242,6 +250,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 10)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + ") AS ZP1" + i.ToString("00") + ",";
@@ -278,6 +290,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 10)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -366,7 +382,7 @@ SELECT {0} AS CDATE
                             ZP107 = reader["ZP107"].ToString(),
                             ZP108 = reader["ZP108"].ToString(),
                             ZP109 = reader["ZP109"] as decimal? ?? null,
-                            ZP110 = reader["ZP110"] as decimal? ?? null,
+                            ZP110 = reader["ZP110"].ToString(),
                             ZP111 = reader["ZP111"] as decimal? ?? null,
                         };
                         list.Add(row);

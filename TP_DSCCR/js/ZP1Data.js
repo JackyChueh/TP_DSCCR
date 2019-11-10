@@ -211,7 +211,11 @@
                             }
                             htmlRow += '<td' + css + '>' + row.ZP108 + '</td>';
                             htmlRow += '<td>' + row.ZP109 + '</td>';
-                            htmlRow += '<td>' + row.ZP110 + '</td>';
+                            css = '';
+                            if (row.ZP110 === "關") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.ZP110 + '</td>';
                             htmlRow += '<td>' + row.ZP111 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);

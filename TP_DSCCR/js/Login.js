@@ -10,6 +10,15 @@
         $('#Login').click(function () {
             Login.LoginCheck();
         });
+
+        $('input').bind("enterKey", function (e) {
+            Login.LoginCheck();
+        });
+        $('input').keyup(function (e) {
+            if (e.keyCode === 13) {
+                $(this).trigger("enterKey");
+            }
+        });
     },
 
     LoginCheck: function () {

@@ -149,7 +149,7 @@ a, a:hover, a:focus {
     }*/
 }
 
-#gridview tbody tr td#gridview thead tr th {
+#gridview tbody tr td, #gridview thead tr th {
     text-align: center;
     vertical-align: middle;
 }
