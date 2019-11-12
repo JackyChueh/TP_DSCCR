@@ -4,26 +4,22 @@ using Newtonsoft.Json;
 
 namespace TP_DSCCR.ViewModels
 {
-    public class ZP1Data
+    public class RRS_PVOIData
     {
         public string CDATE { get; set; }
         public string LOCATION { get; set; }
         public string DEVICE_ID { get; set; }
-        public decimal? ZP101 { get; set; }
-        public decimal? ZP102 { get; set; }
-        //public decimal? ZP103 { get; set; }
-        public decimal? ZP104 { get; set; }
-        public decimal? ZP105 { get; set; }
-        public decimal? ZP106 { get; set; }
-        public string ZP107 { get; set; }
-        public string ZP108 { get; set; }
-        public decimal? ZP109 { get; set; }
-        public string ZP110 { get; set; }
-        public decimal? ZP111 { get; set; }
+        public string RRS01_PVOI01 { get; set; }
+        public string RRS02_PVOI01 { get; set; }
+        public string RRS03_PVOI01 { get; set; }
+        public string RRS04_PVOI01 { get; set; }
+        public string RRS05_PVOI01 { get; set; }
+        public string RRS06_PVOI01 { get; set; }
+        public string RRS07_PVOI01 { get; set; }
     }
-    public class ZP1DataReq
+    public class RRS_PVOIDataReq
     {
-        public ZP1Data ZP1 { get; set; }
+        public RRS_PVOIData RRS_PVOI { get; set; }
         public DateTime? SDATE { get; set; }
         public DateTime? EDATE { get; set; }
         public string FIELD { get; set; }
@@ -31,22 +27,22 @@ namespace TP_DSCCR.ViewModels
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
-    public class ZP1DataRes : BaseResponse
+    public class RRS_PVOIDataRes : BaseResponse
     {
-        public List<ZP1Data> ZP1Data { get; set; }
+        public List<RRS_PVOIData> RRS_PVOIData { get; set; }
         public Pagination Pagination { get; set; }
     }
 
-    public class ZP1ChartJsData
+    public class RRS_PVOIChartJsData
     {
         public string CDATE { get; set; }
         public string LOCATION { get; set; }
         public string DEVICE_ID { get; set; }
         public Decimal? VALUE { get; set; }
     }
-    public class ZP1GraphReq
+    public class RRS_PVOIGraphReq
     {
-        public ZP1Data ZP1 { get; set; }
+        public RRS_PVOIData RRS_PVOI { get; set; }
         public DateTime? SDATE { get; set; }
         public DateTime? EDATE { get; set; }
 
@@ -66,7 +62,7 @@ namespace TP_DSCCR.ViewModels
                 }
                 else
                 {
-                    if ("ZP101,ZP102,ZP104,ZP105,ZP106,ZP107,ZP108,ZP109,ZP110,ZP110,ZP111".IndexOf(value) < 0)
+                    if ("RRS01_PVOI01,RRS02_PVOI01,RRS03_PVOI01,RRS04_PVOI01,RRS05_PVOI01,RRS06_PVOI01,RRS07_PVOI01".IndexOf(value) < 0)
                     {
                         throw new ArgumentException("FIELD invalid domain value");
                     }
@@ -80,20 +76,20 @@ namespace TP_DSCCR.ViewModels
         public string GROUP_BY_DT_NAME { get; set; }
         public string GRAPH_TYPE { get; set; }
     }
-    public class ZP1GraphRes : BaseResponse
+    public class RRS_PVOIGraphRes : BaseResponse
     {
         public Chart Chart { get; set; }
     }
 
-    public class ZP1ExcelReq
+    public class RRS_PVOIExcelReq
     {
-        public ZP1Data ZP1 { get; set; }
+        public RRS_PVOIData RRS_PVOI { get; set; }
         public DateTime? SDATE { get; set; }
         public DateTime? EDATE { get; set; }
         public string FIELD { get; set; }
         public string GROUP_BY_DT { get; set; }
     }
-    public class ZP1ExcelRes : BaseResponse
+    public class RRS_PVOIExcelRes : BaseResponse
     {
         public string DataId { get; set; }
         public string FileName { get; set; }

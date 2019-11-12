@@ -69,6 +69,15 @@ SELECT {0} AS CDATE
                     case "HOUR":
                         for (int i = 1; i < 8; i++)
                         {
+                            if (i == 1)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
+                            else if (i == 2)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
+                            else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(CT" + i.ToString("00") + ")) AS CT" + i.ToString("00") + ",";
                             }
@@ -238,6 +247,15 @@ SELECT {0} AS CDATE
                     case "HOUR":
                         for (int i = 1; i < 8; i++)
                         {
+                            if (i == 1)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
+                            else if (i == 2)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
+                            else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(CT" + i.ToString("00") + ")) AS CT" + i.ToString("00") + ",";
                             }

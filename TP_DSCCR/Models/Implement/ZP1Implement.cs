@@ -79,6 +79,18 @@ SELECT {0} AS CDATE
                             if (i == 3)
                             {
                             }
+                            else if (i == 7)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 10)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(ZP1" + i.ToString("00") + ")) AS ZP1" + i.ToString("00") + ",";
@@ -269,10 +281,20 @@ SELECT {0} AS CDATE
                             if (i == 3)
                             {
                             }
+                            else if (i == 7)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 8)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 10)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
                             else
                             {
-
-
                                 fields += "CONVERT(DECIMAL(28,1),AVG(ZP1" + i.ToString("00") + ")) AS ZP1" + i.ToString("00") + ",";
                             }
                         }
@@ -442,32 +464,27 @@ SELECT {0} AS CDATE
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水流量(lpm)"),
+                        CellValue = new CellValue("冰水瞬間流量(lpm) (ZP1及ZP2總管)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水出水溫(°C)"),
+                        CellValue = new CellValue("冰水水路壓差 (ZP1及ZP2總管)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水入水溫(°C)"),
+                        CellValue = new CellValue("*冰水總出水溫(℃) (ZP1及ZP2總管)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冷卻水流量(lpm)"),
+                        CellValue = new CellValue("*冰水總回水溫(℃) (ZP1及ZP2總管)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冷卻水出水溫(°C)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("冷卻水入水溫(°C)"),
+                        CellValue = new CellValue("旁通控制閥閥位(%) (ZP1及ZP2總管)"),
                         DataType = CellValues.String
                     },
                     new Cell()
@@ -485,9 +502,14 @@ SELECT {0} AS CDATE
                         CellValue = new CellValue("旋鈕檔位狀態"),
                         DataType = CellValues.String
                     },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("*壓差開關"),
+                        DataType = CellValues.String
+                    },
                    new Cell()
                    {
-                       CellValue = new CellValue("變頻器運轉指示 頻率(Hz)/百分比(%)"),
+                       CellValue = new CellValue("*變頻器運轉指示頻率(Hz)"),
                        DataType = CellValues.String
                    }
                 );
@@ -554,11 +576,6 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.ZP103.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
                             CellValue = new CellValue(data.ZP104.ToString()),
                             DataType = CellValues.Number
                         },
@@ -589,7 +606,12 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.ZP110.ToString()),
+                            CellValue = new CellValue(data.ZP110),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.ZP111.ToString()),
                             DataType = CellValues.Number
                         }
                     );

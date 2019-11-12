@@ -12,15 +12,15 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TP_DSCCR.Models.Implement
 {
-    public class ChillerImplement : EnterpriseLibrary
+    public class RRS_PVOIImplement : EnterpriseLibrary
     {
-        public ChillerImplement(string connectionStringName) : base(connectionStringName) { }
+        public RRS_PVOIImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public ChillerDataRes PaginationRetrieve(ChillerDataReq req)
+        public RRS_PVOIDataRes PaginationRetrieve(RRS_PVOIDataReq req)
         {
-            ChillerDataRes res = new ChillerDataRes()
+            RRS_PVOIDataRes res = new RRS_PVOIDataRes()
             {
-                ChillerData = new List<ChillerData>(),
+                RRS_PVOIData = new List<RRS_PVOIData>(),
                 Pagination = new Pagination
                 {
                     PageCount = 0,
@@ -36,10 +36,10 @@ namespace TP_DSCCR.Models.Implement
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM Chiller
+    FROM RRS_PVOI
     {2}
     {3}
 ";
@@ -47,19 +47,10 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else if (i == 8)
-                            {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -67,36 +58,18 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else if (i == 8)
-                            {
-                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
+                                fields += "'-' AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
                     default:
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else if (i == 8)
-                            {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -146,15 +119,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.RRS_PVOI.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.RRS_PVOI.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -178,7 +151,7 @@ SELECT {0} AS CDATE
                     {
                         for (int i = res.Pagination.MinNumber - 1; i < res.Pagination.MaxNumber; i++)
                         {
-                            var row = new ChillerData
+                            var row = new RRS_PVOIData
                             {
                                 //SID = (int)dt.Rows[i]["SID"],
                                 CDATE = dt.Rows[i]["CDATE"] as string,
@@ -186,18 +159,15 @@ SELECT {0} AS CDATE
                                 //DATETIME = dt.Rows[i]["DATETIME"] as DateTime? ?? null,
                                 LOCATION = dt.Rows[i]["LOCATION"] as string,
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
-                                Chiller01 = dt.Rows[i]["Chiller01"] as decimal? ?? null,
-                                Chiller02 = dt.Rows[i]["Chiller02"] as decimal? ?? null,
-                                Chiller03 = dt.Rows[i]["Chiller03"] as decimal? ?? null,
-                                Chiller04 = dt.Rows[i]["Chiller04"] as decimal? ?? null,
-                                Chiller05 = dt.Rows[i]["Chiller05"] as decimal? ?? null,
-                                Chiller06 = dt.Rows[i]["Chiller06"] as decimal? ?? null,
-                                Chiller07 = dt.Rows[i]["Chiller07"].ToString(),
-                                Chiller08 = dt.Rows[i]["Chiller08"].ToString(),
-                                Chiller09 = dt.Rows[i]["Chiller09"] as decimal? ?? null,
-                                Chiller10 = dt.Rows[i]["Chiller10"] as decimal? ?? null,
+                                RRS01_PVOI01 = dt.Rows[i]["RRS01_PVOI01"].ToString(),
+                                RRS02_PVOI01 = dt.Rows[i]["RRS02_PVOI01"].ToString(),
+                                RRS03_PVOI01 = dt.Rows[i]["RRS03_PVOI01"].ToString(),
+                                RRS04_PVOI01 = dt.Rows[i]["RRS04_PVOI01"].ToString(),
+                                RRS05_PVOI01 = dt.Rows[i]["RRS05_PVOI01"].ToString(),
+                                RRS06_PVOI01 = dt.Rows[i]["RRS06_PVOI01"].ToString(),
+                                RRS07_PVOI01 = dt.Rows[i]["RRS07_PVOI01"].ToString(),
                             };
-                            res.ChillerData.Add(row);
+                            res.RRS_PVOIData.Add(row);
                         }
                     }
                 }
@@ -207,20 +177,20 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        public MemoryStream ExcelRetrieve(ChillerExcelReq req)
+        public MemoryStream ExcelRetrieve(RRS_PVOIExcelReq req)
         {
             MemoryStream ms = new MemoryStream();
 
-            List<ChillerData> list = new List<ChillerData>();
+            List<RRS_PVOIData> list = new List<RRS_PVOIData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM Chiller
+    FROM RRS_PVOI
     {2}
     {3}
 ";
@@ -228,19 +198,10 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else if (i == 8)
-                            {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -248,37 +209,18 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
+                                fields += "'-' AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
-                            else if (i == 8)
-                            {
-                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
-                            }
-
                         }
                         break;
                     default:
-                        for (int i = 1; i < 11; i++)
+                        for (int i = 1; i < 8; i++)
                         {
-                            if (i == 7)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else if (i == 8)
-                            {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
-                            }
-                            else
-                            {
-                                fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -327,15 +269,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.RRS_PVOI.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.RRS_PVOI.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -350,21 +292,18 @@ SELECT {0} AS CDATE
                 {
                     while (reader.Read())
                     {
-                        var row = new ChillerData
+                        var row = new RRS_PVOIData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            Chiller01 = reader["Chiller01"] as decimal? ?? null,
-                            Chiller02 = reader["Chiller02"] as decimal? ?? null,
-                            Chiller03 = reader["Chiller03"] as decimal? ?? null,
-                            Chiller04 = reader["Chiller04"] as decimal? ?? null,
-                            Chiller05 = reader["Chiller05"] as decimal? ?? null,
-                            Chiller06 = reader["Chiller06"] as decimal? ?? null,
-                            Chiller07 = reader["Chiller07"].ToString(),
-                            Chiller08 = reader["Chiller08"].ToString(),
-                            Chiller09 = reader["Chiller09"] as decimal? ?? null,
-                            Chiller10 = reader["Chiller10"] as decimal? ?? null,
+                            RRS01_PVOI01 = reader["RRS01_PVOI01"].ToString(),
+                            RRS02_PVOI01 = reader["RRS02_PVOI01"].ToString(),
+                            RRS03_PVOI01 = reader["RRS03_PVOI01"].ToString(),
+                            RRS04_PVOI01 = reader["RRS04_PVOI01"].ToString(),
+                            RRS05_PVOI01 = reader["RRS05_PVOI01"].ToString(),
+                            RRS06_PVOI01 = reader["RRS06_PVOI01"].ToString(),
+                            RRS07_PVOI01 = reader["RRS07_PVOI01"].ToString(),
                         };
                         list.Add(row);
                     }
@@ -377,7 +316,7 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        private MemoryStream ExcelProduce(string GroupByDt, List<ChillerData> List)
+        private MemoryStream ExcelProduce(string GroupByDt, List<RRS_PVOIData> List)
         {
             MemoryStream ms = new MemoryStream();
 
@@ -416,65 +355,50 @@ SELECT {0} AS CDATE
                     //    CellValue = new CellValue("位置"),
                     //    DataType = CellValues.String
                     //},
+                    //new Cell()
+                    //{
+                    //    CellValue = new CellValue("設備名稱"),
+                    //    DataType = CellValues.String
+                    //},
                     new Cell()
                     {
-                        CellValue = new CellValue("設備名稱"),
+                        CellValue = new CellValue("電動閥控制運轉指示"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水流量(lpm)"),
+                        CellValue = new CellValue("花圃澆灌泵#1運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水出水溫(°C)"),
+                        CellValue = new CellValue("花圃澆灌泵#2運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冰水入水溫(°C)"),
+                        CellValue = new CellValue("副樓過濾泵#A運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冷卻水流量(lpm)"),
+                        CellValue = new CellValue("副樓過濾泵#B運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冷卻水出水溫(°C)"),
+                        CellValue = new CellValue("副樓揚水泵#A運轉指示(On/OFF)"),
                         DataType = CellValues.String
                     },
                     new Cell()
                     {
-                        CellValue = new CellValue("冷卻水入水溫(°C)"),
+                        CellValue = new CellValue("副樓揚水泵#B運轉指示(On/OFF)"),
                         DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("運轉指示(On/OFF)"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("故障跳脫"),
-                        DataType = CellValues.String
-                    },
-                    new Cell()
-                    {
-                        CellValue = new CellValue("旋鈕檔位狀態"),
-                        DataType = CellValues.String
-                    },
-                   new Cell()
-                   {
-                       CellValue = new CellValue("變頻器運轉指示 頻率(Hz)/百分比(%)"),
-                       DataType = CellValues.String
-                   }
+                    }
                 );
                 sheetData.AppendChild(row);
 
-                foreach (ChillerData data in List)
+                foreach (RRS_PVOIData data in List)
                 {
                     //DateTime dt = DateTime.Parse(data.CDATE);
                     string date = "";
@@ -518,60 +442,45 @@ SELECT {0} AS CDATE
                         //    CellValue = new CellValue(data.LOCATION),
                         //    DataType = CellValues.String
                         //},
+                        //new Cell()
+                        //{
+                        //    CellValue = new CellValue(data.DEVICE_ID),
+                        //    DataType = CellValues.String
+                        //},
                         new Cell()
                         {
-                            CellValue = new CellValue(data.DEVICE_ID),
+                            CellValue = new CellValue(data.RRS01_PVOI01),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.Chiller01.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller02.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller03.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller04.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller05.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller06.ToString()),
-                            DataType = CellValues.Number
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.Chiller07),
+                            CellValue = new CellValue(data.RRS02_PVOI01),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.Chiller08),
+                            CellValue = new CellValue(data.RRS03_PVOI01),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.Chiller09.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.RRS04_PVOI01),
+                            DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.Chiller10.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.RRS05_PVOI01),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.RRS06_PVOI01),
+                            DataType = CellValues.String
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(data.RRS07_PVOI01),
+                            DataType = CellValues.String
                         }
                     );
                     sheetData.AppendChild(row);
@@ -581,25 +490,25 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        public ChillerGraphRes GraphRetrieve(ChillerGraphReq req)
+        public RRS_PVOIGraphRes GraphRetrieve(RRS_PVOIGraphReq req)
         {
-            ChillerGraphRes res = new ChillerGraphRes();
+            RRS_PVOIGraphRes res = new RRS_PVOIGraphRes();
 
-            List<ChillerChartJsData> list = new List<ChillerChartJsData>();
+            List<RRS_PVOIChartJsData> list = new List<RRS_PVOIChartJsData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('RRS_PVOI_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
-    FROM Chiller
+    FROM RRS_PVOI
     {2}
     {3}
     {4}
 ";
-                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS Chiller_VALUE", req.FIELD);
+                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS RRS_PVOI_VALUE", req.FIELD);
 
                 string groupByDT = null;
                 string group = null;
@@ -647,15 +556,15 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.LOCATION))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.Chiller.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.RRS_PVOI.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.Chiller.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.RRS_PVOI.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.Chiller.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.RRS_PVOI.DEVICE_ID);
                 }
                 if (where.Length > 0)
                 {
@@ -676,13 +585,13 @@ SELECT {0} AS CDATE
                 {
                     while (reader.Read())
                     {
-                        var row = new ChillerChartJsData
+                        var row = new RRS_PVOIChartJsData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            VALUE = reader["Chiller_VALUE"] as decimal? ?? null
-                            //VALUE = (Decimal)reader["Chiller_VALUE"]
+                            VALUE = reader["RRS_PVOI_VALUE"] as decimal? ?? null
+                            //VALUE = (Decimal)reader["RRS_PVOI_VALUE"]
                         };
                         list.Add(row);
                     }
@@ -695,7 +604,7 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        private Chart ChartProduce(string ChartType, List<ChillerChartJsData> ChillerChartJsData, string FieldName, string GroupName)
+        private Chart ChartProduce(string ChartType, List<RRS_PVOIChartJsData> RRS_PVOIChartJsData, string FieldName, string GroupName)
         {
             Chart Chart = new Chart();
 
@@ -707,7 +616,7 @@ SELECT {0} AS CDATE
             TP_DSCCR.ViewModels.Data Data = new TP_DSCCR.ViewModels.Data();
 
             #region chart.data.labels
-            var query = from data in ChillerChartJsData
+            var query = from data in RRS_PVOIChartJsData
                         group data by data.CDATE;
 
             List<string> labels = new List<string>();
@@ -725,12 +634,12 @@ SELECT {0} AS CDATE
             string key = null;
             Dataset ds = null;
             string rgb = null;
-            foreach (ChillerChartJsData ChillerChartJS in ChillerChartJsData)
+            foreach (RRS_PVOIChartJsData RRS_PVOIChartJS in RRS_PVOIChartJsData)
             {
                 if (key == null)
                 {
-                    //key = ChillerChartJS.LOCATION + "_" + ChillerChartJS.DEVICE_ID;
-                    key = ChillerChartJS.DEVICE_ID;
+                    //key = RRS_PVOIChartJS.LOCATION + "_" + RRS_PVOIChartJS.DEVICE_ID;
+                    key = RRS_PVOIChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -741,10 +650,10 @@ SELECT {0} AS CDATE
                         data = new List<Decimal?> { }
                     };
                 }
-                else if (key != ChillerChartJS.DEVICE_ID)
+                else if (key != RRS_PVOIChartJS.DEVICE_ID)
                 {
                     datasets.Add(ds);
-                    key = ChillerChartJS.DEVICE_ID;
+                    key = RRS_PVOIChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -756,7 +665,7 @@ SELECT {0} AS CDATE
                     };
 
                 }
-                ds.data.Add(ChillerChartJS.VALUE);
+                ds.data.Add(RRS_PVOIChartJS.VALUE);
             }
             datasets.Add(ds);
             Data.datasets = datasets;

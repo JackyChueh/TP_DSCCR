@@ -142,6 +142,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AHUController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\RRS_PWLSController.cs" />
+    <Compile Include="Controllers\RRS_PVOIController.cs" />
+    <Compile Include="Controllers\RRS_VFLHController.cs" />
     <Compile Include="Controllers\CTController.cs" />
     <Compile Include="Controllers\ZP1Controller.cs" />
     <Compile Include="Controllers\CPController.cs" />
@@ -155,8 +158,13 @@
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
+    <Compile Include="Models\Entity\RRS_PVOI.cs" />
+    <Compile Include="Models\Entity\RRS_PWLS.cs" />
+    <Compile Include="Models\Entity\RRS_VFLH.cs" />
     <Compile Include="Models\Entity\COP.cs" />
     <Compile Include="Models\Entity\CT.cs" />
+    <Compile Include="Models\Entity\WSDS_PVOI.cs" />
+    <Compile Include="Models\Entity\WSDS_PWLS.cs" />
     <Compile Include="Models\Entity\ZP1.cs" />
     <Compile Include="Models\Entity\CP.cs" />
     <Compile Include="Models\Entity\Chiller.cs" />
@@ -168,6 +176,9 @@
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
+    <Compile Include="Models\Implement\RRS_PWLSImplement.cs" />
+    <Compile Include="Models\Implement\RRS_PVOIImplement.cs" />
+    <Compile Include="Models\Implement\RRS_VFLHImplement.cs" />
     <Compile Include="Models\Implement\CTImplement.cs" />
     <Compile Include="Models\Implement\ZP1Implement.cs" />
     <Compile Include="Models\Implement\CPImplement.cs" />
@@ -178,6 +189,9 @@
     <Compile Include="ViewModels\AHU.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
+    <Compile Include="ViewModels\RRS_PWLS.cs" />
+    <Compile Include="ViewModels\RRS_PVOI.cs" />
+    <Compile Include="ViewModels\RRS_VFLH.cs" />
     <Compile Include="ViewModels\CT.cs" />
     <Compile Include="ViewModels\ZP1.cs" />
     <Compile Include="ViewModels\CP.cs" />
@@ -219,6 +233,10 @@
     <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
+    <Content Include="js\RRS_PWLSData.js" />
+    <Content Include="js\RRS_PVOIData.js" />
+    <Content Include="js\RRS_VFLHData.js" />
+    <Content Include="js\RRS_VFLHGraph.js" />
     <Content Include="js\CTData.js" />
     <Content Include="js\CTGraph.js" />
     <Content Include="js\ZP1Data.js" />
@@ -348,6 +366,10 @@
     <Content Include="Views\ZP1\Graph.cshtml" />
     <Content Include="Views\CT\Data.cshtml" />
     <Content Include="Views\CT\Graph.cshtml" />
+    <Content Include="Views\RRS_VFLH\Data.cshtml" />
+    <Content Include="Views\RRS_VFLH\Graph.cshtml" />
+    <Content Include="Views\RRS_PVOI\Data.cshtml" />
+    <Content Include="Views\RRS_PWLS\Data.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
