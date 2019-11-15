@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "雨水-流量液高 - 數據查詢";
+    ViewBag.Title = "給排水-水泵及閥運轉狀態 - 數據查詢";
 }
 @section Styles
 {
@@ -28,15 +28,15 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="DEVICE_ID">設備名稱</label>
                     <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
                     <label for="GROUP_BY_DT">時間間隔</label>
                     <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
                 </div>
@@ -47,14 +47,9 @@
                         <tr>
                             <th>日期</th>
                             <th>時間</th>
-                            @*<th>位置</th>*@
-                            @*<th>設備名稱</th>*@
-                            <th>流量計自來水補充水量(m&sup3;)</th>
-                            <th>超音波雨水儲存池水位高度(m)</th>
-                            <th>流量計B2樓雨水累積值(m&sup3;)</th>
-                            <th>流量計B2樓雨水瞬間值(m&sup3;)</th>
-                            <th>流量計19樓自來水累積值(m&sup3;)</th>
-                            <th>流量計19樓自來水瞬間值(m&sup3;)</th>
+                            <th>位置</th>
+                            <th>設備名稱</th>
+                            <th>狀態</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -119,11 +114,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/RRS_VFLHData.js"></script>
+    <script src="~/js/WSDS_PVOIData.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            RRS_VFLHData.Page_Init();
-            RRS_VFLHData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+            WSDS_PVOIData.Page_Init();
+            WSDS_PVOIData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

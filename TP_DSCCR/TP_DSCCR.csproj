@@ -142,6 +142,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AHUController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\WSDS_PVOIController.cs" />
+    <Compile Include="Controllers\WSDS_PWLSController.cs" />
     <Compile Include="Controllers\RRS_PWLSController.cs" />
     <Compile Include="Controllers\RRS_PVOIController.cs" />
     <Compile Include="Controllers\RRS_VFLHController.cs" />
@@ -176,6 +178,8 @@
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
+    <Compile Include="Models\Implement\WSDS_PVOIImplement.cs" />
+    <Compile Include="Models\Implement\WSDS_PWLSImplement.cs" />
     <Compile Include="Models\Implement\RRS_PWLSImplement.cs" />
     <Compile Include="Models\Implement\RRS_PVOIImplement.cs" />
     <Compile Include="Models\Implement\RRS_VFLHImplement.cs" />
@@ -189,6 +193,8 @@
     <Compile Include="ViewModels\AHU.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
+    <Compile Include="ViewModels\WSDS_PVOI.cs" />
+    <Compile Include="ViewModels\WSDS_PWLS.cs" />
     <Compile Include="ViewModels\RRS_PWLS.cs" />
     <Compile Include="ViewModels\RRS_PVOI.cs" />
     <Compile Include="ViewModels\RRS_VFLH.cs" />
@@ -232,6 +238,8 @@
     <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
+    <Content Include="js\WSDS_PVOIData.js" />
+    <Content Include="js\WSDS_PWLSData.js" />
     <Content Include="js\RRS_PWLSData.js" />
     <Content Include="js\RRS_PVOIData.js" />
     <Content Include="js\RRS_VFLHData.js" />
@@ -367,6 +375,8 @@
     <Content Include="Views\RRS_VFLH\Graph.cshtml" />
     <Content Include="Views\RRS_PVOI\Data.cshtml" />
     <Content Include="Views\RRS_PWLS\Data.cshtml" />
+    <Content Include="Views\WSDS_PWLS\Data.cshtml" />
+    <Content Include="Views\WSDS_PVOI\Data.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

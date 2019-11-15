@@ -1,10 +1,9 @@
-﻿
-@{
-    ViewBag.Title = "雨水-流量液高 - 統計圖表";
+﻿@{
+    ViewBag.Title = "雨水-水泵及水位警報 - 統計圖表";
 }
 @section Styles
 {
-    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+<link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
 }
 <div class="card">
     <div class="card-header">
@@ -28,11 +27,11 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="DEVICE_ID">設備名稱</label>
                     <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
                 </div>
@@ -43,12 +42,7 @@
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="FIELD">數據欄位</label>
                     <select class="form-control form-control-sm  fields" id="FIELD" name="FIELD">
-                        <option value="RRS01_VFLH01">流量計自來水補充水量(m&sup3;)</option>
-                        <option value="RRS02_VFLH01">超音波雨水儲存池水位高度(m)</option>
-                        <option value="RRS03_VFLH01">流量計B2樓雨水累積值(m&sup3;)</option>
-                        <option value="RRS04_VFLH01">流量計B2樓雨水瞬間值(m&sup3;)</option>
-                        <option value="RRS05_VFLH01">流量計19樓自來水累積值(m&sup3;)</option>
-                        <option value="RRS06_VFLH01">流量計19樓自來水瞬間值(m&sup3;)</option>
+                        <option value="WSDS_PWLS_STATUS">狀態</option>
                     </select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -86,13 +80,13 @@
 </div>
 
 @section Scripts{
-    <script src="~/Scripts/jquery.datetimepicker.js"></script>
-    <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/RRS_VFLHGraph.js"></script>
-    <script type="text/JavaScript">
-        $(document).ready(function () {
-            RRS_VFLHGraph.Page_Init();
-            RRS_VFLHGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
-        });
-    </script>
+<script src="~/Scripts/jquery.datetimepicker.js"></script>
+<script src="~/Scripts/Chart.min.js"></script>
+<script src="~/js/WSDS_PWLSGraph.js"></script>
+<script type="text/JavaScript">
+    $(document).ready(function () {
+        WSDS_PWLSGraph.Page_Init();
+        WSDS_PWLSGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+    });
+</script>
 }
