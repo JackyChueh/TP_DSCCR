@@ -8,6 +8,16 @@ namespace TP_DSCCR.Models.Enums
 {
     public enum ResultEnum : int
     {
+        [Description("密碼重置完成")]
+        RESET_SUCCESS = 5,
+        [Description("設定完成")]
+        SET_SUCCESS = 4,
+        [Description("資料刪除完成")]
+        DELETE_SUCCESS = 3,
+        [Description("資料修改完成")]
+        UPDATE_SUCCESS = 2,
+        [Description("資料新增成功")]
+        CREATE_SUCCESS = 1,
         [Description("交易成功")]
         SUCCESS = 0,
         [Description("交易失敗")]

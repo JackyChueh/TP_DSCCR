@@ -33,7 +33,7 @@ SELECT U.SN, U.NAME, U.PASSWORD
                     {
                         USERS = new USERS()
                         {
-                            SN = reader["SN"] as Int16? ?? null,
+                            SN = reader["SN"] as int? ?? null,
                             ID = LoginCheckReq.USERS.ID,
                             NAME = reader["NAME"] as string
                         };
@@ -71,7 +71,7 @@ SELECT U.SN, U.NAME, U.PASSWORD
             return USERS;
         }
 
-        public List<Main.SidebarItem> UserFunctionAuthority(short? SN)
+        public List<Main.SidebarItem> UserFunctionAuthority(int? SN)
         {
             List<Main.SidebarItem> items = new List<Main.SidebarItem>();
             try
@@ -85,7 +85,7 @@ SELECT U.SN, U.NAME, U.PASSWORD
 ";
                 using (DbCommand cmd = Db.GetSqlStringCommand(sql))
                 {
-                    Db.AddInParameter(cmd, "USERS_SN", DbType.String, SN);
+                    Db.AddInParameter(cmd, "USERS_SN", DbType.Int32, SN);
 
                     using (IDataReader reader = this.Db.ExecuteReader(cmd))
                     {

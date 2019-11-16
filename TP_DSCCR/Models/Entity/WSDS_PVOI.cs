@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TP_DSYNC.Models.DataDefine.B3
+namespace TP_DSCCR.Models.DataDefine.B3
 {
     public class WSDS_PVOI
     {

@@ -13,6 +13,7 @@ namespace TP_DSCCR.Controllers
         protected string MethodName;
         protected string CallerMethodName;
         protected string ThreadId;
+
         public BaseController()
         {
             ClassName = this.GetType().Name;

@@ -7,7 +7,7 @@ namespace TP_DSCCR.Models.Entity
     /// </summary>
     public class USERS
     {
-        public Int16? SN { get; set; }
+        public int? SN { get; set; }
         public string ID { get; set; }
         public string NAME { get; set; }
         public string PASSWORD { get; set; }
@@ -18,5 +18,6 @@ namespace TP_DSCCR.Models.Entity
         public string CUSER { get; set; }
         public DateTime? MDATE { get; set; }
         public string MUSER { get; set; }
+        public int? FORCE_PWD { get; set; }
     }
 }

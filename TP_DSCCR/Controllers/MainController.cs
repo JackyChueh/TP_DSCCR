@@ -34,7 +34,7 @@ namespace TP_DSCCR.Controllers
         {
             if (Session["ID"] == null)
             {
-                return View("Error");
+                return RedirectToAction("Login", "Main");
             }
             return View();
         }
@@ -42,7 +42,7 @@ namespace TP_DSCCR.Controllers
         public ActionResult Sidebar()
         {
             Main.SidebarRes res = new Main.SidebarRes();
-            short? id = Session["SN"] == null ? null : (short?)Session["SN"];
+            int? id = Session["SN"] == null ? null : (int?)Session["SN"];
             res.SidebarItem = new AuthorityImplement("TP_SCC").UserFunctionAuthority(id);
             return View(res);
         }
