@@ -13,6 +13,10 @@ namespace TP_DSCCR.Controllers
         // GET: Users
         public ActionResult UsersIndex()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Main");
+            }
             return View();
         }
 

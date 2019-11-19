@@ -20,5 +20,10 @@ namespace TP_DSCCR.Models.Data
             public int? ALLOW { get; set; }
         }
 
+        public class UserInfo
+        { 
+            public USERS USERS { get; set; }
+            public ROLES ROLES { get; set; } 
+        }
     }
 }

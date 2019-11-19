@@ -43,6 +43,7 @@
             $('#modal_action #confirm').show();
             $('#modal_action').modal('show');
         });
+
         $('#reset').click(function () {
             $('#modal_action .modal-title').text('提示訊息');
             $('#modal_action .modal-body').html('<p>確定要重置密碼?</p>');
@@ -70,10 +71,11 @@
         });
 
         $('#section_modify #ID').keyup(function () {
-            $("#section_modify #ID").val(($("#section_modify #ID").val()).toUpperCase());
+            $("#section_modify #ID").val($("#section_modify #ID").val().toUpperCase());
         });
+
         $('#section_modify #PASSWORD').keyup(function () {
-            $("#section_modify #PASSWORD").val(($("#section_modify #PASSWORD").val()).toUpperCase());
+            $("#section_modify #PASSWORD").val($("#section_modify #PASSWORD").val().toUpperCase());
         });
 
     },
