@@ -35,7 +35,9 @@ namespace TP_DSCCR.Models.Enums
         [Description("帳號或密碼錯誤")]
         LOGIN_FAIL = -7,
         [Description("連線逾時")]
-        SESSION_TIMEOUT = -8
+        SESSION_TIMEOUT = -8,
+        [Description("帳號尚未設定群組")]
+        GRANTS_NOT_FOUND = -9
 
     }
 

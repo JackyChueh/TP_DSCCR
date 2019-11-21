@@ -16,73 +16,12 @@
             @Html.Action("Sidebar", "Main")
             @*<div class="sidebar-header">
                     <img src="~/img/icon.svg" class="sidebar-icon" /><span>語音後台管理系統</span>
-                </div>*@
-            @*<ul class="list-unstyled sidebar-body">
-                    <li class="active">
-                        <a href="#Dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-home text-primary"></i>日常資訊</a>
-                        <ul class="collapse list-unstyled" id="Dashboard">
-                            <li>
-                                <a href="#">home1</a>
-                            </li>
-                            <li>
-                                <a href="#">home2</a>
-                            </li>
-                            <li>
-                                <a href="#">home3</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fas fa-folder"></i>管理功能</a>
-                    </li>
-                    <li>
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-chart-bar text-warning"></i>報表查詢</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                <a href="#">page1</a>
-                            </li>
-                            <li>
-                                <a href="#">page2</a>
-                            </li>
-                            <li>
-                                <a href="#">page3</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fas fa-cog text-danger"></i>參數設定</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fas fa-tasks text-success"></i>權限設定</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fas fa-user text-dark"></i>個人資料</a>
-                    </li>
-                    <li>
-                        <a href="#sysSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-tools text-info"></i>系統設定</a>
-                        <ul class="collapse list-unstyled" id="sysSubmenu">
-                            <li>
-                                <a href="#">page1</a>
-                            </li>
-                            <li>
-                                <a href="#">page2</a>
-                            </li>
-                            <li>
-                                <a href="#">page3</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>*@
-
-            <ul class="list-unstyled">
+                </div>
+                <ul class="list-unstyled">
                 <li>
-                    <a href="#" class="download">Develop Mode</a>
+                    <a href="#" class="download">登出系統</a>
                 </li>
-                <li>
-                    <a href="#" class="article">Article</a>
-                </li>
-            </ul>
-
+            </ul>*@
         </nav>
         <div id="content">
             <!--navbar-->
@@ -97,7 +36,7 @@
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                @Session["ID"].ToString()
+                                @Session["NAME"].ToString()
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 @*<a class="dropdown-item" href="#">個人資料</a>

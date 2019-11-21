@@ -42,7 +42,7 @@ namespace TP_DSCCR.Controllers
         public ActionResult Sidebar()
         {
             Main.SidebarRes res = new Main.SidebarRes();
-            int? id = Session["SN"] == null ? null : (int?)Session["SN"];
+            int? id = Session["ROLES_SN"] == null ? null : (int?)Session["ROLES_SN"];
             res.SidebarItem = new AuthorityImplement("TP_SCC").UserFunctionAuthority(id);
             return View(res);
         }
@@ -58,22 +58,27 @@ namespace TP_DSCCR.Controllers
                 LoginCheckReq req = new LoginCheckReq();
                 JsonConvert.PopulateObject(input, req);
 
-                USERS USERS = null;
+                //USERS USERS = null;
                 if (!(string.IsNullOrEmpty(req.USERS.ID) || string.IsNullOrEmpty(req.USERS.PASSWORD)))
                 {
-                    USERS = new AuthorityImplement("TP_SCC").LoginCheck(req);
+                    res = new AuthorityImplement("TP_SCC").LoginCheck(req);
                 }
 
-                if (USERS == null)
+                if (res.USERS == null)
                 {
                     res.Result.State = ResultEnum.LOGIN_FAIL;
                 }
+                else if (res.GRANTS == null)
+                {
+                    res.Result.State = ResultEnum.GRANTS_NOT_FOUND;
+                }
                 else
                 {
-                    Session["SN"] = USERS.SN;
-                    Session["ID"] = USERS.ID;
+                    Session["SN"] = res.USERS.SN;
+                    Session["ID"] = res.USERS.ID;
+                    Session["NAME"] = res.USERS.NAME;
+                    Session["ROLES_SN"] = res.GRANTS.ROLES_SN;
                     res.Result.State = ResultEnum.SUCCESS;
-                    
                 }
             }
             catch (Exception ex)

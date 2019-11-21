@@ -161,6 +161,7 @@
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
+    <Compile Include="Models\Entity\GRANTS.cs" />
     <Compile Include="Models\Entity\RRS_PVOI.cs" />
     <Compile Include="Models\Entity\RRS_PWLS.cs" />
     <Compile Include="Models\Entity\RRS_VFLH.cs" />

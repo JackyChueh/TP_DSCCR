@@ -12,5 +12,7 @@ namespace TP_DSCCR.ViewModels
 
     public class LoginCheckRes : BaseResponse
     {
+        public USERS USERS { get; set; }
+        public GRANTS GRANTS { get; set; }
     }
 }
