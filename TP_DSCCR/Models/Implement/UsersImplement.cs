@@ -107,16 +107,16 @@ SELECT TOP(@TOP) SN,ID,NAME,PASSWORD,EMAIL,dbo.PHRASE_NAME('mode',MODE,default) 
             return res;
         }
 
-        public USERS ModificationQuery(UsersModifyReq Req)
+        public UsersModifyRes ModificationQuery(UsersModifyReq Req)
         {
-            USERS row = null;
-
+            UsersModifyRes res = new UsersModifyRes();
+            
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
-        SELECT SN,ID,NAME,PASSWORD,EMAIL,MODE,MEMO,CDATE,CUSER,MDATE,MUSER
-            FROM USERS
-            WHERE SN=@SN
+        SELECT U.SN,U.ID,U.NAME,U.PASSWORD,U.EMAIL,U.MODE,U.MEMO,U.CDATE,U.CUSER,U.MDATE,U.MUSER,G.ROLES_SN
+            FROM USERS U LEFT JOIN GRANTS G ON U.SN=G.USERS_SN
+            WHERE U.SN=@SN
         ";
                 Db.AddInParameter(cmd, "SN", DbType.Int32, Req.USERS.SN);
 
@@ -124,9 +124,9 @@ SELECT TOP(@TOP) SN,ID,NAME,PASSWORD,EMAIL,dbo.PHRASE_NAME('mode',MODE,default) 
                 cmd.CommandText = sql;
                 using (IDataReader reader = Db.ExecuteReader(cmd))
                 {
-                    while (reader.Read())
+                    if (reader.Read())
                     {
-                        row = new USERS
+                        USERS USERS = new USERS
                         {
                             SN = reader["SN"] as int? ?? null,
                             ID = reader["ID"] as string,
@@ -140,77 +140,154 @@ SELECT TOP(@TOP) SN,ID,NAME,PASSWORD,EMAIL,dbo.PHRASE_NAME('mode',MODE,default) 
                             MDATE = reader["MDATE"] as DateTime?,
                             MUSER = reader["MUSER"] as string
                         };
+                        res.USERS = USERS;
+
+                        GRANTS GRANTS = new GRANTS
+                        {
+                            ROLES_SN = reader["ROLES_SN"] as int? ?? null
+                        };
+                        res.GRANTS = GRANTS;
                     }
                 }
             }
 
-            return row;
+            return res;
         }
 
-        public int DataCreate(UsersModifyReq req)
+        public bool DataCreate(UsersModifyReq req)
         {
             int effect = 0;
-            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            using (DbConnection conn = Db.CreateConnection())
             {
-                //Int64? USERS_SN = new Sequence("SCC").GetSeqBigInt("USERS");
-                string sql = @"
+                conn.Open();
+                DbTransaction trans = conn.BeginTransaction();
+                try
+                {
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        //Int64? USERS_SN = new Sequence("SCC").GetSeqBigInt("USERS");
+                        string sql = @"
 SET @SN = NEXT VALUE FOR [USERS_SEQ]
 INSERT USERS (SN,ID,NAME,PASSWORD,EMAIL,MODE,MEMO,CDATE,CUSER,MDATE,MUSER)
     VALUES (@SN,@ID,@NAME,@PASSWORD,@EMAIL,@MODE,@MEMO,GETDATE(),@CUSER,GETDATE(),@MUSER);
         ";
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
 
-                Db.AddInParameter(cmd, "ID", DbType.String, req.USERS.ID);
-                Db.AddInParameter(cmd, "NAME", DbType.String, req.USERS.NAME);
-                Db.AddInParameter(cmd, "PASSWORD", DbType.String, req.USERS.PASSWORD);
-                Db.AddInParameter(cmd, "EMAIL", DbType.String, req.USERS.EMAIL);
-                Db.AddInParameter(cmd, "MODE", DbType.String, req.USERS.MODE);
-                Db.AddInParameter(cmd, "MEMO", DbType.String, req.USERS.MEMO);
-                Db.AddInParameter(cmd, "CUSER", DbType.String, req.USERS.CUSER);
-                Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
-                Db.AddOutParameter(cmd, "SN", DbType.Int32, 1);
+                        Db.AddInParameter(cmd, "ID", DbType.String, req.USERS.ID);
+                        Db.AddInParameter(cmd, "NAME", DbType.String, req.USERS.NAME);
+                        Db.AddInParameter(cmd, "PASSWORD", DbType.String, req.USERS.PASSWORD);
+                        Db.AddInParameter(cmd, "EMAIL", DbType.String, req.USERS.EMAIL);
+                        Db.AddInParameter(cmd, "MODE", DbType.String, req.USERS.MODE);
+                        Db.AddInParameter(cmd, "MEMO", DbType.String, req.USERS.MEMO);
+                        Db.AddInParameter(cmd, "CUSER", DbType.String, req.USERS.CUSER);
+                        Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
+                        Db.AddOutParameter(cmd, "SN", DbType.Int32, 1);
 
-                effect = Db.ExecuteNonQuery(cmd);
-                req.USERS.SN = Db.GetParameterValue(cmd, "SN") as Int32? ?? null;
+                        effect = Db.ExecuteNonQuery(cmd);
+                        req.USERS.SN = Db.GetParameterValue(cmd, "SN") as Int32? ?? null;
+                    }
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        string sql = @"
+  INSERT GRANTS (ROLES_SN,USERS_SN,CDATE,CUSER,MDATE,MUSER)
+	VALUES (@ROLES_SN,@USERS_SN,GETDATE(),@CUSER,GETDATE(),@MUSER);
+        ";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        Db.AddInParameter(cmd, "ROLES_SN", DbType.Int32, req.GRANTS.ROLES_SN);
+                        Db.AddInParameter(cmd, "USERS_SN", DbType.String, req.USERS.SN);
+                        Db.AddInParameter(cmd, "CUSER", DbType.String, req.USERS.CUSER);
+                        Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
+
+                        effect = Db.ExecuteNonQuery(cmd);
+                    }
+
+                    trans.Commit();
+                    return true;
+                    
+                }
+                catch
+                {
+                    trans.Rollback();
+                }
             }
-            return effect;
+            return false;
         }
 
-        public int DataUpdate(UsersModifyReq req)
+        public bool DataUpdate(UsersModifyReq req)
         {
-            int count = 0;
-            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            int effect = 0;
+            using (DbConnection conn = Db.CreateConnection())
             {
-                string sql = @"
+                conn.Open();
+                DbTransaction trans = conn.BeginTransaction();
+                try
+                {
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        string sql = @"
 UPDATE USERS
     SET ID=@ID,NAME=@NAME,EMAIL=@EMAIL,MODE=@MODE,MEMO=@MEMO,MDATE=GETDATE(),MUSER=@MUSER
         {0}
     WHERE SN=@SN;
 ";
-                string password = "";
-                if (!string.IsNullOrEmpty(req.USERS.PASSWORD))
-                {
-                    password = ",PASSWORD=@PASSWORD";
+                        string password = "";
+                        if (!string.IsNullOrEmpty(req.USERS.PASSWORD))
+                        {
+                            password = ",PASSWORD=@PASSWORD";
 
-                    Db.AddInParameter(cmd, "PASSWORD", DbType.String, req.USERS.PASSWORD);
+                            Db.AddInParameter(cmd, "PASSWORD", DbType.String, req.USERS.PASSWORD);
+                        }
+                        sql = string.Format(sql, password);
+
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        Db.AddInParameter(cmd, "SN", DbType.String, req.USERS.SN);
+                        Db.AddInParameter(cmd, "ID", DbType.String, req.USERS.ID);
+                        Db.AddInParameter(cmd, "NAME", DbType.String, req.USERS.NAME);
+
+                        Db.AddInParameter(cmd, "EMAIL", DbType.String, req.USERS.EMAIL);
+                        Db.AddInParameter(cmd, "MODE", DbType.String, req.USERS.MODE);
+                        Db.AddInParameter(cmd, "MEMO", DbType.String, req.USERS.MEMO);
+                        Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
+                        effect = Db.ExecuteNonQuery(cmd);
+                    }
+
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        string sql = @"
+  UPDATE GRANTS 
+    SET ROLES_SN=@ROLES_SN,MDATE=GETDATE(),MUSER=@MUSER
+    WHERE USERS_SN=@USERS_SN
+        ";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        Db.AddInParameter(cmd, "ROLES_SN", DbType.Int32, req.GRANTS.ROLES_SN);
+                        Db.AddInParameter(cmd, "USERS_SN", DbType.String, req.USERS.SN);
+                        Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
+
+                        effect = Db.ExecuteNonQuery(cmd);
+                    }
+
+                    trans.Commit();
+                    return true;
+
                 }
-                sql = string.Format(sql, password);
-
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
-
-                Db.AddInParameter(cmd, "SN", DbType.String, req.USERS.SN);
-                Db.AddInParameter(cmd, "ID", DbType.String, req.USERS.ID);
-                Db.AddInParameter(cmd, "NAME", DbType.String, req.USERS.NAME);
-
-                Db.AddInParameter(cmd, "EMAIL", DbType.String, req.USERS.EMAIL);
-                Db.AddInParameter(cmd, "MODE", DbType.String, req.USERS.MODE);
-                Db.AddInParameter(cmd, "MEMO", DbType.String, req.USERS.MEMO);
-                Db.AddInParameter(cmd, "MUSER", DbType.String, req.USERS.MUSER);
-                count = Db.ExecuteNonQuery(cmd);
+                catch
+                {
+                    trans.Rollback();
+                }
             }
-            return count;
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+    
+            }
+            return false;
         }
 
         public int DataDelete(UsersModifyReq req)

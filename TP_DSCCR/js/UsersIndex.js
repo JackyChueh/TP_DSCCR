@@ -230,7 +230,10 @@
                 PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
                 EMAIL: section_modify.find('input[name=EMAIL]').val(),
                 MODE: section_modify.find('select[name=MODE]').val(),
-                MEMO: section_modify.find('select[name=MEMO]').val()
+                MEMO: section_modify.find('textarea[name=MEMO]').val()
+            },
+            GRANTS: {
+                ROLES_SN: section_modify.find('select[name=ROLES]').val()
             }
         };
 
@@ -270,7 +273,10 @@
                 PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
                 EMAIL: section_modify.find('input[name=EMAIL]').val(),
                 MODE: section_modify.find('select[name=MODE]').val(),
-                MEMO: section_modify.find('input[name=MEMO]').val()
+                MEMO: section_modify.find('textarea[name=MEMO]').val()
+            },
+            GRANTS: {
+                ROLES_SN: section_modify.find('select[name=ROLES]').val()
             }
         };
 
@@ -384,16 +390,18 @@
                 if (response.Result.State === 0) {
                     var section_modify = $('#section_modify');
                     section_modify.find('input[name=SN]').val(response.USERS.SN),
-                        section_modify.find('input[name=ID]').val(response.USERS.ID);
+                    section_modify.find('input[name=ID]').val(response.USERS.ID);
                     section_modify.find('input[name=NAME]').val(response.USERS.NAME);
                     section_modify.find('input[name=PASSWORD]').val(response.USERS.PASSWORD);
                     section_modify.find('input[name=EMAIL]').val(response.USERS.EMAIL);
                     section_modify.find('select[name=MODE]').val(response.USERS.MODE);
-                    section_modify.find('input[name=MEMO]').val(response.USERS.MEMO);
+                    section_modify.find('textarea[name=MEMO]').val(response.USERS.MEMO);
                     section_modify.find('input[name=CDATE]').val(response.USERS.CDATE.replace('T', ' '));
                     section_modify.find('input[name=CUSER]').val(response.USERS.CUSER);
                     section_modify.find('input[name=MDATE]').val(response.USERS.MDATE.replace('T', ' '));
                     section_modify.find('input[name=MUSER]').val(response.USERS.MUSER);
+                    section_modify.find('select[name=ROLES]').val(response.GRANTS.ROLES_SN);
+
                     UsersIndex.USERS = response.USERS;
                     UsersIndex.ActionSwitch('U');
                 }
@@ -421,7 +429,7 @@
             PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
             EMAIL: section_modify.find('input[name=EMAIL]').val(),
             MODE: section_modify.find('select[name=MODE]').val(),
-            MEMO: section_modify.find('input[name=MEMO]').val()
+            MEMO: section_modify.find('textarea[name=MEMO]').val()
         };
         if (!USERS.ID) {
             error += '帳號不可空白<br />';

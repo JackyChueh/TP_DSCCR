@@ -67,10 +67,9 @@ namespace TP_DSCCR.Controllers
                     UsersModifyReq req = new UsersModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    var USERS = new UsersImplement("TP_SCC").ModificationQuery(req);
-                    if (USERS != null)
+                    res = new UsersImplement("TP_SCC").ModificationQuery(req);
+                    if (res.USERS != null)
                     {
-                        res.USERS = USERS;
                         res.Result.State = ResultEnum.SUCCESS;
                     }
                     else
@@ -109,10 +108,11 @@ namespace TP_DSCCR.Controllers
                     req.USERS.CUSER = Session["ID"].ToString();
                     req.USERS.MUSER = Session["ID"].ToString();
 
-                    int effect = new UsersImplement("TP_SCC").DataCreate(req);
-                    if (effect > 0)
+                    bool success = new UsersImplement("TP_SCC").DataCreate(req);
+                    if (success)
                     {
                         res.USERS = req.USERS;
+                        res.GRANTS = req.GRANTS;
                         res.Result.State = ResultEnum.CREATE_SUCCESS;
                     }
                     else
@@ -150,10 +150,11 @@ namespace TP_DSCCR.Controllers
 
                     req.USERS.MUSER = Session["ID"].ToString();
 
-                    int effect = new UsersImplement("TP_SCC").DataUpdate(req);
-                    if (effect > 0)
+                    bool success = new UsersImplement("TP_SCC").DataUpdate(req);
+                    if (success)
                     {
                         res.USERS = req.USERS;
+                        res.GRANTS = req.GRANTS;
                         res.Result.State = ResultEnum.UPDATE_SUCCESS;
                     }
                     else

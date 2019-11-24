@@ -97,6 +97,13 @@
                     <label for="MODE">狀態</label>
                     <select class="form-control form-control-sm modify" id="MODE" name="MODE"></select>
                 </div>
+                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                    <label for="MODE">權限群組</label>
+                    <select class="form-control form-control-sm modify" id="ROLES" name="ROLES">
+                        <option value="2">使用者群組</option>
+                        <option value="1">系統管理者</option>
+                    </select>
+                </div>
                 <div class="w-100"></div>
                 <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
                     <label for="ID">帳號</label>
@@ -110,14 +117,15 @@
                     <label for="PASSWORD">密碼</label>
                     <input type="password" class="form-control form-control-sm modify" id="PASSWORD" name="PASSWORD">
                 </div>
-                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                <div class="form-group col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                     <label for="EMAIL">電子郵件</label>
                     <input type="text" class="form-control form-control-sm modify" id="EMAIL" name="EMAIL">
                 </div>
-                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                <div class="form-group col-12">
                     <label for="MEMO">備註</label>
-                    <input type="text" class="form-control form-control-sm modify" id="MEMO" name="MEMO">
+                    <textarea class="form-control form-control-sm modify" rows="2" id="MEMO" name="MEMO"></textarea>
                 </div>
+
                 <div class="w-100"></div>
                 <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
                     <label for="CDATE">建檔時間</label>
