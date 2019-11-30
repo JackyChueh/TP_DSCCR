@@ -17,7 +17,7 @@ namespace TP_DSCCR.ViewModels
         public decimal? Chiller06 { get; set; }
         public string Chiller07 { get; set; }
         public string Chiller08 { get; set; }
-        public decimal? Chiller09 { get; set; }
+        public string Chiller09 { get; set; }
         public decimal? Chiller10 { get; set; }
     }
     public class ChillerDataReq

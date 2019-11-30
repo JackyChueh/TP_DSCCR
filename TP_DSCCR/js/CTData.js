@@ -196,16 +196,20 @@
                             //htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             var css = '';
-                            if (row.CT01 === "Off") {
+                            if (row.CT01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.CT01 + '</td>';
                             css = '';
-                            if (row.CT02 === "停止") {
+                            if (row.CT02 === "發生") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.CT02 + '</td>';
-                            htmlRow += '<td>' + row.CT03 + '</td>';
+                            css = '';
+                            if (row.CT03 === "手動") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.CT03 + '</td>';
                             htmlRow += '<td>' + row.CT04 + '</td>';
                             //htmlRow += '<td>' + row.CT05 + '</td>';
                             htmlRow += '<td>' + row.CT06 + '</td>';

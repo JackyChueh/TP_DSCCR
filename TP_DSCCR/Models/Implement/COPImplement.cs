@@ -61,6 +61,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 4)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + ") AS COP" + i.ToString("00") + ",";
@@ -85,6 +89,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 4)
+                            {
+                                fields += "'-' AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(COP" + i.ToString("00") + ")) AS COP" + i.ToString("00") + ",";
@@ -106,6 +114,10 @@ SELECT {0} AS CDATE
                             else if (i == 3)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
+                            else if (i == 4)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -202,7 +214,7 @@ SELECT {0} AS CDATE
                                 COP01 = dt.Rows[i]["COP01"].ToString(),
                                 COP02 = dt.Rows[i]["COP02"].ToString(),
                                 COP03 = dt.Rows[i]["COP03"].ToString(),
-                                COP04 = dt.Rows[i]["COP04"] as decimal? ?? null,
+                                COP04 = dt.Rows[i]["COP04"].ToString(),
                                 COP05 = dt.Rows[i]["COP05"] as decimal? ?? null
                             };
                             res.COPData.Add(row);
@@ -250,6 +262,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 4)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + ") AS COP" + i.ToString("00") + ",";
@@ -274,6 +290,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS COP" + i.ToString("00") + ",";
                             }
+                            else if (i == 4)
+                            {
+                                fields += "'-' AS COP" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(COP" + i.ToString("00") + ")) AS COP" + i.ToString("00") + ",";
@@ -295,6 +315,10 @@ SELECT {0} AS CDATE
                             else if (i == 3)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
+                            }
+                            else if (i == 4)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),COP" + i.ToString("00") + "), default) AS COP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -379,7 +403,7 @@ SELECT {0} AS CDATE
                             COP01 = reader["COP01"].ToString(),
                             COP02 = reader["COP02"].ToString(),
                             COP03 = reader["COP03"].ToString(),
-                            COP04 = reader["COP04"] as decimal? ?? null,
+                            COP04 = reader["COP04"].ToString(),
                             COP05 = reader["COP05"] as decimal? ?? null
                         };
                         list.Add(row);
@@ -526,13 +550,13 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.COP03.ToString()),
+                            CellValue = new CellValue(data.COP03),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.COP04.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.COP04),
+                            DataType = CellValues.String
                         }
                         //new Cell()
                         //{

@@ -60,6 +60,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
                             else if (i == 10)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
@@ -87,6 +91,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
                             else if (i == 10)
                             {
                                 fields += "'-' AS ZP1" + i.ToString("00") + ",";
@@ -110,6 +118,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
                             else if (i == 10)
                             {
@@ -214,7 +226,7 @@ SELECT {0} AS CDATE
                                 ZP106 = dt.Rows[i]["ZP106"] as decimal? ?? null,
                                 ZP107 = dt.Rows[i]["ZP107"].ToString(),
                                 ZP108 = dt.Rows[i]["ZP108"].ToString(),
-                                ZP109 = dt.Rows[i]["ZP109"] as decimal? ?? null,
+                                ZP109 = dt.Rows[i]["ZP109"].ToString(),
                                 ZP110 = dt.Rows[i]["ZP110"].ToString(),
                                 ZP111 = dt.Rows[i]["ZP111"] as decimal? ?? null,
                             };
@@ -262,6 +274,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
                             else if (i == 10)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
@@ -289,6 +305,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS ZP1" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "'-' AS ZP1" + i.ToString("00") + ",";
+                            }
                             else if (i == 10)
                             {
                                 fields += "'-' AS ZP1" + i.ToString("00") + ",";
@@ -312,6 +332,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
+                            }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),ZP1" + i.ToString("00") + "), default) AS ZP1" + i.ToString("00") + ",";
                             }
                             else if (i == 10)
                             {
@@ -403,7 +427,7 @@ SELECT {0} AS CDATE
                             ZP106 = reader["ZP106"] as decimal? ?? null,
                             ZP107 = reader["ZP107"].ToString(),
                             ZP108 = reader["ZP108"].ToString(),
-                            ZP109 = reader["ZP109"] as decimal? ?? null,
+                            ZP109 = reader["ZP109"].ToString(),
                             ZP110 = reader["ZP110"].ToString(),
                             ZP111 = reader["ZP111"] as decimal? ?? null,
                         };
@@ -601,8 +625,8 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.ZP109.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.ZP109),
+                            DataType = CellValues.String
                         },
                         new Cell()
                         {

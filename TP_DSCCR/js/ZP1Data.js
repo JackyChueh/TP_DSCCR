@@ -201,18 +201,22 @@
                             htmlRow += '<td>' + row.ZP105 + '</td>';
                             htmlRow += '<td>' + row.ZP106 + '</td>';
                             var css = '';
-                            if (row.ZP107 === "Off") {
+                            if (row.ZP107 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.ZP107 + '</td>';
                             css = '';
-                            if (row.ZP108 === "停止") {
+                            if (row.ZP108 === "發生") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.ZP108 + '</td>';
-                            htmlRow += '<td>' + row.ZP109 + '</td>';
                             css = '';
-                            if (row.ZP110 === "關") {
+                            if (row.ZP109 === "手動") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.ZP109 + '</td>';
+                            css = '';
+                            if (row.ZP110 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.ZP110 + '</td>';

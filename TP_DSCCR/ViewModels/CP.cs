@@ -11,7 +11,7 @@ namespace TP_DSCCR.ViewModels
         public string DEVICE_ID { get; set; }
         public string CP01 { get; set; }
         public string CP02 { get; set; }
-        public decimal? CP03 { get; set; }
+        public string CP03 { get; set; }
         public string CP04 { get; set; }
         public decimal? CP05 { get; set; }
         public decimal? CP06 { get; set; }

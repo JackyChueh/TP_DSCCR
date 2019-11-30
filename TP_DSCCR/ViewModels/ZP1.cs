@@ -17,7 +17,7 @@ namespace TP_DSCCR.ViewModels
         public decimal? ZP106 { get; set; }
         public string ZP107 { get; set; }
         public string ZP108 { get; set; }
-        public decimal? ZP109 { get; set; }
+        public string ZP109 { get; set; }
         public string ZP110 { get; set; }
         public decimal? ZP111 { get; set; }
     }

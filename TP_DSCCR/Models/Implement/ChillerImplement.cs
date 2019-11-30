@@ -57,6 +57,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
@@ -77,6 +81,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS Chiller" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
@@ -93,6 +101,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -194,7 +206,7 @@ SELECT {0} AS CDATE
                                 Chiller06 = dt.Rows[i]["Chiller06"] as decimal? ?? null,
                                 Chiller07 = dt.Rows[i]["Chiller07"].ToString(),
                                 Chiller08 = dt.Rows[i]["Chiller08"].ToString(),
-                                Chiller09 = dt.Rows[i]["Chiller09"] as decimal? ?? null,
+                                Chiller09 = dt.Rows[i]["Chiller09"].ToString(),
                                 Chiller10 = dt.Rows[i]["Chiller10"] as decimal? ?? null,
                             };
                             res.ChillerData.Add(row);
@@ -238,6 +250,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + ") AS Chiller" + i.ToString("00") + ",";
@@ -258,11 +274,14 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS Chiller" + i.ToString("00") + ",";
                             }
+                            else if (i == 9)
+                            {
+                                fields += "'-' AS Chiller" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(Chiller" + i.ToString("00") + ")) AS Chiller" + i.ToString("00") + ",";
                             }
-
                         }
                         break;
                     default:
@@ -275,6 +294,10 @@ SELECT {0} AS CDATE
                             else if (i == 8)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
+                            }
+                            else if (i == 9)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),Chiller" + i.ToString("00") + "), default) AS Chiller" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -363,7 +386,7 @@ SELECT {0} AS CDATE
                             Chiller06 = reader["Chiller06"] as decimal? ?? null,
                             Chiller07 = reader["Chiller07"].ToString(),
                             Chiller08 = reader["Chiller08"].ToString(),
-                            Chiller09 = reader["Chiller09"] as decimal? ?? null,
+                            Chiller09 = reader["Chiller09"].ToString(),
                             Chiller10 = reader["Chiller10"] as decimal? ?? null,
                         };
                         list.Add(row);
@@ -565,8 +588,8 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.Chiller09.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.Chiller09),
+                            DataType = CellValues.String
                         },
                         new Cell()
                         {

@@ -57,6 +57,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + ") AS CT" + i.ToString("00") + ",";
@@ -77,6 +81,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS CT" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(CT" + i.ToString("00") + ")) AS CT" + i.ToString("00") + ",";
@@ -93,6 +101,10 @@ SELECT {0} AS CDATE
                             else if (i == 2)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
+                            }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -188,7 +200,7 @@ SELECT {0} AS CDATE
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
                                 CT01 = dt.Rows[i]["CT01"].ToString(),
                                 CT02 = dt.Rows[i]["CT02"].ToString(),
-                                CT03 = dt.Rows[i]["CT03"] as decimal? ?? null,
+                                CT03 = dt.Rows[i]["CT03"].ToString(),
                                 CT04 = dt.Rows[i]["CT04"] as decimal? ?? null,
                                 CT05 = dt.Rows[i]["CT05"] as decimal? ?? null,
                                 CT06 = dt.Rows[i]["CT06"] as decimal? ?? null,
@@ -235,6 +247,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + ") AS CT" + i.ToString("00") + ",";
@@ -255,11 +271,14 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS CT" + i.ToString("00") + ",";
                             }
+                            else if (i == 3)
+                            {
+                                fields += "'-' AS CT" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(CT" + i.ToString("00") + ")) AS CT" + i.ToString("00") + ",";
                             }
-
                         }
                         break;
                     default:
@@ -272,6 +291,10 @@ SELECT {0} AS CDATE
                             else if (i == 2)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
+                            }
+                            else if (i == 3)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CT" + i.ToString("00") + "), default) AS CT" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -354,7 +377,7 @@ SELECT {0} AS CDATE
                             DEVICE_ID = reader["DEVICE_ID"] as string,
                             CT01 = reader["CT01"].ToString(),
                             CT02 = reader["CT02"].ToString(),
-                            CT03 = reader["CT03"] as decimal? ?? null,
+                            CT03 = reader["CT03"].ToString(),
                             CT04 = reader["CT04"] as decimal? ?? null,
                             CT05 = reader["CT05"] as decimal? ?? null,
                             CT06 = reader["CT06"] as decimal? ?? null,
@@ -504,18 +527,18 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.CT01.ToString()),
+                            CellValue = new CellValue(data.CT01),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.CT02.ToString()),
+                            CellValue = new CellValue(data.CT02),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.CT03.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.CT03),
+                            DataType = CellValues.String
                         },
                         new Cell()
                         {

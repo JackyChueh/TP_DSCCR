@@ -10,7 +10,7 @@ namespace TP_DSCCR.ViewModels
         public string LOCATION { get; set; }
         public string DEVICE_ID { get; set; }
         public string AHU01 { get; set; }
-        public decimal? AHU02 { get; set; }
+        public string AHU02 { get; set; }
         public decimal? AHU03 { get; set; }
         public decimal? AHU04 { get; set; }
         public decimal? AHU05 { get; set; }

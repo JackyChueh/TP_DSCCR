@@ -202,16 +202,20 @@
                             htmlRow += '<td>' + row.Chiller05 + '</td>';
                             htmlRow += '<td>' + row.Chiller06 + '</td>';
                             var css = '';
-                            if (row.Chiller07 === "Off") {
+                            if (row.Chiller07 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.Chiller07 + '</td>';
                             css = '';
-                            if (row.Chiller08 === "停止") {
+                            if (row.Chiller08 === "發生") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.Chiller08 + '</td>';
-                            htmlRow += '<td>' + row.Chiller09 + '</td>';
+                            css = '';
+                            if (row.Chiller09 === "手動") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.Chiller09 + '</td>';
                             htmlRow += '<td>' + row.Chiller10 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);

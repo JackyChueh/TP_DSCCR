@@ -53,6 +53,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
+                            else if (i == 2)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
@@ -69,6 +73,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS AHU" + i.ToString("00") + ",";
                             }
+                            else if (i == 2)
+                            {
+                                fields += "'-' AS AHU" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
@@ -82,6 +90,10 @@ SELECT {0} AS CDATE
                             if (i == 1)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else if (i == 2)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -176,7 +188,7 @@ SELECT {0} AS CDATE
                                 LOCATION = dt.Rows[i]["LOCATION"] as string,
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
                                 AHU01 = dt.Rows[i]["AHU01"].ToString(),
-                                AHU02 = dt.Rows[i]["AHU02"] as decimal? ?? null,
+                                AHU02 = dt.Rows[i]["AHU02"].ToString(),
                                 AHU03 = dt.Rows[i]["AHU03"] as decimal? ?? null,
                                 AHU04 = dt.Rows[i]["AHU04"] as decimal? ?? null,
                                 AHU05 = dt.Rows[i]["AHU05"] as decimal? ?? null,
@@ -224,6 +236,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
+                            else if (i == 2)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + ") AS AHU" + i.ToString("00") + ",";
@@ -240,6 +256,10 @@ SELECT {0} AS CDATE
                             {
                                 fields += "'-' AS AHU" + i.ToString("00") + ",";
                             }
+                            else if (i == 2)
+                            {
+                                fields += "'-' AS AHU" + i.ToString("00") + ",";
+                            }
                             else
                             {
                                 fields += "CONVERT(DECIMAL(28,1),AVG(AHU" + i.ToString("00") + ")) AS AHU" + i.ToString("00") + ",";
@@ -253,6 +273,10 @@ SELECT {0} AS CDATE
                             if (i == 1)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                            }
+                            else if (i == 2)
+                            {
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -335,7 +359,7 @@ SELECT {0} AS CDATE
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
                             AHU01 = reader["AHU01"].ToString(),
-                            AHU02 = reader["AHU02"] as decimal? ?? null,
+                            AHU02 = reader["AHU02"].ToString(),
                             AHU03 = reader["AHU03"] as decimal? ?? null,
                             AHU04 = reader["AHU04"] as decimal? ?? null,
                             AHU05 = reader["AHU05"] as decimal? ?? null,
@@ -515,8 +539,8 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.AHU02.ToString()),
-                            DataType = CellValues.Number
+                            CellValue = new CellValue(data.AHU02),
+                            DataType = CellValues.String
                         },
                         new Cell()
                         {

@@ -50,7 +50,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 8; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -69,7 +69,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 8; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -201,7 +201,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 8; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;
@@ -220,7 +220,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 8; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PVOI01), default) AS RRS" + i.ToString("00") + "_PVOI01,";
                             }
                         }
                         break;

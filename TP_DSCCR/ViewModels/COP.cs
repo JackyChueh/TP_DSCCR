@@ -12,7 +12,7 @@ namespace TP_DSCCR.ViewModels
         public string COP01 { get; set; }
         public string COP02 { get; set; }
         public string COP03 { get; set; }
-        public decimal? COP04 { get; set; }
+        public string COP04 { get; set; }
         public decimal? COP05 { get; set; }
     }
     public class COPDataReq

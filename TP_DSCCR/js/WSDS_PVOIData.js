@@ -193,7 +193,7 @@
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             var css = '';
-                            if (row.WSDS_PVOI_STATUS === "發生") {
+                            if (row.WSDS_PVOI_STATUS === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.WSDS_PVOI_STATUS + '</td>';

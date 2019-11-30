@@ -196,21 +196,25 @@
                             //htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             var css = '';
-                            if (row.COP01 === "Off") {
+                            if (row.COP01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.COP01 + '</td>';
                             css = '';
-                            if (row.COP02 === "停止") {
+                            if (row.COP02 === "發生") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.COP02 + '</td>';
                             css = '';
-                            if (row.COP03 === "關") {
+                            if (row.COP03 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.COP03 + '</td>';
-                            htmlRow += '<td>' + row.COP04 + '</td>';
+                            css = '';
+                            if (row.COP04 === "手動") {
+                                css = ' class="text-danger"';
+                            }
+                            htmlRow += '<td' + css + '>' + row.COP04 + '</td>';
                             //htmlRow += '<td>' + row.COP05 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);

@@ -193,37 +193,37 @@
                             //htmlRow += '<td>' + row.LOCATION + '</td>';
                             //htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             var css = '';
-                            if (row.RRS01_PVOI01 === "Off") {
+                            if (row.RRS01_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS01_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS02_PVOI01 === "Off") {
+                            if (row.RRS02_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS02_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS03_PVOI01 === "Off") {
+                            if (row.RRS03_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS03_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS04_PVOI01 === "Off") {
+                            if (row.RRS04_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS04_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS05_PVOI01 === "Off") {
+                            if (row.RRS05_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS05_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS06_PVOI01 === "Off") {
+                            if (row.RRS06_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS06_PVOI01 + '</td>';
                             css = '';
-                            if (row.RRS07_PVOI01 === "Off") {
+                            if (row.RRS07_PVOI01 === "停止") {
                                 css = ' class="text-danger"';
                             }
                             htmlRow += '<td' + css + '>' + row.RRS07_PVOI01 + '</td>';
