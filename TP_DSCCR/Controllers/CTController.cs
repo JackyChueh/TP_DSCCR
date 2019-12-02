@@ -87,7 +87,7 @@ namespace TP_DSCCR.Controllers
                         MemoryStream.Dispose();
 
                         res.DataId = DataId;
-                        res.FileName = "水塔.xlsx";
+                        res.FileName = "冷卻水塔.xlsx";
                         res.Result.State = ResultEnum.SUCCESS;
                     }
                     else

@@ -18,6 +18,10 @@ namespace TP_DSCCR.Models.Implement
 
         public AHUDataRes PaginationRetrieve(AHUDataReq req)
         {
+            //AHU空調箱, 故障跳脫, 主樓與副樓(S03F,SB1F), 定義相反
+            //主樓: 發生 1 復歸 0
+            //副樓: 復歸 1 發生 0
+
             AHUDataRes res = new AHUDataRes()
             {
                 AHUData = new List<AHUData>(),
@@ -51,7 +55,7 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
@@ -89,7 +93,7 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
@@ -234,7 +238,7 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
@@ -272,7 +276,7 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
