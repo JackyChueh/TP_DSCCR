@@ -1,7 +1,7 @@
-﻿var UsersIndex = {
+﻿var ALERT_CONFIGIndex = {
     Action: null,
-    USERS: null,
-    GRANTS: null,
+    ALERT_CONFIG: null,
+    ConfirmAction: null,
 
     Page_Init: function () {
         this.EventBinding();
@@ -10,76 +10,86 @@
     },
 
     EventBinding: function () {
+
         $('#query').click(function () {
-            UsersIndex.UsersRetrieve('R');
+            ALERT_CONFIGIndex.ALERT_CONFIGRetrieve('R');
         });
 
         $('#page_number, #page_size').change(function () {
-            UsersIndex.UsersRetrieve('R');
+            ALERT_CONFIGIndex.ALERT_CONFIGRetrieve('R');
         });
 
         $('#create').click(function () {
-            UsersIndex.ActionSwitch('C');
+            ALERT_CONFIGIndex.ActionSwitch('C');
         });
 
         $('#save').click(function () {
-            if (UsersIndex.DataValidate()) {
-                if (UsersIndex.Action === 'C') {
-                    UsersIndex.UsersCreate();
-                } else if (UsersIndex.Action === 'U') {
-                    UsersIndex.UsersUpdate();
+            if (ALERT_CONFIGIndex.DataValidate()) {
+                if (ALERT_CONFIGIndex.Action === 'C') {
+                    ALERT_CONFIGIndex.ALERT_CONFIGCreate();
+                } else if (ALERT_CONFIGIndex.Action === 'U') {
+                    ALERT_CONFIGIndex.ALERT_CONFIGUpdate();
                 }
             }
         });
 
         $('#undo').click(function () {
-            UsersIndex.ValueRecover(UsersIndex.Action);
+            ALERT_CONFIGIndex.ValueRecover(ALERT_CONFIGIndex.Action);
         });
 
         $('#delete').click(function () {
-            console.log("delete");
             $('#modal_action .modal-title').text('提示訊息');
             $('#modal_action .modal-body').html('<p>確定要刪除該筆資料?</p>');
             //$('#confirm').attr('data-action', 'delete');
-            UsersIndex.ConfirmAction = 'delete';
-            $('#modal_action #confirm').show();
-            $('#modal_action').modal('show');
-        });
-
-        $('#reset').click(function () {
-            $('#modal_action .modal-title').text('提示訊息');
-            $('#modal_action .modal-body').html('<p>確定要重置密碼?</p>');
-            //$('#confirm').attr('data-action', 'reset');
-            UsersIndex.ConfirmAction = 'reset';
+            ALERT_CONFIGIndex.ConfirmAction = 'delete';
             $('#modal_action #confirm').show();
             $('#modal_action').modal('show');
         });
 
         $('#return').click(function () {
-            UsersIndex.ActionSwitch('R');
-            UsersIndex.ValueRecover();
-            UsersIndex.UsersRetrieve();
+            ALERT_CONFIGIndex.ActionSwitch('R');
+            ALERT_CONFIGIndex.ValueRecover();
+            ALERT_CONFIGIndex.ALERT_CONFIGRetrieve();
         });
 
         $('#modal_action #confirm').click(function () {
             $('#confirm').hide();
             $('#modal_action').modal('hide');
-            console.log(UsersIndex.ConfirmAction);
-            if (UsersIndex.ConfirmAction === 'delete') {
-                UsersIndex.UsersDelete();
-            } if (UsersIndex.ConfirmAction === 'reset') {
-                UsersIndex.UsersReset();
+            console.log(ALERT_CONFIGIndex.ConfirmAction);
+            if (ALERT_CONFIGIndex.ConfirmAction === 'delete') {
+                ALERT_CONFIGIndex.ALERT_CONFIGDelete();
             }
         });
 
-        $('#section_modify #ID').keyup(function () {
-            $("#section_modify #ID").val($("#section_modify #ID").val().toUpperCase());
-        });
+        //$('#section_modify #ID').keyup(function () {
+        //    $("#section_modify #ID").val($("#section_modify #ID").val().toUpperCase());
+        //});
 
-        $('#section_modify #PASSWORD').keyup(function () {
-            $("#section_modify #PASSWORD").val($("#section_modify #PASSWORD").val().toUpperCase());
-        });
+        //$('#section_modify #PASSWORD').keyup(function () {
+        //    $("#section_modify #PASSWORD").val($("#section_modify #PASSWORD").val().toUpperCase());
+        //});
 
+        $('#HR_DATE').datetimepicker({ timepicker: false, format: 'Y-m-d' });
+
+        var section_retrieve = $('#section_retrieve');
+        var today = new Date();
+        section_retrieve.find('input[name=HR_DATE_START]').datetimepicker({ timepicker: false, format: 'Y-m-d', value: new Date(today.getFullYear(),0,1) });
+        section_retrieve.find('input[name=HR_DATE_END]').datetimepicker({ timepicker: false, format: 'Y-m-d', value: new Date(today.getFullYear(), 11, 31) });
+
+        $('#SUN_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#SUN_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#MON_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#MON_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#TUE_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#TUE_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#WED_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#WED_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#THU_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#THU_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#FRI_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#FRI_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#STA_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+        $('#STA_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
     },
 
     ActionSwitch: function (Action) {
@@ -94,14 +104,11 @@
             $('#delete').show();
             $('#return').show();
             $('#undo').show();
-            $('#reset').show();
-            //$('#section_modify #ID').prop('disabled', true);
             $('#section_modify').show();
         } else if (Action === 'C') {
             $('#save').show();
             $('#return').show();
             $('#undo').show();
-            //$('#section_modify #ID').prop('disabled', false);
             $('#section_modify').show();
         }
         this.Action = Action;
@@ -111,7 +118,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'mode']
+            PhraseGroup: ['page_size', 'DATE_TYPE']
         };
 
         $.ajax({
@@ -127,12 +134,13 @@
                     $.each(response.ItemList.page_size, function (idx, row) {
                         $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#page_size option[value="30"]').attr("selected", true);
 
                     //var section_retrieve = $('#section_retrieve');
-                    //section_retrieve.find("select[name='MODE']").append('<option value=""></option>');
-                    $("select[name='MODE']").append('<option value=""></option>');
-                    $.each(response.ItemList.mode, function (idx, row) {
-                        $("select[name='MODE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    //section_retrieve.find("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    $("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    $.each(response.ItemList.DATE_TYPE, function (idx, row) {
+                        $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
                 }
@@ -150,16 +158,15 @@
         });
     },
 
-    UsersRetrieve: function () {
-        var url = 'UsersRetrieve';
+    ALERT_CONFIGRetrieve: function () {
+        var url = 'ALERT_CONFIGRetrieve';
         var section_retrieve = $('#section_retrieve');
         var request = {
-            USERS: {
-                //SN: section_retrieve.find('input[name=SN]').val(),
-                ID: section_retrieve.find('input[name=ID]').val(),
-                NAME: section_retrieve.find('input[name=NAME]').val(),
-                MODE: section_retrieve.find('select[name=MODE]').val()
+            ALERT_CONFIG: {
+                DATE_TYPE: section_retrieve.find('select[name=DATE_TYPE]').val()
             },
+            HR_DATE_START: section_retrieve.find('input[name=HR_DATE_START]').val(),
+            HR_DATE_END: section_retrieve.find('input[name=HR_DATE_END]').val(),
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
             PageSize: $('#page_size').val() ? $('#page_size').val() : 1
         };
@@ -185,17 +192,12 @@
 
                     var htmlRow = '';
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.USERS, function (idx, row) {
+                        $.each(response.ALERT_CONFIG, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="UsersIndex.UsersQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
-                            //htmlRow += '<td>' + row.SN + '</td>';
-                            htmlRow += '<td>' + row.ID + '</td>';
-                            htmlRow += '<td>' + row.NAME + '</td>';
-                            htmlRow += '<td>' + (row.EMAIL ? row.EMAIL : '') + '</td>';
-                            htmlRow += '<td>' + row.MODE + '</td>';
+                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_CONFIGIndex.ALERT_CONFIGQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+                            htmlRow += '<td>' + row.HR_DATE.substr(0, 10) + '</td>';
+                            htmlRow += '<td>' + row.DATE_TYPE + '</td>';
                             htmlRow += '<td>' + (row.MEMO ? row.MEMO : '') + '</td>';
-                            //htmlRow += '<td>' + row.CDATE.replace('T', ' ') + '</td>';
-                            //htmlRow += '<td>' + row.CUSER + '</td>';
                             htmlRow += '<td>' + row.MDATE.replace('T', ' ') + '</td>';
                             htmlRow += '<td>' + row.MUSER + '</td>';
                             htmlRow += '</tr>';
@@ -223,20 +225,14 @@
         });
     },
 
-    UsersCreate: function () {
-        var url = 'UsersCreate';
+    ALERT_CONFIGCreate: function () {
+        var url = 'ALERT_CONFIGCreate';
         var section_modify = $('#section_modify');
         var request = {
-            USERS: {
-                ID: section_modify.find('input[name=ID]').val(),
-                NAME: section_modify.find('input[name=NAME]').val(),
-                PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
-                EMAIL: section_modify.find('input[name=EMAIL]').val(),
-                MODE: section_modify.find('select[name=MODE]').val(),
+            ALERT_CONFIG: {
+                HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+                DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
                 MEMO: section_modify.find('textarea[name=MEMO]').val()
-            },
-            GRANTS: {
-                ROLES_SN: section_modify.find('select[name=ROLES_SN]').val()
             }
         };
 
@@ -248,11 +244,14 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 1) {
-                    UsersIndex.UsersQuery(response.USERS.SN);
-                    UsersIndex.ActionSwitch('U');
+                    ALERT_CONFIGIndex.ALERT_CONFIGQuery(response.ALERT_CONFIG.SN);
+                    ALERT_CONFIGIndex.ActionSwitch('U');
+                } else if (response.Result.State === -10) {
+                    response.Result.Msg = '日期' + request.ALERT_CONFIG.HR_DATE + '已存在，不可重複設定。';
                 }
+
                 $('#modal .modal-title').text('交易訊息');
-                $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
                 $('#modal').modal('show');
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -265,22 +264,16 @@
         });
     },
 
-    UsersUpdate: function () {
-        var url = 'UsersUpdate';
+    ALERT_CONFIGUpdate: function () {
+        var url = 'ALERT_CONFIGUpdate';
         var section_modify = $('#section_modify');
         var request = {
-            USERS: {
+            ALERT_CONFIG: {
                 SN: section_modify.find('input[name=SN]').val(),
-                ID: section_modify.find('input[name=ID]').val(),
-                NAME: section_modify.find('input[name=NAME]').val(),
-                PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
-                EMAIL: section_modify.find('input[name=EMAIL]').val(),
-                MODE: section_modify.find('select[name=MODE]').val(),
+                HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+                DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
                 MEMO: section_modify.find('textarea[name=MEMO]').val()
-            },
-            GRANTS: {
-                ROLES_SN: section_modify.find('select[name=ROLES_SN]').val()
-            }
+            }         
         };
 
         $.ajax({
@@ -291,7 +284,9 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 2) {
-                    UsersIndex.UsersQuery(response.USERS.SN);
+                    ALERT_CONFIGIndex.ALERT_CONFIGQuery(response.ALERT_CONFIG.SN);
+                } else if (response.Result.State === -10) {
+                    response.Result.Msg = '日期' + request.ALERT_CONFIG.HR_DATE + '已存在，不可重複設定。';
                 }
                 $('#modal .modal-title').text('交易訊息');
                 $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
@@ -307,11 +302,11 @@
         });
     },
 
-    UsersDelete: function () {
-        var url = 'UsersDelete';
+    ALERT_CONFIGDelete: function () {
+        var url = 'ALERT_CONFIGDelete';
         var section_modify = $('#section_modify');
         var request = {
-            USERS: {
+            ALERT_CONFIG: {
                 SN: section_modify.find('input[name=SN]').val()
             }
         };
@@ -324,9 +319,9 @@
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.Result.State === 3) {
-                    UsersIndex.UsersRetrieve();
-                    UsersIndex.ActionSwitch('R');
-                    //UsersIndex.ValueRecover();
+                    ALERT_CONFIGIndex.ALERT_CONFIGRetrieve();
+                    ALERT_CONFIGIndex.ActionSwitch('R');
+                    //ALERT_CONFIGIndex.ValueRecover();
                 }
                 $('#modal .modal-title').text('交易訊息');
                 $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
@@ -342,43 +337,10 @@
         });
     },
 
-    UsersReset: function () {
-        var url = 'UsersReset';
+    ALERT_CONFIGQuery: function (SN) {
+        var url = 'ALERT_CONFIGQuery';
         var request = {
-            USERS: {
-                SN: $('#section_modify #SN').val(),
-                ID: $('#section_modify #ID').val()
-            }
-        };
-
-        $.ajax({
-            type: 'post',
-            url: url,
-            contentType: 'application/json',
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                if (response.Result.State === 5) {
-                    UsersIndex.UsersQuery(response.USERS.SN);
-                }
-                $('#modal .modal-title').text('交易訊息');
-                $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
-                $('#modal').modal('show');
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
-    },
-
-    UsersQuery: function (SN) {
-        var url = 'UsersQuery';
-        var request = {
-            USERS: {
+            ALERT_CONFIG: {
                 SN: SN
             }
         };
@@ -392,22 +354,17 @@
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
                     var section_modify = $('#section_modify');
-                    section_modify.find('input[name=SN]').val(response.USERS.SN);
-                    section_modify.find('input[name=ID]').val(response.USERS.ID);
-                    section_modify.find('input[name=NAME]').val(response.USERS.NAME);
-                    section_modify.find('input[name=PASSWORD]').val(response.USERS.PASSWORD);
-                    section_modify.find('input[name=EMAIL]').val(response.USERS.EMAIL);
-                    section_modify.find('select[name=MODE]').val(response.USERS.MODE);
-                    section_modify.find('textarea[name=MEMO]').val(response.USERS.MEMO);
-                    section_modify.find('input[name=CDATE]').val(response.USERS.CDATE.replace('T', ' '));
-                    section_modify.find('input[name=CUSER]').val(response.USERS.CUSER);
-                    section_modify.find('input[name=MDATE]').val(response.USERS.MDATE.replace('T', ' '));
-                    section_modify.find('input[name=MUSER]').val(response.USERS.MUSER);
-                    section_modify.find('select[name=ROLES_SN]').val(response.GRANTS.ROLES_SN);
+                    section_modify.find('input[name=SN]').val(response.ALERT_CONFIG.SN);
+                    section_modify.find('input[name=HR_DATE]').val(response.ALERT_CONFIG.HR_DATE.substr(0, 10));
+                    section_modify.find('select[name=DATE_TYPE]').val(response.ALERT_CONFIG.DATE_TYPE);
+                    section_modify.find('textarea[name=MEMO]').val(response.ALERT_CONFIG.MEMO);
+                    section_modify.find('input[name=CDATE]').val(response.ALERT_CONFIG.CDATE.replace('T', ' '));
+                    section_modify.find('input[name=CUSER]').val(response.ALERT_CONFIG.CUSER);
+                    section_modify.find('input[name=MDATE]').val(response.ALERT_CONFIG.MDATE.replace('T', ' '));
+                    section_modify.find('input[name=MUSER]').val(response.ALERT_CONFIG.MUSER);
 
-                    UsersIndex.USERS = response.USERS;
-                    UsersIndex.GRANTS = response.GRANTS;
-                    UsersIndex.ActionSwitch('U');
+                    ALERT_CONFIGIndex.ALERT_CONFIG = response.ALERT_CONFIG;
+                    ALERT_CONFIGIndex.ActionSwitch('U');
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -424,41 +381,22 @@
     },
 
     DataValidate: function () {
-
         var error = '';
         var section_modify = $('#section_modify');
-        var request = {
-            USERS: {
-                SN: section_modify.find('input[name=SN]').val(),
-                ID: section_modify.find('input[name=ID]').val(),
-                NAME: section_modify.find('input[name=NAME]').val(),
-                PASSWORD: section_modify.find('input[name=PASSWORD]').val(),
-                EMAIL: section_modify.find('input[name=EMAIL]').val(),
-                MODE: section_modify.find('select[name=MODE]').val(),
-                MEMO: section_modify.find('textarea[name=MEMO]').val()
-            },
-            GRANTS: {
-                ROLES_SN: section_modify.find('select[name=ROLES_SN]').val()
-            }
+
+        var ALERT_CONFIG = {
+            HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+            DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
+            MEMO: section_modify.find('textarea[name=MEMO]').val()
         };
 
-        if (!request.USERS.MODE) {
-            error += '狀態不可空白<br />';
+        if (!ALERT_CONFIG.HR_DATE) {
+            error += '日期不可空白<br />';
         }
-        if (!request.GRANTS.ROLES_SN) {
-            error += '權限群組不可空白<br />';
+        if (!ALERT_CONFIG.DATE_TYPE) {
+            error += '類別不可空白<br />';
         }
-        if (!request.USERS.ID) {
-            error += '帳號不可空白<br />';
-        }
-        if (!request.USERS.NAME) {
-            error += '姓名不可空白<br />';
-        }
-        if (UsersIndex.Action === 'C') {
-            if (!request.USERS.PASSWORD) {
-                error += '密碼不可空白<br />';
-            }
-        }
+       
         if (error.length > 0) {
             $('#modal .modal-title').text('提示訊息');
             $('#modal .modal-body').html('<p>' + error + '</p>');
@@ -469,18 +407,14 @@
 
     ValueRecover: function (action) {
         if (action === 'U') {
-            if (UsersIndex.USERS) {
+            if (ALERT_CONFIGIndex.ALERT_CONFIG) {
                 $('.modify').each(function (index, value) {
                     if (value.id === 'CDATE' || value.id === 'MDATE') {
-                        $(value).val(UsersIndex.USERS[value.id].replace('T', ' '));
-                    }
-                    else if (value.id === 'ROLES_SN') {
-                        $(value).val(UsersIndex.GRANTS[value.id]);
+                        $(value).val(ALERT_CONFIGIndex.ALERT_CONFIG[value.id].replace('T', ' '));
                     }
                     else {
-                        $(value).val(UsersIndex.USERS[value.id]);
+                        $(value).val(ALERT_CONFIGIndex.ALERT_CONFIG[value.id]);
                     }
-
                 });
             }
         }

@@ -141,7 +141,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AHUController.cs" />
-    <Compile Include="Controllers\AlertController.cs" />
+    <Compile Include="Controllers\ALERT_CONFIGController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HR_CALENDARController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -249,6 +249,7 @@
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
     <Content Include="img\TaiwanPower3.png" />
+    <Content Include="js\ALERT_CONFIGIndex.js" />
     <Content Include="js\HR_CALENDARIndex.js" />
     <Content Include="js\UsersIndex.js" />
     <Content Include="js\WSDS_PVOIData.js" />
@@ -391,6 +392,7 @@
     <Content Include="Views\WSDS_PVOI\Data.cshtml" />
     <Content Include="Views\Users\UsersIndex.cshtml" />
     <Content Include="Views\HR_CALENDAR\HR_CALENDARIndex.cshtml" />
+    <Content Include="Views\ALERT_CONFIG\ALERT_CONFIGIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

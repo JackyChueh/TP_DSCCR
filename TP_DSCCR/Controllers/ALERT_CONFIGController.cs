@@ -6,10 +6,10 @@ using System.Web.Mvc;
 
 namespace TP_DSCCR.Controllers
 {
-    public class AlertController : Controller
+    public class ALERT_CONFIGController : Controller
     {
-        // GET: Alert
-        public ActionResult Index()
+        // GET: ALERT_CONFIG
+        public ActionResult ALERT_CONFIGIndex()
         {
             return View();
         }
