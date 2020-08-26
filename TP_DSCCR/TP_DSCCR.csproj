@@ -143,6 +143,7 @@
     <Compile Include="Controllers\AHUController.cs" />
     <Compile Include="Controllers\AlertController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HR_CALENDARController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WSDS_PVOIController.cs" />
     <Compile Include="Controllers\WSDS_PWLSController.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
     <Compile Include="Models\Entity\GRANTS.cs" />
+    <Compile Include="Models\Entity\HR_CALENDAR.cs" />
     <Compile Include="Models\Entity\RRS_PVOI.cs" />
     <Compile Include="Models\Entity\RRS_PWLS.cs" />
     <Compile Include="Models\Entity\RRS_VFLH.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
+    <Compile Include="Models\Implement\HR_CALENDARImplement.cs" />
     <Compile Include="Models\Implement\UsersImplement.cs" />
     <Compile Include="Models\Implement\WSDS_PVOIImplement.cs" />
     <Compile Include="Models\Implement\WSDS_PWLSImplement.cs" />
@@ -197,6 +200,7 @@
     <Compile Include="ViewModels\AHU.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
+    <Compile Include="ViewModels\HR_CALENDAR.cs" />
     <Compile Include="ViewModels\USERS.cs" />
     <Compile Include="ViewModels\WSDS_PVOI.cs" />
     <Compile Include="ViewModels\WSDS_PWLS.cs" />
@@ -244,6 +248,8 @@
     <Content Include="img\Spinner168px.svg" />
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
+    <Content Include="img\TaiwanPower3.png" />
+    <Content Include="js\HR_CALENDARIndex.js" />
     <Content Include="js\UsersIndex.js" />
     <Content Include="js\WSDS_PVOIData.js" />
     <Content Include="js\WSDS_PWLSData.js" />
@@ -384,6 +390,7 @@
     <Content Include="Views\WSDS_PWLS\Data.cshtml" />
     <Content Include="Views\WSDS_PVOI\Data.cshtml" />
     <Content Include="Views\Users\UsersIndex.cshtml" />
+    <Content Include="Views\HR_CALENDAR\HR_CALENDARIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

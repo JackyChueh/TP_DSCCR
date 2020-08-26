@@ -203,17 +203,15 @@ INSERT USERS (SN,ID,NAME,PASSWORD,EMAIL,MODE,MEMO,CDATE,CUSER,MDATE,MUSER)
 
                         effect = Db.ExecuteNonQuery(cmd);
                     }
-
                     trans.Commit();
-                    return true;
-                    
                 }
                 catch
                 {
                     trans.Rollback();
+                    throw;
                 }
             }
-            return false;
+            return true;
         }
 
         public bool DataUpdate(UsersModifyReq req)
@@ -272,22 +270,15 @@ UPDATE USERS
 
                         effect = Db.ExecuteNonQuery(cmd);
                     }
-
                     trans.Commit();
-                    return true;
-
                 }
                 catch
                 {
                     trans.Rollback();
+                    throw;
                 }
             }
-
-            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
-            {
-    
-            }
-            return false;
+            return true;
         }
 
         public int DataDelete(UsersModifyReq req)

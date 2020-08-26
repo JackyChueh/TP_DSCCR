@@ -7,10 +7,10 @@ using TP_DSCCR.Models.Enums;
 
 namespace TP_DSCCR.Controllers
 {
-    public class UsersController : BaseController
+    public class HR_CALENDARController : BaseController
     {
-        // GET: Users
-        public ActionResult UsersIndex()
+        // GET: HR_CALENDAR
+        public ActionResult HR_CALENDARIndex()
         {
             if (Session["ID"] == null)
             {
@@ -19,9 +19,9 @@ namespace TP_DSCCR.Controllers
             return View();
         }
 
-        public string UsersRetrieve()
+        public string HR_CALENDARRetrieve()
         {
-            UsersRetrieveRes res = new UsersRetrieveRes();
+            HR_CALENDARRetrieveRes res = new HR_CALENDARRetrieveRes();
             try
             {
                 if (Session["ID"] == null)
@@ -31,11 +31,22 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersRetrieveReq req = new UsersRetrieveReq();
+                    Log("HR_CALENDARRetrieveReq=" + input);
+                    HR_CALENDARRetrieveReq req = new HR_CALENDARRetrieveReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new UsersImplement("TP_SCC").PaginationRetrieve(req);
+                    if (req.HR_DATE_START != null && req.HR_DATE_END != null)
+                    {
+                        DateTime? temp;
+                        if (req.HR_DATE_START > req.HR_DATE_END)
+                        {
+                            temp = req.HR_DATE_START;
+                            req.HR_DATE_START = req.HR_DATE_END;
+                            req.HR_DATE_END = temp;
+                        }
+                    }
+
+                    res = new HR_CALENDARImplement("TP_ALERT").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
             }
@@ -47,13 +58,13 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
+            Log("HR_CALENDARRetrieveRes=" + json);
             return json;
         }
 
-        public string UsersQuery()
+        public string HR_CALENDARQuery()
         {
-            UsersModifyRes res = new UsersModifyRes();
+            HR_CALENDARModifyRes res = new HR_CALENDARModifyRes();
             try
             {
                 if (Session["ID"] == null)
@@ -63,12 +74,12 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersModifyReq req = new UsersModifyReq();
+                    Log("HR_CALENDARQueryReq=" + input);
+                    HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new UsersImplement("TP_SCC").ModificationQuery(req);
-                    if (res.USERS != null)
+                    res = new HR_CALENDARImplement("TP_ALERT").ModificationQuery(req);
+                    if (res.HR_CALENDAR != null)
                     {
                         res.Result.State = ResultEnum.SUCCESS;
                     }
@@ -86,13 +97,13 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
+            Log("HR_CALENDARQueryRes=" + json);
             return json;
         }
 
-        public string UsersCreate()
+        public string HR_CALENDARCreate()
         {
-            UsersModifyRes res = new UsersModifyRes();
+            HR_CALENDARModifyRes res = new HR_CALENDARModifyRes();
             try
             {
                 if (Session["ID"] == null)
@@ -102,23 +113,30 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersModifyReq req = new UsersModifyReq();
+                    Log("HR_CALENDARCreateReq=" + input);
+                    HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    req.USERS.CUSER = Session["ID"].ToString();
-                    req.USERS.MUSER = Session["ID"].ToString();
-
-                    bool success = new UsersImplement("TP_SCC").DataCreate(req);
-                    if (success)
+                    bool yn = new HR_CALENDARImplement("TP_ALERT").DataDuplicate(req);
+                    if (yn)
                     {
-                        res.USERS = req.USERS;
-                        res.GRANTS = req.GRANTS;
-                        res.Result.State = ResultEnum.CREATE_SUCCESS;
+                        res.Result.State = ResultEnum.DATA_DUPLICATION;
                     }
                     else
                     {
-                        res.Result.State = ResultEnum.FAIL;
+                        req.HR_CALENDAR.CUSER = Session["ID"].ToString();
+                        req.HR_CALENDAR.MUSER = Session["ID"].ToString();
+
+                        bool success = new HR_CALENDARImplement("TP_ALERT").DataCreate(req);
+                        if (success)
+                        {
+                            res.HR_CALENDAR = req.HR_CALENDAR;
+                            res.Result.State = ResultEnum.CREATE_SUCCESS;
+                        }
+                        else
+                        {
+                            res.Result.State = ResultEnum.FAIL;
+                        }
                     }
                 }
             }
@@ -130,13 +148,13 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
+            Log("HR_CALENDARCreateRes=" + json);
             return json;
         }
 
-        public string UsersUpdate()
+        public string HR_CALENDARUpdate()
         {
-            UsersModifyRes res = new UsersModifyRes();
+            HR_CALENDARModifyRes res = new HR_CALENDARModifyRes();
             try
             {
                 if (Session["ID"] == null)
@@ -146,22 +164,29 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersModifyReq req = new UsersModifyReq();
+                    Log("HR_CALENDARUpdateReq=" + input);
+                    HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    req.USERS.MUSER = Session["ID"].ToString();
-
-                    bool success = new UsersImplement("TP_SCC").DataUpdate(req);
-                    if (success)
+                    bool yn = new HR_CALENDARImplement("TP_ALERT").DataDuplicate(req);
+                    if (yn)
                     {
-                        res.USERS = req.USERS;
-                        res.GRANTS = req.GRANTS;
-                        res.Result.State = ResultEnum.UPDATE_SUCCESS;
+                        res.Result.State = ResultEnum.DATA_DUPLICATION;
                     }
                     else
                     {
-                        res.Result.State = ResultEnum.FAIL;
+                        req.HR_CALENDAR.MUSER = Session["ID"].ToString();
+
+                        bool success = new HR_CALENDARImplement("TP_ALERT").DataUpdate(req);
+                        if (success)
+                        {
+                            res.HR_CALENDAR = req.HR_CALENDAR;
+                            res.Result.State = ResultEnum.UPDATE_SUCCESS;
+                        }
+                        else
+                        {
+                            res.Result.State = ResultEnum.FAIL;
+                        }
                     }
                 }
             }
@@ -173,13 +198,13 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
+            Log("HR_CALENDARUpdateRes=" + json);
             return json;
         }
 
-        public string UsersDelete()
+        public string HR_CALENDARDelete()
         {
-            UsersModifyRes res = new UsersModifyRes();
+            HR_CALENDARModifyRes res = new HR_CALENDARModifyRes();
             try
             {
                 if (Session["ID"] == null)
@@ -189,13 +214,13 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersModifyReq req = new UsersModifyReq();
+                    Log("HR_CALENDARDeleteReq=" + input);
+                    HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    req.USERS.MUSER = Session["ID"].ToString();
+                    req.HR_CALENDAR.MUSER = Session["ID"].ToString();
 
-                    int effect = new UsersImplement("TP_SCC").DataDelete(req);
+                    int effect = new HR_CALENDARImplement("TP_ALERT").DataDelete(req);
                     if (effect > 0)
                     {
                         res.Result.State = ResultEnum.DELETE_SUCCESS;
@@ -214,52 +239,7 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
-            return json;
-        }
-
-        public string UsersReset()
-        {
-            UsersModifyRes res = new UsersModifyRes();
-            try
-            {
-                if (Session["ID"] == null)
-                {
-                    res.Result.State = ResultEnum.SESSION_TIMEOUT;
-                }
-                else
-                {
-                    string input = RequestData();
-                    Log("UsersDataAccessReq=" + input);
-                    UsersModifyReq req = new UsersModifyReq();
-                    JsonConvert.PopulateObject(input, req);
-
-                    req.USERS.PASSWORD = req.USERS.ID;
-                    req.USERS.FORCE_PWD = 1;
-                    req.USERS.MUSER = Session["ID"].ToString();
-                    
-                    int effect = new UsersImplement("TP_SCC").DataReset(req);
-                    if (effect > 0)
-                    {
-                        res.USERS = req.USERS;
-                        res.USERS.PASSWORD = null;
-                        res.Result.State = ResultEnum.RESET_SUCCESS;
-                    }
-                    else
-                    {
-                        res.Result.State = ResultEnum.FAIL;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                res.Result.State = ResultEnum.EXCEPTION_ERROR;
-                Log("Err=" + ex.Message);
-                Log(ex.StackTrace);
-            }
-            var json = JsonConvert.SerializeObject(res, Formatting.None,
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("UsersDataAccessRes=" + json);
+            Log("HR_CALENDARDeleteRes=" + json);
             return json;
         }
 

@@ -37,7 +37,9 @@ namespace TP_DSCCR.Models.Enums
         [Description("連線逾時")]
         SESSION_TIMEOUT = -8,
         [Description("帳號尚未設定群組")]
-        GRANTS_NOT_FOUND = -9
+        GRANTS_NOT_FOUND = -9,
+        [Description("資料已存在")]
+        DATA_DUPLICATION = -10
 
     }
 
