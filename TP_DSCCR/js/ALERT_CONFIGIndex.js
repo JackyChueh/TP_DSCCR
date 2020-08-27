@@ -90,6 +90,27 @@
         $('#FRI_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
         $('#STA_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
         $('#STA_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
+
+        //加入&移除
+        $('#add').click(function () {
+            var options = $('#unjoin option:selected');
+
+            if (GrantsIndex.Action === 'users' && $('#joined option').length + options.length > 1) {
+                $('#modal .modal-title').text('交易訊息');
+                $('#modal .modal-body').html('<p>只能加入一個群組</p>');
+                $('#modal').modal('show');
+                return false;
+            }
+
+            options.remove();
+            $("#joined").append(options);
+        });
+        $('#remove').click(function () {
+            var options = $('#joined option:selected');
+            options.remove();
+            $("#unjoin").append(options);
+        });
+
     },
 
     ActionSwitch: function (Action) {
