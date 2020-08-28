@@ -105,11 +105,25 @@
             options.remove();
             $("#joined").append(options);
         });
+
         $('#remove').click(function () {
             var options = $('#joined option:selected');
             options.remove();
             $("#unjoin").append(options);
         });
+
+        $('#DATA_TYPE').change(function () {
+            ALERT_CONFIGIndex.SubOptionRetrieve($('#LOCATION'), $('#DATA_TYPE').val() + '_LOCATION', $(this).val());
+            ALERT_CONFIGIndex.SubOptionRetrieve($('#DATA_FIELD'), $('#DATA_TYPE').val() + '_DATA_FIELD', $(this).val());
+        });
+
+        $('#LOCATION').change(function () {
+            ALERT_CONFIGIndex.SubOptionRetrieve($('#DEVICE_ID'), $('#DATA_TYPE').val() + '_DEVICE_ID',$(this).val());
+        });
+
+        //$('#DEVICE_ID').change(function () {
+        //    ALERT_CONFIGIndex.SubOptionRetrieve($('#DATA_FIELD'), $('#DATA_TYPE').val() + '_DATA_FIELD', $(this).val());
+        //});
 
     },
 
@@ -139,7 +153,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'DATE_TYPE']
+            PhraseGroup: ['page_size', 'mode', 'DATA_TYPE']
         };
 
         $.ajax({
@@ -157,12 +171,22 @@
                     });
                     $('#page_size option[value="30"]').attr("selected", true);
 
-                    //var section_retrieve = $('#section_retrieve');
-                    //section_retrieve.find("select[name='DATE_TYPE']").append('<option value=""></option>');
-                    $("select[name='DATE_TYPE']").append('<option value=""></option>');
-                    $.each(response.ItemList.DATE_TYPE, function (idx, row) {
-                        $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    $("select[name='MODE']").append('<option value=""></option>');
+                    $.each(response.ItemList.mode, function (idx, row) {
+                        $("select[name='MODE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+
+                    $("select[name='DATA_TYPE']").append('<option value=""></option>');
+                    $.each(response.ItemList.DATA_TYPE, function (idx, row) {
+                        $("select[name='DATA_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    });
+
+                    ////var section_retrieve = $('#section_retrieve');
+                    ////section_retrieve.find("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    //$("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    //$.each(response.ItemList.DATE_TYPE, function (idx, row) {
+                    //    $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    //});
 
                 }
                 else {
@@ -177,6 +201,48 @@
             complete: function (xhr, status) {
             }
         });
+    },
+
+    SubOptionRetrieve: function (obj, PhraseGroup, parentKey) {
+        if (parentKey) {
+            var url = '/Main/SubItemListRetrieve';
+            var request = {
+                PhraseGroup: PhraseGroup,
+                ParentKey: parentKey
+            };
+
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify(request),
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Result.State === 0) {
+                        $(obj).find('option').remove();
+                        $(obj).append('<option value=""></option>');
+                        $.each(response.SubItemList, function (idx, row) {
+                            $(obj).append($('<option></option>').attr('value', row.Key).text(row.Value));
+                        });
+                    }
+                    else {
+                        $('#modal .modal-title').text('交易訊息');
+                        $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                        $('#modal').modal('show');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+                },
+                complete: function (xhr, status) {
+                    //alert('' + xhr.status + ';' + status );
+                }
+            });
+        }
+        else {
+            $(obj).find('option').remove();
+        }
     },
 
     ALERT_CONFIGRetrieve: function () {

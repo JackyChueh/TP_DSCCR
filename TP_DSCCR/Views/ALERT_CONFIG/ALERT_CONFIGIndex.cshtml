@@ -24,16 +24,16 @@
         <form id="section_retrieve" style="display: none;">
             <div class="form-row">
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="MODE">警報狀態</label>
+                    <select class="form-control form-control-sm modify" name="MODE"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="HR_DATE_START">日期(起)</label>
                     <input type="text" class="form-control form-control-sm" name="HR_DATE_START">
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="HR_DATE_START">日期(迄)</label>
                     <input type="text" class="form-control form-control-sm" name="HR_DATE_END">
-                </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="DATE_TYPE">日期型態</label>
-                    <select class="form-control form-control-sm" name="DATE_TYPE"></select>
                 </div>
             </div>
 
@@ -141,7 +141,7 @@
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">星期日</label>
                         <input class="form-check-input ml-3" type="checkbox" value="" id="SUN" name="SUN">
-                        <label class="form-check-label" for="TUE">執行檢查</label>
+                        <label class="form-check-label" for="SUN">執行檢查</label>
                     </div>
                     <label for="SUN_STIME">時間(起)</label>
                     <input type="text" class="form-control form-control-sm modify" id="SUN_STIME" name="SUN_STIME">
@@ -174,7 +174,7 @@
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">星期三</label>
                         <input class="form-check-input ml-3" type="checkbox" value="" id="WED" name="WED">
-                        <label class="form-check-label" for="TUE">執行檢查</label>
+                        <label class="form-check-label" for="WED">執行檢查</label>
                     </div>
                     <label for="WED_STIME">時間(起)</label>
                     <input type="text" class="form-control form-control-sm modify" id="WED_STIME" name="WED_STIME">
@@ -185,7 +185,7 @@
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">星期四</label>
                         <input class="form-check-input ml-3" type="checkbox" value="" id="THU" name="THU">
-                        <label class="form-check-label" for="TUE">執行檢查</label>
+                        <label class="form-check-label" for="THU">執行檢查</label>
                     </div>
                     <label for="THU_STIME">時間(起)</label>
                     <input type="text" class="form-control form-control-sm modify" id="THU_STIME" name="THU_STIME">
@@ -196,7 +196,7 @@
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">星期五</label>
                         <input class="form-check-input ml-3" type="checkbox" value="" id="FRI" name="FRI">
-                        <label class="form-check-label" for="TUE">執行檢查</label>
+                        <label class="form-check-label" for="FRI">執行檢查</label>
                     </div>
                     <label for="FRI_STIME">時間(起)</label>
                     <input type="text" class="form-control form-control-sm modify" id="FRI_STIME" name="FRI_STIME">
@@ -207,7 +207,7 @@
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">星期六</label>
                         <input class="form-check-input ml-3" type="checkbox" value="" id="STA" name="STA">
-                        <label class="form-check-label" for="TUE">執行檢查</label>
+                        <label class="form-check-label" for="STA">執行檢查</label>
                     </div>
                     <label for="STA_STIME">時間(起)</label>
                     <input type="text" class="form-control form-control-sm modify" id="STA_STIME" name="STA_STIME">
