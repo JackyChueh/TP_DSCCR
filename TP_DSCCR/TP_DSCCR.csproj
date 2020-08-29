@@ -162,6 +162,7 @@
     <Compile Include="Models\Access\EnterpriseLibrary.cs" />
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
+    <Compile Include="Models\Entity\ALERT_CONFIG.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
     <Compile Include="Models\Entity\GRANTS.cs" />
     <Compile Include="Models\Entity\HR_CALENDAR.cs" />

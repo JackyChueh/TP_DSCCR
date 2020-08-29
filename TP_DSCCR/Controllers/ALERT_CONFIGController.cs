@@ -11,6 +11,10 @@ namespace TP_DSCCR.Controllers
         // GET: ALERT_CONFIG
         public ActionResult ALERT_CONFIGIndex()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Main");
+            }
             return View();
         }
     }
