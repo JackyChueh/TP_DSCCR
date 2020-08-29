@@ -6,7 +6,7 @@
     Page_Init: function () {
         this.EventBinding();
         this.OptionRetrieve();
-        this.ActionSwitch('C');
+        this.ActionSwitch('R');
     },
 
     EventBinding: function () {
@@ -92,12 +92,21 @@
         $('#STA_STIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
         $('#STA_ETIME').datetimepicker({ datepicker: false, step: 15, format: 'H:i' });
 
+        var section_retrieve = $('#section_retrieve');
+        section_retrieve.find('select[name=DATA_TYPE]').change(function () {    //監控類別
+            ALERT_CONFIGIndex.SubOptionRetrieve(section_retrieve.find('select[name=LOCATION]'), $(this).val() + '_LOCATION', $(this).val());
+            ALERT_CONFIGIndex.SubOptionRetrieve(section_retrieve.find('select[name=DATA_FIELD]'), $(this).val() + '_DATA_FIELD', $(this).val());
+            section_retrieve.find('select[name=DEVICE_ID]').find('option').remove();
+        });
+        section_retrieve.find('select[name=LOCATION]').change(function () { //位置
+            ALERT_CONFIGIndex.SubOptionRetrieve(section_retrieve.find('select[name=DEVICE_ID]'), section_retrieve.find('select[name=DATA_TYPE]').val() + '_DEVICE_ID', $(this).val());
+        });
+
         $('#DATA_TYPE').change(function () {    //監控類別
             ALERT_CONFIGIndex.SubOptionRetrieve($('#LOCATION'), $('#DATA_TYPE').val() + '_LOCATION', $(this).val());
             ALERT_CONFIGIndex.SubOptionRetrieve($('#DATA_FIELD'), $('#DATA_TYPE').val() + '_DATA_FIELD', $(this).val());
             $('#DEVICE_ID').find('option').remove();
         });
-
         $('#LOCATION').change(function () { //位置
             ALERT_CONFIGIndex.SubOptionRetrieve($('#DEVICE_ID'), $('#DATA_TYPE').val() + '_DEVICE_ID', $(this).val());
         });
@@ -247,41 +256,11 @@
         var section_retrieve = $('#section_retrieve');
         var request = {
             ALERT_CONFIG: {
-                SID: section_retrieve.find('input[name=SID]').val(),
                 MODE: section_retrieve.find('select[name=MODE]').val(),
                 DATA_TYPE: section_retrieve.find('select[name=DATA_TYPE]').val(),
                 LOCATION: section_retrieve.find('select[name=LOCATION]').val(),
                 DEVICE_ID: section_retrieve.find('select[name=DEVICE_ID]').val(),
                 DATA_FIELD: section_retrieve.find('select[name=DATA_FIELD]').val(),
-                MAX_VALUE: section_retrieve.find('input[name=MAX_VALUE]').val(),
-                MIN_VALUE: section_retrieve.find('input[name=MIN_VALUE]').val(),
-                CHECK_INTERVAL: section_retrieve.find('input[name=CHECK_INTERVAL]').val(),
-                ALERT_INTERVAL: section_retrieve.find('input[name=ALERT_INTERVAL]').val(),
-                SUN: section_retrieve.find('input[name=SUN]').val(),
-                SUN_STIME: section_retrieve.find('input[name=SUN_STIME]').val(),
-                SUN_ETIME: section_retrieve.find('input[name=SUN_ETIME]').val(),
-                MON: section_retrieve.find('input[name=MON]').val(),
-                MON_STIME: section_retrieve.find('input[name=MON_STIME]').val(),
-                MON_ETIME: section_retrieve.find('input[name=MON_ETIME]').val(),
-                TUE: section_retrieve.find('input[name=TUE]').val(),
-                TUE_STIME: section_retrieve.find('input[name=TUE_STIME]').val(),
-                TUE_ETIME: section_retrieve.find('input[name=TUE_ETIME]').val(),
-                WED: section_retrieve.find('input[name=WED]').val(),
-                WED_STIME: section_retrieve.find('input[name=WED_STIME]').val(),
-                WED_ETIME: section_retrieve.find('input[name=WED_ETIME]').val(),
-                THU: section_retrieve.find('input[name=THU]').val(),
-                THU_STIME: section_retrieve.find('input[name=THU_STIME]').val(),
-                THU_ETIME: section_retrieve.find('input[name=THU_ETIME]').val(),
-                FRI: section_retrieve.find('input[name=FRI]').val(),
-                FRI_STIME: section_retrieve.find('input[name=FRI_STIME]').val(),
-                FRI_ETIME: section_retrieve.find('input[name=FRI_ETIME]').val(),
-                STA: section_retrieve.find('input[name=STA]').val(),
-                STA_STIME: section_retrieve.find('input[name=STA_STIME]').val(),
-                STA_ETIME: section_retrieve.find('input[name=STA_ETIME]').val(),
-                CHECK_DATE: section_retrieve.find('input[name=CHECK_DATE]').val(),
-                ALERT_DATE: section_retrieve.find('input[name=ALERT_DATE]').val(),
-                MAIL_TO: section_retrieve.find('input[name=MAIL_TO]').val(),
-                CHECK_HR_CALENDAR: section_retrieve.find('input[name=CHECK_HR_CALENDAR]').val()
             },
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
             PageSize: $('#page_size').val() ? $('#page_size').val() : 1
@@ -872,7 +851,6 @@
             }
         }
 
-
         if ($('#MAIL_TO option').length === 0) {
             error += '郵件通知清單不可空白<br />';
         }
@@ -902,6 +880,16 @@
             $('.modify').each(function (index, value) {
                 $(value).val('');
             });
+            $('#SUN').prop('checked', false);
+            $('#MON').prop('checked', false);
+            $('#TUE').prop('checked', false);
+            $('#WED').prop('checked', false);
+            $('#THU').prop('checked', false);
+            $('#FRI').prop('checked', false);
+            $('#STA').prop('checked', false);
+            $('#LOCATION').find('option').remove();
+            $('#DEVICE_ID').find('option').remove();
+            $('#DATA_FIELD').find('option').remove();
             $('#MAIL_TO').empty();
         }
     },

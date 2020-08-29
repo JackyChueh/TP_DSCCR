@@ -184,6 +184,7 @@
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
+    <Compile Include="Models\Implement\ALERT_CONFIGImplement.cs" />
     <Compile Include="Models\Implement\HR_CALENDARImplement.cs" />
     <Compile Include="Models\Implement\UsersImplement.cs" />
     <Compile Include="Models\Implement\WSDS_PVOIImplement.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="ViewModels\AHU.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
+    <Compile Include="ViewModels\ALERT_CONFIG.cs" />
     <Compile Include="ViewModels\HR_CALENDAR.cs" />
     <Compile Include="ViewModels\USERS.cs" />
     <Compile Include="ViewModels\WSDS_PVOI.cs" />

@@ -25,15 +25,23 @@
             <div class="form-row">
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="MODE">警報狀態</label>
-                    <select class="form-control form-control-sm modify" name="MODE"></select>
+                    <select class="form-control form-control-sm" name="MODE"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="HR_DATE_START">日期(起)</label>
-                    <input type="text" class="form-control form-control-sm" name="HR_DATE_START">
+                    <label for="DATA_TYPE">監控類別</label>
+                    <select class="form-control form-control-sm" name="DATA_TYPE"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="HR_DATE_START">日期(迄)</label>
-                    <input type="text" class="form-control form-control-sm" name="HR_DATE_END">
+                    <label for="LOCATION">位置</label>
+                    <select class="form-control form-control-sm" name="LOCATION"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="DEVICE_ID">設備名稱</label>
+                    <select class="form-control form-control-sm" name="DEVICE_ID"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="DATA_FIELD">數據欄位</label>
+                    <select class="form-control form-control-sm" name="DATA_FIELD"></select>
                 </div>
             </div>
 
@@ -137,6 +145,11 @@
                     <label for="CHECK_INTERVAL">通知間隔時間(分)</label>
                     <input type="text" class="form-control form-control-sm modify" id="ALERT_INTERVAL" name="ALERT_INTERVAL">
                 </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="TEST">星期日</label>
+                    <label for="TEST">星期日</label>
+                </div>
+
                 <div class="w-100"></div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 card p-3">
                     <div class="form-check form-check-inline">
