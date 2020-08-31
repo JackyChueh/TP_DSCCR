@@ -290,11 +290,12 @@
                         $.each(response.ALERT_CONFIG, function (idx, row) {
                             htmlRow = '<tr>';
                             htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_CONFIGIndex.ALERT_CONFIGQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
-                            htmlRow += '<td>' + row.HR_DATE.substr(0, 10) + '</td>';
-                            htmlRow += '<td>' + row.DATE_TYPE + '</td>';
-                            htmlRow += '<td>' + (row.MEMO ? row.MEMO : '') + '</td>';
-                            htmlRow += '<td>' + row.MDATE.replace('T', ' ') + '</td>';
-                            htmlRow += '<td>' + row.MUSER + '</td>';
+                            htmlRow += '<td>' + row.DATA_TYPE + '</td>';
+                            htmlRow += '<td>' + row.LOCATION + '</td>';
+                            htmlRow += '<td>' + row.DEVICE_ID + '</td>';
+                            htmlRow += '<td>' + row.DATA_FIELD + '</td>';
+                            htmlRow += '<td>' + row.MAX_VALUE + '</td>';
+                            htmlRow += '<td>' + row.MIN_VALUE + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
                         });
