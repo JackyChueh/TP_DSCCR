@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TP_DSCCR.ViewModels
 {
@@ -12,6 +13,8 @@ namespace TP_DSCCR.ViewModels
     public class SubItemListRetrieveReq
     {
         public string PhraseGroup { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string ParentKey { get; set; }
     }
 

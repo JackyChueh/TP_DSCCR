@@ -111,6 +111,15 @@
             ALERT_CONFIGIndex.SubOptionRetrieve($('#DEVICE_ID'), $('#DATA_TYPE').val() + '_DEVICE_ID', $(this).val());
         });
 
+        $('#DATA_FIELD').change(function () { //數據欄位
+            ALERT_CONFIGIndex.MaxMinSwitch($('#DATA_TYPE').val(), $('#LOCATION').val(), $(this).val());
+        });
+
+        $('#SPEC_VALUE').change(function () { //特定正常值
+            $('#MAX_VALUE').val($(this).val());
+            $('#MIN_VALUE').val($(this).val());
+        });
+
         $('#mail_add').click(function () {  //加入-郵件通知清單
             $('#modal_mail').modal('show');
         });
@@ -251,6 +260,72 @@
         }
     },
 
+    SpecRetrieve: function (obj, PhraseGroup, parentKey) {
+        var url = '/Main/SubItemListRetrieve';
+        var request = {
+            PhraseGroup: PhraseGroup,
+            ParentKey: parentKey
+        };
+
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Result.State === 0) {
+                    $(obj).find('option').remove();
+                    $(obj).append('<option value=""></option>');
+                    $.each(response.SubItemList, function (idx, row) {
+                        $(obj).append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    });
+                }
+                else {
+                    $('#modal .modal-title').text('交易訊息');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                    $('#modal').modal('show');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+            },
+            complete: function (xhr, status) {
+                //alert('' + xhr.status + ';' + status );
+            }
+        });
+    },
+
+    MaxMinSwitch: function (DataType, Location, DataField) {
+        console.log(DataType + ', ' + Location + ', ' + DataField);
+
+        if (DataField) {
+            $('#max,#min').show();
+            $('#spec').hide();
+            if (DataType === 'AHU') {
+                if (DataField === 'AHU01') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'function_fail_AHU', Location);
+                }
+                if (DataField === 'AHU02') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'switch_status', '');
+                }
+            }
+            else if (DataType === 'COP') {
+                //
+            }
+        }
+        else {
+            $('#spec').find('option').remove();
+        }
+      
+
+    },
+    
     ALERT_CONFIGRetrieve: function () {
         var url = 'ALERT_CONFIGRetrieve';
         var section_retrieve = $('#section_retrieve');
@@ -290,6 +365,8 @@
                         $.each(response.ALERT_CONFIG, function (idx, row) {
                             htmlRow = '<tr>';
                             htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_CONFIGIndex.ALERT_CONFIGQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+                            htmlRow += '<td>' + row.SID + '</td>';
+                            htmlRow += '<td>' + row.MODE + '</td>';
                             htmlRow += '<td>' + row.DATA_TYPE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
@@ -506,78 +583,78 @@
         });
     },
 
-    UsersRetrieve: function () {
-        var url = '/User/UsersRetrieve';
-        var section_retrieve = $('#section_retrieve');
-        var request = {
-            USERS: {
-                //SN: section_retrieve.find('input[name=SN]').val(),
-                ID: section_retrieve.find('input[name=ID]').val(),
-                NAME: section_retrieve.find('input[name=NAME]').val(),
-                MODE: section_retrieve.find('select[name=MODE]').val()
-            },
-            PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 1
-        };
+    //UsersRetrieve: function () {
+    //    var url = '/User/UsersRetrieve';
+    //    var section_retrieve = $('#section_retrieve');
+    //    var request = {
+    //        USERS: {
+    //            //SN: section_retrieve.find('input[name=SN]').val(),
+    //            ID: section_retrieve.find('input[name=ID]').val(),
+    //            NAME: section_retrieve.find('input[name=NAME]').val(),
+    //            MODE: section_retrieve.find('select[name=MODE]').val()
+    //        },
+    //        PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
+    //        PageSize: $('#page_size').val() ? $('#page_size').val() : 1
+    //    };
 
-        $.ajax({
-            type: 'post',
-            url: url,
-            contentType: 'application/json',
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                if (response.Result.State === 0) {
-                    $('#gridview >  tbody').html('');
-                    $('#rows_count').text(response.Pagination.RowCount);
-                    $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
-                    $('#page_number option').remove();
-                    for (var i = 1; i <= response.Pagination.PageCount; i++) {
-                        $('#page_number').append($('<option></option>').attr('value', i).text(i));
-                    }
-                    $('#page_number').val(response.Pagination.PageNumber);
-                    $('#page_count').text(response.Pagination.PageCount);
-                    $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
+    //    $.ajax({
+    //        type: 'post',
+    //        url: url,
+    //        contentType: 'application/json',
+    //        data: JSON.stringify(request),
+    //        success: function (data) {
+    //            var response = JSON.parse(data);
+    //            if (response.Result.State === 0) {
+    //                $('#gridview >  tbody').html('');
+    //                $('#rows_count').text(response.Pagination.RowCount);
+    //                $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
+    //                $('#page_number option').remove();
+    //                for (var i = 1; i <= response.Pagination.PageCount; i++) {
+    //                    $('#page_number').append($('<option></option>').attr('value', i).text(i));
+    //                }
+    //                $('#page_number').val(response.Pagination.PageNumber);
+    //                $('#page_count').text(response.Pagination.PageCount);
+    //                $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
 
-                    var htmlRow = '';
-                    if (response.Pagination.RowCount > 0) {
-                        $.each(response.USERS, function (idx, row) {
-                            htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="UsersIndex.UsersQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
-                            //htmlRow += '<td>' + row.SN + '</td>';
-                            htmlRow += '<td>' + row.ID + '</td>';
-                            htmlRow += '<td>' + row.NAME + '</td>';
-                            htmlRow += '<td>' + (row.EMAIL ? row.EMAIL : '') + '</td>';
-                            htmlRow += '<td>' + row.MODE + '</td>';
-                            htmlRow += '<td>' + (row.MEMO ? row.MEMO : '') + '</td>';
-                            //htmlRow += '<td>' + row.CDATE.replace('T', ' ') + '</td>';
-                            //htmlRow += '<td>' + row.CUSER + '</td>';
-                            htmlRow += '<td>' + row.MDATE.replace('T', ' ') + '</td>';
-                            htmlRow += '<td>' + row.MUSER + '</td>';
-                            htmlRow += '</tr>';
-                            $('#gridview >  tbody').append(htmlRow);
-                        });
-                    }
-                    else {
-                        htmlRow = '<tr><td colspan="12" style="text-align:center">data not found</td></tr>';
-                        $('#gridview >  tbody').append(htmlRow);
-                    }
-                }
-                else {
-                    $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-                    $('#modal').modal('show');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
-    },
+    //                var htmlRow = '';
+    //                if (response.Pagination.RowCount > 0) {
+    //                    $.each(response.USERS, function (idx, row) {
+    //                        htmlRow = '<tr>';
+    //                        htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="UsersIndex.UsersQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+    //                        //htmlRow += '<td>' + row.SN + '</td>';
+    //                        htmlRow += '<td>' + row.ID + '</td>';
+    //                        htmlRow += '<td>' + row.NAME + '</td>';
+    //                        htmlRow += '<td>' + (row.EMAIL ? row.EMAIL : '') + '</td>';
+    //                        htmlRow += '<td>' + row.MODE + '</td>';
+    //                        htmlRow += '<td>' + (row.MEMO ? row.MEMO : '') + '</td>';
+    //                        //htmlRow += '<td>' + row.CDATE.replace('T', ' ') + '</td>';
+    //                        //htmlRow += '<td>' + row.CUSER + '</td>';
+    //                        htmlRow += '<td>' + row.MDATE.replace('T', ' ') + '</td>';
+    //                        htmlRow += '<td>' + row.MUSER + '</td>';
+    //                        htmlRow += '</tr>';
+    //                        $('#gridview >  tbody').append(htmlRow);
+    //                    });
+    //                }
+    //                else {
+    //                    htmlRow = '<tr><td colspan="12" style="text-align:center">data not found</td></tr>';
+    //                    $('#gridview >  tbody').append(htmlRow);
+    //                }
+    //            }
+    //            else {
+    //                $('#modal .modal-title').text('交易訊息');
+    //                $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+    //                $('#modal').modal('show');
+    //            }
+    //        },
+    //        error: function (xhr, ajaxOptions, thrownError) {
+    //            $('#modal .modal-title').text(ajaxOptions);
+    //            $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+    //            $('#modal').modal('show');
+    //        },
+    //        complete: function (xhr, status) {
+    //        }
+    //    });
+    //},
 
     DataValidate: function () {
         var error = '';

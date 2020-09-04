@@ -50,11 +50,16 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>日期</th>
-                            <th>日期型態</th>
-                            <th>備註</th>
-                            <th>修改時間</th>
-                            <th>修改人員</th>
+                            <th>序號</th>
+                            <th>警報狀態</th>
+                            <th>監控類別</th>
+                            <th>位置</th>
+                            <th>設備名稱</th>
+                            <th>數據欄位</th>
+                            <th>最大值</th>
+                            <th>最小值</th>
+                            @*<th>修改時間</th>
+                            <th>修改人員</th>*@
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -125,12 +130,17 @@
                     <select class="form-control form-control-sm modify" id="DATA_FIELD" name="DATA_FIELD"></select>
                 </div>
                 <div class="w-100"></div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div id="spec" class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <span class="text-danger">*</span>
+                    <label for="SPEC_VALUE">特定正常值</label>
+                    <select class="form-control form-control-sm modify" id="SPEC_VALUE" name="SPEC_VALUE"></select>
+                </div>
+                <div id="max" class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <span class="text-danger">*</span>
                     <label for="MAX_VALUE">最大值</label>
                     <input type="text" class="form-control form-control-sm modify" id="MAX_VALUE" name="MAX_VALUE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div id="min" class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <span class="text-danger">*</span>
                     <label for="MIN_VALUE">最小值</label>
                     <input type="text" class="form-control form-control-sm modify" id="MIN_VALUE" name="MIN_VALUE">
@@ -146,8 +156,12 @@
                     <input type="text" class="form-control form-control-sm modify" id="ALERT_INTERVAL" name="ALERT_INTERVAL">
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="TEST">星期日</label>
-                    <label for="TEST">星期日</label>
+                    <label class="form-check-label">判斷是否檢查之優先順序</label>
+                    <div class="w-100"></div>
+                    <div class="form-check form-check-inline m-2">
+                        <input class="form-check-input" type="checkbox" value="" id="CHECK_HR_CALENDAR" name="CHECK_HR_CALENDAR">
+                        <label class="form-check-label" for="CHECK_HR_CALENDAR">以例假日設定為主</label>
+                    </div>
                 </div>
 
                 <div class="w-100"></div>
