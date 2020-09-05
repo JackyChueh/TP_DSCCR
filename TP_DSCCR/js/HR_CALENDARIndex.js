@@ -306,7 +306,7 @@
                 if (response.Result.State === 3) {
                     HR_CALENDARIndex.HR_CALENDARRetrieve();
                     HR_CALENDARIndex.ActionSwitch('R');
-                    //HR_CALENDARIndex.ValueRecover();
+                    HR_CALENDARIndex.ValueRecover();
                 }
                 $('#modal .modal-title').text('交易訊息');
                 $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');

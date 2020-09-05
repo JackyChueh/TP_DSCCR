@@ -15,6 +15,7 @@
             <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1 text-primary"></i>查詢</button>
             <button type="button" id="create" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-plus-square fa-lg mr-1 text-warning"></i>新增</button>
             <button type="button" id="save" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-save fa-lg mr-1 text-success"></i>存檔</button>
+            <button type="button" id="default" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-tasks fa-lg mr-1 text-info"></i>帶入預設值</button>
             <button type="button" id="undo" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-undo fa-lg mr-1"></i>復原</button>
             <button type="button" id="delete" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-trash fa-lg mr-1 text-danger"></i>刪除</button>
             <button type="button" id="return" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-arrow-left fa-lg mr-1 text-secondary"></i>返回</button>
@@ -23,10 +24,6 @@
     <div class="card-body">
         <form id="section_retrieve" style="display: none;">
             <div class="form-row">
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <label for="MODE">警報狀態</label>
-                    <select class="form-control form-control-sm" name="MODE"></select>
-                </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="DATA_TYPE">監控類別</label>
                     <select class="form-control form-control-sm" name="DATA_TYPE"></select>
@@ -43,6 +40,10 @@
                     <label for="DATA_FIELD">數據欄位</label>
                     <select class="form-control form-control-sm" name="DATA_FIELD"></select>
                 </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="MODE">警報狀態</label>
+                    <select class="form-control form-control-sm" name="MODE"></select>
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -51,15 +52,15 @@
                         <tr>
                             <th></th>
                             <th>序號</th>
-                            <th>警報狀態</th>
                             <th>監控類別</th>
                             <th>位置</th>
                             <th>設備名稱</th>
                             <th>數據欄位</th>
                             <th>最大值</th>
                             <th>最小值</th>
+                            <th>警報狀態</th>
                             @*<th>修改時間</th>
-                            <th>修改人員</th>*@
+        <th>修改人員</th>*@
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -100,10 +101,11 @@
 
         <form id="section_modify" style="display: none;">
             <div class="form-row">
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
-                    <label for="SN">序號</label>
-                    <input type="text" class="form-control form-control-sm modify" id="SN" name="SN" placeholder="系統自動產生" disabled />
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="SID">序號</label>
+                    <input type="text" class="form-control form-control-sm modify" id="SID" name="SID" placeholder="系統自動產生" disabled />
                 </div>
+                <div class="w-100"></div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <span class="text-danger">*</span>
                     <label for="MODE">警報狀態</label>
@@ -130,7 +132,7 @@
                     <select class="form-control form-control-sm modify" id="DATA_FIELD" name="DATA_FIELD"></select>
                 </div>
                 <div class="w-100"></div>
-                <div id="spec" class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div id="spec" class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
                     <span class="text-danger">*</span>
                     <label for="SPEC_VALUE">特定正常值</label>
                     <select class="form-control form-control-sm modify" id="SPEC_VALUE" name="SPEC_VALUE"></select>
@@ -150,11 +152,11 @@
                     <label for="CHECK_INTERVAL">檢查間隔時間(分)</label>
                     <input type="text" class="form-control form-control-sm modify" id="CHECK_INTERVAL" name="CHECK_INTERVAL">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                @*<div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <span class="text-danger">*</span>
-                    <label for="CHECK_INTERVAL">通知間隔時間(分)</label>
+                    <label for="ALERT_INTERVAL">通知間隔時間(分)</label>
                     <input type="text" class="form-control form-control-sm modify" id="ALERT_INTERVAL" name="ALERT_INTERVAL">
-                </div>
+                </div>*@
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label class="form-check-label">檢查之優先順序</label>
                     <div class="w-100"></div>
@@ -163,7 +165,6 @@
                         <label class="form-check-label" for="CHECK_HR_CALENDAR">以例假日設定為主</label>
                     </div>
                 </div>
-
                 <div class="w-100"></div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 card p-3">
                     <div class="form-check form-check-inline">
