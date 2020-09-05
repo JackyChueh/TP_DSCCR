@@ -51,19 +51,19 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 3)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 4)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -104,19 +104,19 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 3)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 4)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -253,19 +253,19 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 3)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 4)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -306,19 +306,19 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('running', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 3)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else if (i == 4)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,1),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('open_close', CONVERT(DECIMAL(28,0),CP" + i.ToString("00") + "), default) AS CP" + i.ToString("00") + ",";
                             }
                             else
                             {

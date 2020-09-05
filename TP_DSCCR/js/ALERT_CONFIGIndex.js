@@ -103,6 +103,8 @@
         });
 
         $('#DATA_TYPE').change(function () {    //監控類別
+            console.log('$(#DATA_TYPE).change');
+            console.log($(this).val());
             ALERT_CONFIGIndex.SubOptionRetrieve($('#LOCATION'), $('#DATA_TYPE').val() + '_LOCATION', $(this).val());
             ALERT_CONFIGIndex.SubOptionRetrieve($('#DATA_FIELD'), $('#DATA_TYPE').val() + '_DATA_FIELD', $(this).val());
             $('#DEVICE_ID').find('option').remove();
@@ -364,7 +366,7 @@
                     if (response.Pagination.RowCount > 0) {
                         $.each(response.ALERT_CONFIG, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_CONFIGIndex.ALERT_CONFIGQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_CONFIGIndex.ALERT_CONFIGQuery(' + row.SID + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
                             htmlRow += '<td>' + row.SID + '</td>';
                             htmlRow += '<td>' + row.MODE + '</td>';
                             htmlRow += '<td>' + row.DATA_TYPE + '</td>';
@@ -404,40 +406,40 @@
         var request = {
             ALERT_CONFIG: {
                 SID: section_modify.find('input[name=SID]').val(),
-                MODE: section_modify.find('input[name=MODE]').val(),
-                DATA_TYPE: section_modify.find('input[name=DATA_TYPE]').val(),
-                LOCATION: section_modify.find('input[name=LOCATION]').val(),
-                DEVICE_ID: section_modify.find('input[name=DEVICE_ID]').val(),
-                DATA_FIELD: section_modify.find('input[name=DATA_FIELD]').val(),
+                MODE: section_modify.find('select[name=MODE]').val(),
+                DATA_TYPE: section_modify.find('select[name=DATA_TYPE]').val(),
+                LOCATION: section_modify.find('select[name=LOCATION]').val(),
+                DEVICE_ID: section_modify.find('select[name=DEVICE_ID]').val(),
+                DATA_FIELD: section_modify.find('select[name=DATA_FIELD]').val(),
                 MAX_VALUE: section_modify.find('input[name=MAX_VALUE]').val(),
                 MIN_VALUE: section_modify.find('input[name=MIN_VALUE]').val(),
                 CHECK_INTERVAL: section_modify.find('input[name=CHECK_INTERVAL]').val(),
                 ALERT_INTERVAL: section_modify.find('input[name=ALERT_INTERVAL]').val(),
-                SUN: section_modify.find('input[name=SUN]').val(),
+                SUN: section_modify.find('input[name=SUN]').is(':checked'),
                 SUN_STIME: section_modify.find('input[name=SUN_STIME]').val(),
                 SUN_ETIME: section_modify.find('input[name=SUN_ETIME]').val(),
-                MON: section_modify.find('input[name=MON]').val(),
+                MON: section_modify.find('input[name=MON]').is(':checked'),
                 MON_STIME: section_modify.find('input[name=MON_STIME]').val(),
                 MON_ETIME: section_modify.find('input[name=MON_ETIME]').val(),
-                TUE: section_modify.find('input[name=TUE]').val(),
+                TUE: section_modify.find('input[name=TUE]').is(':checked'),
                 TUE_STIME: section_modify.find('input[name=TUE_STIME]').val(),
                 TUE_ETIME: section_modify.find('input[name=TUE_ETIME]').val(),
-                WED: section_modify.find('input[name=WED]').val(),
+                WED: section_modify.find('input[name=WED]').is(':checked'),
                 WED_STIME: section_modify.find('input[name=WED_STIME]').val(),
                 WED_ETIME: section_modify.find('input[name=WED_ETIME]').val(),
-                THU: section_modify.find('input[name=THU]').val(),
+                THU: section_modify.find('input[name=THU]').is(':checked'),
                 THU_STIME: section_modify.find('input[name=THU_STIME]').val(),
                 THU_ETIME: section_modify.find('input[name=THU_ETIME]').val(),
-                FRI: section_modify.find('input[name=FRI]').val(),
+                FRI: section_modify.find('input[name=FRI]').is(':checked'),
                 FRI_STIME: section_modify.find('input[name=FRI_STIME]').val(),
                 FRI_ETIME: section_modify.find('input[name=FRI_ETIME]').val(),
-                STA: section_modify.find('input[name=STA]').val(),
+                STA: section_modify.find('input[name=STA]').is(':checked'),
                 STA_STIME: section_modify.find('input[name=STA_STIME]').val(),
                 STA_ETIME: section_modify.find('input[name=STA_ETIME]').val(),
                 CHECK_DATE: section_modify.find('input[name=CHECK_DATE]').val(),
                 ALERT_DATE: section_modify.find('input[name=ALERT_DATE]').val(),
-                MAIL_TO: section_modify.find('input[name=MAIL_TO]').val(),
-                CHECK_HR_CALENDAR: section_modify.find('input[name=CHECK_HR_CALENDAR]').val()
+                //MAIL_TO: section_modify.find('input[name=MAIL_TO]').val(),
+                CHECK_HR_CALENDAR: section_modify.find('input[name=CHECK_HR_CALENDAR]').is(':checked')
             }
         };
 
@@ -540,11 +542,11 @@
         });
     },
 
-    ALERT_CONFIGQuery: function (SN) {
+    ALERT_CONFIGQuery: function (SID) {
         var url = 'ALERT_CONFIGQuery';
         var request = {
             ALERT_CONFIG: {
-                SN: SN
+                SID: SID
             }
         };
 
@@ -555,16 +557,60 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+
                 if (response.Result.State === 0) {
                     var section_modify = $('#section_modify');
-                    section_modify.find('input[name=SN]').val(response.ALERT_CONFIG.SN);
-                    section_modify.find('input[name=HR_DATE]').val(response.ALERT_CONFIG.HR_DATE.substr(0, 10));
-                    section_modify.find('select[name=DATE_TYPE]').val(response.ALERT_CONFIG.DATE_TYPE);
-                    section_modify.find('textarea[name=MEMO]').val(response.ALERT_CONFIG.MEMO);
-                    section_modify.find('input[name=CDATE]').val(response.ALERT_CONFIG.CDATE.replace('T', ' '));
+                    section_modify.find('input[name=SID]').val(response.ALERT_CONFIG.SID);
+                    section_modify.find('select[name=MODE]').val(response.ALERT_CONFIG.MODE);
+                    section_modify.find('select[name=DATA_TYPE]').val(response.ALERT_CONFIG.DATA_TYPE);
+                    $("#DATA_TYPE").trigger("change");
+                    section_modify.find('select[name=LOCATION]').val(response.ALERT_CONFIG.LOCATION);
+                    $("#LOCATION").trigger("change");
+                    section_modify.find('select[name=DEVICE_ID]').val(response.ALERT_CONFIG.DEVICE_ID);
+                    section_modify.find('select[name=DATA_FIELD]').val(response.ALERT_CONFIG.DATA_FIELD);
+                    $("#DATA_FIELD").trigger("change");
+                    section_modify.find('select[name=SPEC_VALUE]').val(response.ALERT_CONFIG.MAX_VALUE);
+                    section_modify.find('input[name=MAX_VALUE]').val(response.ALERT_CONFIG.MAX_VALUE);
+                    section_modify.find('input[name=MIN_VALUE]').val(response.ALERT_CONFIG.MIN_VALUE);
+                    section_modify.find('input[name=CHECK_INTERVAL]').val(response.ALERT_CONFIG.CHECK_INTERVAL);
+                    section_modify.find('input[name=ALERT_INTERVAL]').val(response.ALERT_CONFIG.ALERT_INTERVAL);
+                    section_modify.find('input[name=SUN]').val(response.ALERT_CONFIG.SUN);
+                    section_modify.find('input[name=SUN_STIME]').val(response.ALERT_CONFIG.SUN_STIME);
+                    section_modify.find('input[name=SUN_ETIME]').val(response.ALERT_CONFIG.SUN_ETIME);
+                    section_modify.find('input[name=MON]').val(response.ALERT_CONFIG.MON);
+                    section_modify.find('input[name=MON_STIME]').val(response.ALERT_CONFIG.MON_STIME);
+                    section_modify.find('input[name=MON_ETIME]').val(response.ALERT_CONFIG.MON_ETIME);
+                    section_modify.find('input[name=TUE]').val(response.ALERT_CONFIG.TUE);
+                    section_modify.find('input[name=TUE_STIME]').val(response.ALERT_CONFIG.TUE_STIME);
+                    section_modify.find('input[name=TUE_ETIME]').val(response.ALERT_CONFIG.TUE_ETIME);
+                    section_modify.find('input[name=WED]').val(response.ALERT_CONFIG.WED);
+                    section_modify.find('input[name=WED_STIME]').val(response.ALERT_CONFIG.WED_STIME);
+                    section_modify.find('input[name=WED_ETIME]').val(response.ALERT_CONFIG.WED_ETIME);
+                    section_modify.find('input[name=THU]').val(response.ALERT_CONFIG.THU);
+                    section_modify.find('input[name=THU_STIME]').val(response.ALERT_CONFIG.THU_STIME);
+                    section_modify.find('input[name=THU_ETIME]').val(response.ALERT_CONFIG.THU_ETIME);
+                    section_modify.find('input[name=FRI]').val(response.ALERT_CONFIG.FRI);
+                    section_modify.find('input[name=FRI_STIME]').val(response.ALERT_CONFIG.FRI_STIME);
+                    section_modify.find('input[name=FRI_ETIME]').val(response.ALERT_CONFIG.FRI_ETIME);
+                    section_modify.find('input[name=STA]').val(response.ALERT_CONFIG.STA);
+                    section_modify.find('input[name=STA_STIME]').val(response.ALERT_CONFIG.STA_STIME);
+                    section_modify.find('input[name=STA_ETIME]').val(response.ALERT_CONFIG.STA_ETIME);
+                    section_modify.find('input[name=CHECK_DATE]').val(response.ALERT_CONFIG.CHECK_DATE);
+                    section_modify.find('input[name=ALERT_DATE]').val(response.ALERT_CONFIG.ALERT_DATE);
+                    section_modify.find('input[name=MAIL_TO]').val(response.ALERT_CONFIG.MAIL_TO);
+                    section_modify.find('input[name=CHECK_HR_CALENDAR]').val(response.ALERT_CONFIG.CHECK_HR_CALENDAR);
+                    section_modify.find('input[name=CDATE]').val(response.ALERT_CONFIG.CDATE);
                     section_modify.find('input[name=CUSER]').val(response.ALERT_CONFIG.CUSER);
-                    section_modify.find('input[name=MDATE]').val(response.ALERT_CONFIG.MDATE.replace('T', ' '));
+                    section_modify.find('input[name=MDATE]').val(response.ALERT_CONFIG.MDATE);
                     section_modify.find('input[name=MUSER]').val(response.ALERT_CONFIG.MUSER);
+                    //section_modify.find('input[name=SN]').val(response.ALERT_CONFIG.SN);
+                    //section_modify.find('input[name=HR_DATE]').val(response.ALERT_CONFIG.HR_DATE.substr(0, 10));
+                    //section_modify.find('select[name=DATE_TYPE]').val(response.ALERT_CONFIG.DATE_TYPE);
+                    //section_modify.find('textarea[name=MEMO]').val(response.ALERT_CONFIG.MEMO);
+                    //section_modify.find('input[name=CDATE]').val(response.ALERT_CONFIG.CDATE.replace('T', ' '));
+                    //section_modify.find('input[name=CUSER]').val(response.ALERT_CONFIG.CUSER);
+                    //section_modify.find('input[name=MDATE]').val(response.ALERT_CONFIG.MDATE.replace('T', ' '));
+                    //section_modify.find('input[name=MUSER]').val(response.ALERT_CONFIG.MUSER);
 
                     ALERT_CONFIGIndex.ALERT_CONFIG = response.ALERT_CONFIG;
                     ALERT_CONFIGIndex.ActionSwitch('U');
@@ -696,7 +742,7 @@
                 CHECK_DATE: section_modify.find('input[name=CHECK_DATE]').val(),
                 ALERT_DATE: section_modify.find('input[name=ALERT_DATE]').val(),
                 //MAIL_TO: section_modify.find('input[name=MAIL_TO]').val(),
-                CHECK_HR_CALENDAR: section_modify.find('input[name=CHECK_HR_CALENDAR]').val()
+                CHECK_HR_CALENDAR: section_modify.find('input[name=CHECK_HR_CALENDAR]').is(':checked')
             }
         };
 

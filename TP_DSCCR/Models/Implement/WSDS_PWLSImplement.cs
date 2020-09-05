@@ -47,7 +47,7 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
+                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
                         break;
                     case "YEAR":
                     case "MONTH":
@@ -56,7 +56,7 @@ SELECT {0} AS CDATE
                         fields += "'-' AS WSDS_PWLS_STATUS,";
                         break;
                     default:
-                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
+                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
                         break;
                 }
                 
@@ -178,7 +178,7 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
+                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
                         break;
                     case "YEAR":
                     case "MONTH":
@@ -187,7 +187,7 @@ SELECT {0} AS CDATE
                         fields += "'-' AS WSDS_PWLS_STATUS,";
                         break;
                     default:
-                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
+                        fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),WSDS_PWLS_STATUS), default) AS WSDS_PWLS_STATUS,";
                         break;
 
                 }

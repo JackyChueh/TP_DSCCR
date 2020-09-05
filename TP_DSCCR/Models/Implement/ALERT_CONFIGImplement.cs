@@ -152,6 +152,7 @@ FROM ALERT_CONFIG
 SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHECK_INTERVAL,ALERT_INTERVAL
     ,SUN,SUN_STIME,SUN_ETIME,MON,MON_STIME,MON_ETIME,TUE,TUE_STIME,TUE_ETIME,WED,WED_STIME,WED_ETIME,THU,THU_STIME
     ,THU_ETIME,FRI,FRI_STIME,FRI_ETIME,STA,STA_STIME,STA_ETIME,CHECK_DATE,ALERT_DATE,MAIL_TO,CHECK_HR_CALENDAR
+    ,CDATE,CUSER,MDATE,MUSER
     FROM ALERT_CONFIG
     WHERE SID=@SID
         ";
@@ -220,20 +221,31 @@ SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHEC
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
-        SET @SN = NEXT VALUE FOR [ALERT_CONFIG_SEQ]
+        SET @SID = NEXT VALUE FOR [ALERT_CONFIG_SEQ]
         INSERT ALERT_CONFIG (
-SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHECK_INTERVAL,ALERT_INTERVAL
-    ,SUN,SUN_STIME,SUN_ETIME,MON,MON_STIME,MON_ETIME,TUE,TUE_STIME,TUE_ETIME,WED,WED_STIME,WED_ETIME,THU,THU_STIME
-    ,THU_ETIME,FRI,FRI_STIME,FRI_ETIME,STA,STA_STIME,STA_ETIME,CHECK_DATE,ALERT_DATE,MAIL_TO,CHECK_HR_CALENDAR
-    ,CDATE,CUSER,MDATE,MUSER
-)
-            VALUES (
-@SID,@MODE,@DATA_TYPE,@LOCATION,@DEVICE_ID,@DATA_FIELD,@MAX_VALUE,@MIN_VALUE,@CHECK_INTERVAL,@ALERT_INTERVAL
-    ,@SUN,@SUN_STIME,@SUN_ETIME,@MON,@MON_STIME,@MON_ETIME,@TUE,@TUE_STIME,@TUE_ETIME,@WED,@WED_STIME,@WED_ETIME,@THU,@THU_STIME
-    ,@THU_ETIME,@FRI,@FRI_STIME,@FRI_ETIME,@STA,@STA_STIME,@STA_ETIME,@CHECK_DATE,@ALERT_DATE,@MAIL_TO,@CHECK_HR_CALENDAR
-    ,GETDATE(),@CUSER,GETDATE(),@MUSER
-);
+            SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHECK_INTERVAL,ALERT_INTERVAL
+            ,SUN,SUN_STIME,SUN_ETIME,MON,MON_STIME,MON_ETIME,TUE,TUE_STIME,TUE_ETIME,WED,WED_STIME,WED_ETIME,THU,THU_STIME
+            ,THU_ETIME,FRI,FRI_STIME,FRI_ETIME,STA,STA_STIME,STA_ETIME,CHECK_DATE,ALERT_DATE,MAIL_TO,CHECK_HR_CALENDAR
+            ,CDATE,CUSER,MDATE,MUSER)
+        VALUES (
+            @SID,@MODE,@DATA_TYPE,@LOCATION,@DEVICE_ID,@DATA_FIELD,@MAX_VALUE,@MIN_VALUE,@CHECK_INTERVAL,@ALERT_INTERVAL
+            ,@SUN,@SUN_STIME,@SUN_ETIME,@MON,@MON_STIME,@MON_ETIME,@TUE,@TUE_STIME,@TUE_ETIME,@WED,@WED_STIME,@WED_ETIME,@THU,@THU_STIME
+            ,@THU_ETIME,@FRI,@FRI_STIME,@FRI_ETIME,@STA,@STA_STIME,@STA_ETIME,GETDATE(),GETDATE(),@MAIL_TO,@CHECK_HR_CALENDAR
+            ,GETDATE(),@CUSER,GETDATE(),@MUSER);
                 ";
+
+//                sql = @"
+//        SET @SID = NEXT VALUE FOR [ALERT_CONFIG_SEQ]
+//        INSERT ALERT_CONFIG (
+//            SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHECK_INTERVAL,ALERT_INTERVAL
+//            ,SUN,SUN_STIME,SUN_ETIME
+//)
+//        VALUES (
+//            @SID,@MODE,@DATA_TYPE,@LOCATION,@DEVICE_ID,@DATA_FIELD,@MAX_VALUE,@MIN_VALUE,@CHECK_INTERVAL,@ALERT_INTERVAL
+//            ,@SUN,@SUN_STIME,@SUN_ETIME
+//);
+//                ";
+
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
 
@@ -247,34 +259,35 @@ SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHECK_INTER
                 Db.AddInParameter(cmd, "CHECK_INTERVAL", DbType.Int32, req.ALERT_CONFIG.CHECK_INTERVAL);
                 Db.AddInParameter(cmd, "ALERT_INTERVAL", DbType.Int32, req.ALERT_CONFIG.ALERT_INTERVAL);
                 Db.AddInParameter(cmd, "SUN", DbType.Boolean, req.ALERT_CONFIG.SUN);
-                Db.AddInParameter(cmd, "SUN_STIME", DbType.Time, req.ALERT_CONFIG.SUN_STIME);
-                Db.AddInParameter(cmd, "SUN_ETIME", DbType.Time, req.ALERT_CONFIG.SUN_ETIME);
+                Db.AddInParameter(cmd, "SUN_STIME", DbType.Time, req.ALERT_CONFIG.SUN_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.SUN_STIME.ToString());
+                Db.AddInParameter(cmd, "SUN_ETIME", DbType.Time, req.ALERT_CONFIG.SUN_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.SUN_ETIME.ToString());
                 Db.AddInParameter(cmd, "MON", DbType.Boolean, req.ALERT_CONFIG.MON);
-                Db.AddInParameter(cmd, "MON_STIME", DbType.Time, req.ALERT_CONFIG.MON_STIME);
-                Db.AddInParameter(cmd, "MON_ETIME", DbType.Time, req.ALERT_CONFIG.MON_ETIME);
+                Db.AddInParameter(cmd, "MON_STIME", DbType.Time, req.ALERT_CONFIG.MON_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.MON_STIME.ToString());
+                Db.AddInParameter(cmd, "MON_ETIME", DbType.Time, req.ALERT_CONFIG.MON_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.MON_ETIME.ToString());
                 Db.AddInParameter(cmd, "TUE", DbType.Boolean, req.ALERT_CONFIG.TUE);
-                Db.AddInParameter(cmd, "TUE_STIME", DbType.Time, req.ALERT_CONFIG.TUE_STIME);
-                Db.AddInParameter(cmd, "TUE_ETIME", DbType.Time, req.ALERT_CONFIG.TUE_ETIME);
+                Db.AddInParameter(cmd, "TUE_STIME", DbType.Time, req.ALERT_CONFIG.TUE_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.TUE_STIME.ToString());
+                Db.AddInParameter(cmd, "TUE_ETIME", DbType.Time, req.ALERT_CONFIG.TUE_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.TUE_ETIME.ToString());
                 Db.AddInParameter(cmd, "WED", DbType.Boolean, req.ALERT_CONFIG.WED);
-                Db.AddInParameter(cmd, "WED_STIME", DbType.Time, req.ALERT_CONFIG.WED_STIME);
-                Db.AddInParameter(cmd, "WED_ETIME", DbType.Time, req.ALERT_CONFIG.WED_ETIME);
+                Db.AddInParameter(cmd, "WED_STIME", DbType.Time, req.ALERT_CONFIG.WED_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.WED_STIME.ToString());
+                Db.AddInParameter(cmd, "WED_ETIME", DbType.Time, req.ALERT_CONFIG.WED_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.WED_ETIME.ToString());
                 Db.AddInParameter(cmd, "THU", DbType.Boolean, req.ALERT_CONFIG.THU);
-                Db.AddInParameter(cmd, "THU_STIME", DbType.Time, req.ALERT_CONFIG.THU_STIME);
-                Db.AddInParameter(cmd, "THU_ETIME", DbType.Time, req.ALERT_CONFIG.THU_ETIME);
+                Db.AddInParameter(cmd, "THU_STIME", DbType.Time, req.ALERT_CONFIG.THU_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.THU_STIME.ToString());
+                Db.AddInParameter(cmd, "THU_ETIME", DbType.Time, req.ALERT_CONFIG.THU_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.THU_ETIME.ToString());
                 Db.AddInParameter(cmd, "FRI", DbType.Boolean, req.ALERT_CONFIG.FRI);
-                Db.AddInParameter(cmd, "FRI_STIME", DbType.Time, req.ALERT_CONFIG.FRI_STIME);
-                Db.AddInParameter(cmd, "FRI_ETIME", DbType.Time, req.ALERT_CONFIG.FRI_ETIME);
+                Db.AddInParameter(cmd, "FRI_STIME", DbType.Time, req.ALERT_CONFIG.FRI_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.FRI_STIME.ToString());
+                Db.AddInParameter(cmd, "FRI_ETIME", DbType.Time, req.ALERT_CONFIG.FRI_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.FRI_ETIME.ToString());
                 Db.AddInParameter(cmd, "STA", DbType.Boolean, req.ALERT_CONFIG.STA);
-                Db.AddInParameter(cmd, "STA_STIME", DbType.Time, req.ALERT_CONFIG.STA_STIME);
-                Db.AddInParameter(cmd, "STA_ETIME", DbType.Time, req.ALERT_CONFIG.STA_ETIME);
-                Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
-                Db.AddInParameter(cmd, "ALERT_DATE", DbType.Date, req.ALERT_CONFIG.ALERT_DATE);
+                Db.AddInParameter(cmd, "STA_STIME", DbType.Time, req.ALERT_CONFIG.STA_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_STIME.ToString());
+                Db.AddInParameter(cmd, "STA_ETIME", DbType.Time, req.ALERT_CONFIG.STA_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_ETIME.ToString());
+                //Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
+                //Db.AddInParameter(cmd, "ALERT_DATE", DbType.Date, req.ALERT_CONFIG.ALERT_DATE);
                 Db.AddInParameter(cmd, "MAIL_TO", DbType.String, req.ALERT_CONFIG.MAIL_TO);
-                Db.AddInParameter(cmd, "CHECK_HR_CALENDAR", DbType.Date, req.ALERT_CONFIG.CHECK_HR_CALENDAR);
+                Db.AddInParameter(cmd, "CHECK_HR_CALENDAR", DbType.Boolean, req.ALERT_CONFIG.CHECK_HR_CALENDAR);
                 //Db.AddInParameter(cmd, "CDATE", DbType.Date, req.ALERT_CONFIG.CDATE);
                 Db.AddInParameter(cmd, "CUSER", DbType.String, req.ALERT_CONFIG.CUSER);
                 //Db.AddInParameter(cmd, "MDATE", DbType.Date, req.ALERT_CONFIG.MDATE);
                 Db.AddInParameter(cmd, "MUSER", DbType.String, req.ALERT_CONFIG.MUSER);
+                Db.AddOutParameter(cmd, "SID", DbType.Int32, 1);
 
                 effect = Db.ExecuteNonQuery(cmd);
                 req.ALERT_CONFIG.SID = Db.GetParameterValue(cmd, "SID") as Int32? ?? null;

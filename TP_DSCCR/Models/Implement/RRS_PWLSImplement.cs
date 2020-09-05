@@ -50,7 +50,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 14; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
                             }
                         }
                         break;
@@ -69,7 +69,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 14; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
                             }
                         }
                         break;
@@ -207,7 +207,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 14; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
                             }
                         }
                         break;
@@ -226,7 +226,7 @@ SELECT {0} AS CDATE
                         for (int i = 1; i < 14; i++)
                         {
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,1),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('up_down', CONVERT(DECIMAL(28,0),RRS" + i.ToString("00") + "_PWLS01), default) AS RRS" + i.ToString("00") + "_PWLS01,";
                             }
                         }
                         break;

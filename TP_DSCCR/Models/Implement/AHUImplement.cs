@@ -55,11 +55,11 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -93,11 +93,11 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -238,11 +238,11 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
@@ -276,11 +276,11 @@ SELECT {0} AS CDATE
                         {
                             if (i == 1)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('function_fail_AHU', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), LOCATION) AS AHU" + i.ToString("00") + ",";
                             }
                             else if (i == 2)
                             {
-                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,1),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
+                                fields += "TP_SCC.dbo.PHRASE_NAME('switch_status', CONVERT(DECIMAL(28,0),AHU" + i.ToString("00") + "), default) AS AHU" + i.ToString("00") + ",";
                             }
                             else
                             {
