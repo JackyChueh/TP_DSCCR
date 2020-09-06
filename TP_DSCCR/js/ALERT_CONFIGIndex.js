@@ -353,8 +353,7 @@
                     $('#spec').show();
                     ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'open_close', '');
                 }
-            }
-            else if (DataType === 'ZP1') {
+            } else if (DataType === 'ZP1') {
                 if (DataField === 'ZP107') {
                     $('#max,#min').hide();
                     $('#spec').show();
@@ -371,6 +370,44 @@
                     $('#max,#min').hide();
                     $('#spec').show();
                     ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'open_close', '');
+                }
+            } else if (DataType === 'CT') {
+                if (DataField === 'CT01') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'running', '');
+                } else if (DataField === 'CT02') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'function_fail', '');
+                } else if (DataField === 'CT03') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'switch_status', '');
+                } 
+            } else if (DataType === 'WSDS_PVOI') {
+                if (DataField === 'WSDS_PVOI_STATUS') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'on_off', '');
+                }
+            } else if (DataType === 'WSDS_PWLS') {
+                if (DataField === 'WSDS_PWLS_STATUS') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'up_down', '');
+                }
+            } else if (DataType === 'RRS_PVOI') {
+                if (DataField >= 'RRS01_PVOI01' && DataField <= 'RRS07_PVOI01') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'on_off', '');
+                }
+            } else if (DataType === 'RRS_PWLS') {
+                if (DataField >= 'RRS01_PWLS01' && DataField <= 'RRS13_PWLS01') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'up_down', '');
                 }
             }
 
