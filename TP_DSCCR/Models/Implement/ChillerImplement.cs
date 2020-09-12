@@ -36,7 +36,7 @@ namespace TP_DSCCR.Models.Implement
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,'Chiller') AS LOCATION
     ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
     FROM Chiller
@@ -229,7 +229,7 @@ SELECT {0} AS CDATE
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,'Chiller') AS LOCATION
     ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
     FROM Chiller
@@ -614,7 +614,7 @@ SELECT {0} AS CDATE
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,default) AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('Chiller_LOCATION',LOCATION,'Chiller') AS LOCATION
     ,TP_SCC.dbo.PHRASE_NAME('Chiller_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,{1}
     FROM Chiller
