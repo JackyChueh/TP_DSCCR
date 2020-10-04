@@ -151,6 +151,7 @@
     <Compile Include="Controllers\RRS_PVOIController.cs" />
     <Compile Include="Controllers\RRS_VFLHController.cs" />
     <Compile Include="Controllers\CTController.cs" />
+    <Compile Include="Controllers\MSPCSTATSController.cs" />
     <Compile Include="Controllers\ZP1Controller.cs" />
     <Compile Include="Controllers\CPController.cs" />
     <Compile Include="Controllers\COPController.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Models\Implement\RRS_PVOIImplement.cs" />
     <Compile Include="Models\Implement\RRS_VFLHImplement.cs" />
     <Compile Include="Models\Implement\CTImplement.cs" />
+    <Compile Include="Models\Implement\MSPCSTATSImplement.cs" />
     <Compile Include="Models\Implement\ZP1Implement.cs" />
     <Compile Include="Models\Implement\CPImplement.cs" />
     <Compile Include="Models\Implement\COPImplement.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="ViewModels\RRS_PVOI.cs" />
     <Compile Include="ViewModels\RRS_VFLH.cs" />
     <Compile Include="ViewModels\CT.cs" />
+    <Compile Include="ViewModels\MSPCSTATS.cs" />
     <Compile Include="ViewModels\ZP1.cs" />
     <Compile Include="ViewModels\CP.cs" />
     <Compile Include="ViewModels\COP.cs" />
@@ -264,6 +267,7 @@
     <Content Include="js\RRS_VFLHGraph.js" />
     <Content Include="js\CTData.js" />
     <Content Include="js\CTGraph.js" />
+    <Content Include="js\MSPCSTATSData.js" />
     <Content Include="js\ZP1Data.js" />
     <Content Include="js\ZP1Graph.js" />
     <Content Include="js\CPData.js" />
@@ -397,6 +401,8 @@
     <Content Include="Views\Users\UsersIndex.cshtml" />
     <Content Include="Views\HR_CALENDAR\HR_CALENDARIndex.cshtml" />
     <Content Include="Views\ALERT_CONFIG\ALERT_CONFIGIndex.cshtml" />
+    <Content Include="Views\MSPCSTATS\Data.cshtml" />
+    <Content Include="Views\MSPCSTATS\Graph.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
