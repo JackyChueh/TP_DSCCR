@@ -1,10 +1,12 @@
-﻿var MSPCSTATSData = {
+﻿var MSPCSTATSGraph = {
     LoginUrl: null,
+    ChartObj: null,
 
     Page_Init: function () {
-        MSPCSTATSData.EventBinding();
-        MSPCSTATSData.OptionRetrieve();
-        MSPCSTATSData.ActionSwitch('R');
+        MSPCSTATSGraph.EventBinding();
+        MSPCSTATSGraph.OptionRetrieve();
+        MSPCSTATSGraph.ActionSwitch('R');
+        $('#FIELD option:nth-child(1)').attr("selected", true);
     },
 
     EventBinding: function () {
@@ -13,25 +15,20 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            MSPCSTATSData.MSPCSTATSRetrieve();
+            MSPCSTATSGraph.MSPCSTATSGraph();
         });
 
-        $('#page_number, #page_size').change(function () {
-            MSPCSTATSData.MSPCSTATSRetrieve();
+        $('#print').click(function () {
+            MSPCSTATSGraph.MSPCSTATSGraphPrint();
         });
 
         $('#LOCATION').change(function () {
-            MSPCSTATSData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
-        });
-
-        $('#excel').click(function () {
-            MSPCSTATSData.MSPCSTATSExcel();
+            MSPCSTATSGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
         $('#login').click(function () {
-            window.location.href = MSPCSTATSData.LoginUrl;
+            window.location.href = MSPCSTATSGraph.LoginUrl;
         });
-
     },
 
     ActionSwitch: function (action) {
@@ -39,7 +36,7 @@
         $('.card-header button').hide();
         if (action === 'R') {
             $('#query').show();
-            $('#excel').show();
+            $('#print').show();
             $('#section_retrieve').show();
         }
     },
@@ -57,7 +54,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'MSPCSTATS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE','WATER_TOWER']
+            PhraseGroup: ['page_size', 'MSPCSTATS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE', 'WATER_TOWER']
         };
 
         $.ajax({
@@ -86,6 +83,7 @@
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
@@ -96,7 +94,6 @@
                     $.each(response.ItemList.WATER_TOWER, function (idx, row) {
                         $('#WATER_TOWER').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -108,6 +105,7 @@
                 alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
             },
             complete: function (xhr, status) {
+                //alert('' + xhr.status + ';' + status );
             }
         });
     },
@@ -151,11 +149,13 @@
         }
         else {
             $(obj).find('option').remove();
+            //$(obj).find('option').not(':first').remove();
+            //$(obj).append('<option value=""></option>');
         }
     },
 
-    MSPCSTATSRetrieve: function () {
-        var url = 'MSPCSTATSRetrieve';
+    MSPCSTATSGraph: function () {
+        var url = 'MSPCSTATSGraph';
         var request = {
             MSPCSTATS: {
                 LOCATION: $('#LOCATION').val(),
@@ -164,9 +164,11 @@
             },
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
+            FIELD: $('#FIELD').val(),
+            FIELD_NAME: $('#FIELD :selected').text(),
             GROUP_BY_DT: $('#GROUP_BY_DT').val(),
-            PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 10
+            GROUP_BY_DT_NAME: $('#GROUP_BY_DT :selected').text(),
+            GRAPH_TYPE: $('#GRAPH_TYPE').val()
         };
 
         $.ajax({
@@ -176,68 +178,16 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                MSPCSTATSData.ModalSwitch(response.Result.State);
+                MSPCSTATSGraph.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
-                    $('#gridview >  tbody').html('');
-                    $('#rows_count').text(response.Pagination.RowCount);
-                    $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
-                    $('#page_number option').remove();
-                    for (var i = 1; i <= response.Pagination.PageCount; i++) {
-                        $('#page_number').append($('<option></option>').attr('value', i).text(i));
-                    }
-                    $('#page_number').val(response.Pagination.PageNumber);
-                    $('#page_count').text(response.Pagination.PageCount);
-                    $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
-
-                    var htmlRow = '';
-                    if (response.Pagination.RowCount > 0) {
-                        $.each(response.MSPCSTATSData, function (idx, row) {
-                            htmlRow = '<tr>';
-                            htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
-                            htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
-                            htmlRow += '<td>' + row.LOCATION + '</td>';
-                            htmlRow += '<td>' + row.DEVICE_ID + '</td>';
-                            htmlRow += '<td>' + row.WATER_TOWER + '</td>';
-                            var css = '';
-                            if (row.SEF01 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF01 + '</td>';
-                            if (row.SEF02 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF02 + '</td>';
-                            if (row.SEF03 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF03 + '</td>';
-                            if (row.SEF04 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF04 + '</td>';
-                            if (row.SEF05 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF05 + '</td>';
-                            if (row.SEF06 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF06 + '</td>';
-                            if (row.SEF07 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF07 + '</td>';
-                            if (row.SEF08 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF08 + '</td>';
-                            htmlRow += '</tr>';
-                            $('#gridview >  tbody').append(htmlRow);
-                        });
-                    }
-                    else {
-                        htmlRow = '<tr><td colspan="' + $('#gridview > thead').children('tr').children('th').length +'" style="text-align:center">data not found</td></tr>';
-                        $('#gridview >  tbody').append(htmlRow);
+                    if (response.Chart) {
+                        if (MSPCSTATSGraph.ChartObj) {
+                            MSPCSTATSGraph.ChartObj.destroy();
+                        }
+                        var obj;
+                        obj = document.getElementById('chartCanvas').getContext('2d');
+                        MSPCSTATSGraph.ChartObj = new Chart(obj, response.Chart);
+                        //MSPCSTATSGraph.ChartObj.resize();
                     }
                 }
                 else {
@@ -256,45 +206,20 @@
         });
     },
 
-    MSPCSTATSExcel: function () {
-        var url = 'MSPCSTATSExcel';
-        var request = {
-            MSPCSTATS: {
-                LOCATION: $('#LOCATION').val(),
-                DEVICE_ID: $('#DEVICE_ID').val(),
-                WATER_TOWER: $('#WATER_TOWER').val()
-            },
-            SDATE: $('#SDATE').val(),
-            EDATE: $('#EDATE').val(),
-            GROUP_BY_DT: $('#GROUP_BY_DT').val()
-        };
-
-        $.ajax({
-            cache: false,
-            type: 'post',
-            url: url,
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                MSPCSTATSData.ModalSwitch(response.Result.State);
-                if (response.Result.State === 0) {
-                    window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
-                        + '&FileName=' + response.FileName;
-                }
-                else {
-                    $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-                    $('#modal').modal('show');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
+    MSPCSTATSGraphPrint: function () {
+        var win = window.open();
+        //win.document.open();
+        win.document.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        win.document.write('<head><title></title>');
+        win.document.write('</head><body style="padding:0;margin-top:0 !important;margin-bottom:0!important;"   onLoad="self.print();self.close();">');
+        //var content_vlue = document.getElementById("chartCanvas").innerHTML;
+        //win.document.write(content_vlue);
+        var canvas = document.getElementById("chartCanvas");
+        win.document.write("<img src='" + canvas.toDataURL("image/png", 1) + "'/>");
+        win.document.write('</body></html>');
+        //document.write(doct + divContent.innerHTML);
+        win.document.close();
+        win.focus();
     }
 
 

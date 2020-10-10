@@ -1,10 +1,10 @@
-﻿var MSPCSTATSData = {
+﻿var MSPCALARSData = {
     LoginUrl: null,
 
     Page_Init: function () {
-        MSPCSTATSData.EventBinding();
-        MSPCSTATSData.OptionRetrieve();
-        MSPCSTATSData.ActionSwitch('R');
+        MSPCALARSData.EventBinding();
+        MSPCALARSData.OptionRetrieve();
+        MSPCALARSData.ActionSwitch('R');
     },
 
     EventBinding: function () {
@@ -13,23 +13,23 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            MSPCSTATSData.MSPCSTATSRetrieve();
+            MSPCALARSData.MSPCALARSRetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
-            MSPCSTATSData.MSPCSTATSRetrieve();
+            MSPCALARSData.MSPCALARSRetrieve();
         });
 
         $('#LOCATION').change(function () {
-            MSPCSTATSData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+            MSPCALARSData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
         $('#excel').click(function () {
-            MSPCSTATSData.MSPCSTATSExcel();
+            MSPCALARSData.MSPCALARSExcel();
         });
 
         $('#login').click(function () {
-            window.location.href = MSPCSTATSData.LoginUrl;
+            window.location.href = MSPCALARSData.LoginUrl;
         });
 
     },
@@ -57,7 +57,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'MSPCSTATS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE','WATER_TOWER']
+            PhraseGroup: ['page_size', 'MSPCALARS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE','WATER_TOWER']
         };
 
         $.ajax({
@@ -76,7 +76,7 @@
                     });
 
                     $('#LOCATION').append('<option value=""></option>');
-                    $.each(response.ItemList.MSPCSTATS_LOCATION, function (idx, row) {
+                    $.each(response.ItemList.MSPCALARS_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
                     //$('#LOCATION option:nth-child(2)').attr("selected", true);
@@ -116,7 +116,7 @@
         if (parentKey) {
             var url = '/Main/SubItemListRetrieve';
             var request = {
-                PhraseGroup: 'MSPCSTATS_DEVICE_ID',
+                PhraseGroup: 'MSPCALARS_DEVICE_ID',
                 ParentKey: parentKey
             };
 
@@ -154,10 +154,10 @@
         }
     },
 
-    MSPCSTATSRetrieve: function () {
-        var url = 'MSPCSTATSRetrieve';
+    MSPCALARSRetrieve: function () {
+        var url = 'MSPCALARSRetrieve';
         var request = {
-            MSPCSTATS: {
+            MSPCALARS: {
                 LOCATION: $('#LOCATION').val(),
                 DEVICE_ID: $('#DEVICE_ID').val(),
                 WATER_TOWER: $('#WATER_TOWER').val()
@@ -176,7 +176,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                MSPCSTATSData.ModalSwitch(response.Result.State);
+                MSPCALARSData.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -191,7 +191,7 @@
 
                     var htmlRow = '';
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.MSPCSTATSData, function (idx, row) {
+                        $.each(response.MSPCALARSData, function (idx, row) {
                             htmlRow = '<tr>';
                             htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
                             htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
@@ -199,38 +199,34 @@
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
                             htmlRow += '<td>' + row.WATER_TOWER + '</td>';
                             var css = '';
-                            if (row.SEF01 === "停止") {
+                            if (row.SEF09 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF01 + '</td>';
-                            if (row.SEF02 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF09 + '</td>';
+                            if (row.SEF10 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF02 + '</td>';
-                            if (row.SEF03 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF10 + '</td>';
+                            if (row.SEF11 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF03 + '</td>';
-                            if (row.SEF04 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF11 + '</td>';
+                            if (row.SEF12 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF04 + '</td>';
-                            if (row.SEF05 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF12 + '</td>';
+                            if (row.SEF13 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF05 + '</td>';
-                            if (row.SEF06 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF13 + '</td>';
+                            if (row.SEF14 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF06 + '</td>';
-                            if (row.SEF07 === "停止") {
+                            htmlRow += '<td' + css + '>' + row.SEF14 + '</td>';
+                            if (row.SEF15 === "警報") {
                                 css = ' class="text-danger"';
                             }
-                            htmlRow += '<td' + css + '>' + row.SEF07 + '</td>';
-                            if (row.SEF08 === "停止") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF08 + '</td>';
+                            htmlRow += '<td' + css + '>' + row.SEF15 + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
                         });
@@ -256,10 +252,10 @@
         });
     },
 
-    MSPCSTATSExcel: function () {
-        var url = 'MSPCSTATSExcel';
+    MSPCALARSExcel: function () {
+        var url = 'MSPCALARSExcel';
         var request = {
-            MSPCSTATS: {
+            MSPCALARS: {
                 LOCATION: $('#LOCATION').val(),
                 DEVICE_ID: $('#DEVICE_ID').val(),
                 WATER_TOWER: $('#WATER_TOWER').val()
@@ -276,7 +272,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                MSPCSTATSData.ModalSwitch(response.Result.State);
+                MSPCALARSData.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
                         + '&FileName=' + response.FileName;

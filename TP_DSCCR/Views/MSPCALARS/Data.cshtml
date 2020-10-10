@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "箱冷狀態 - 數據查詢";
+    ViewBag.Title = "箱冷警報 - 數據查詢";
 }
 @section Styles
 {
@@ -54,14 +54,13 @@
                             <th>位置</th>
                             <th>設備名稱</th>
                             <th>水塔編號</th>
-                            <th>*時間控制(On/OFF)</th>
-                            <th>*溫度控制(On/OFF)</th>
-                            <th>*旋鈕檔位狀態</th>
-                            <th>電源運轉指示(On/OFF)</th>
-                            <th>*運轉指示(On/OFF)</th>
-                            <th>*運轉指示(On/OFF)(第1壓縮機)</th>
-                            <th>*運轉指示(On/OFF)(第2壓縮機)</th>
-                            <th>*風扇運轉指示(On/OFF)</th>
+                            <th>*風壓警報</th>
+                            <th>*電源警報</th>
+                            <th>故障跳脫</th>
+                            <th>*綜合警報</th>
+                            <th>*漏水警報</th>
+                            <th>溫度過高警報</th>
+                            <th>*溫度過低警報</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -126,11 +125,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/MSPCSTATSData.js"></script>
+    <script src="~/js/MSPCALARSData.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            MSPCSTATSData.Page_Init();
-            MSPCSTATSData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+            MSPCALARSData.Page_Init();
+            MSPCALARSData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

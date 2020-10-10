@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "區域泵 - 統計圖表";
+    ViewBag.Title = "箱冷狀態 - 統計圖表";
 }
 @section Styles
 {
@@ -28,7 +28,7 @@
                     <label for="EDATE">日期時間(迄)</label>
                     <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
                 </div>
-                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2" style="display:none;">
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="LOCATION">位置</label>
                     <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
                 </div>
@@ -37,23 +37,24 @@
                     <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="WATER_TOWER">水塔編號</label>
+                    <select class="form-control form-control-sm" id="WATER_TOWER" name="WATER_TOWER"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="GROUP_BY_DT">時間間隔</label>
                     <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="FIELD">數據欄位</label>
                     <select class="form-control form-control-sm  fields" id="FIELD" name="FIELD">
-                        <option value="ZP101">冰水瞬間流量(lpm) (ZP1及ZP2總管)</option>
-                        <option value="ZP102">冰水水路壓差 (ZP1及ZP2總管)</option>
-                        @*<option value="ZP103">BTU (ZP1及ZP2總管)(&deg;C)</option>*@
-                        <option value="ZP104">*冰水總出水溫(&deg;C) (ZP1及ZP2總管)</option>
-                        <option value="ZP105">*冰水總回水溫(&deg;C) (ZP1及ZP2總管)(&deg;C)</option>
-                        <option value="ZP106">旁通控制閥閥位(%) (ZP1及ZP2總管)</option>
-                        <option value="ZP107">運轉指示(On/OFF)</option>
-                        <option value="ZP108">故障跳脫</option>
-                        <option value="ZP109">旋鈕檔位狀態</option>
-                        <option value="ZP110">*壓差開關</option>
-                        <option value="ZP111">*變頻器運轉指示頻率(Hz)</option>
+                        <option value="SEF01">*時間控制(On/OFF)</option>
+                        <option value="SEF02">*溫度控制(On/OFF)</option>
+                        <option value="SEF03">*旋鈕檔位狀態</option>
+                        <option value="SEF04">電源運轉指示(On/OFF)</option>
+                        <option value="SEF05">*運轉指示(On/OFF)</option>
+                        <option value="SEF06">*運轉指示(On/OFF)(第1壓縮機)</option>
+                        <option value="SEF07">*運轉指示(On/OFF)(第2壓縮機)</option>
+                        <option value="SEF08">*風扇運轉指示(On/OFF)</option>
                     </select>
                 </div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -93,11 +94,11 @@
 @section Scripts{
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/Chart.min.js"></script>
-    <script src="~/js/ZP1Graph.js"></script>
+    <script src="~/js/MSPCSTATSGraph.js"></script>
     <script type="text/JavaScript">
         $(document).ready(function () {
-            ZP1Graph.Page_Init();
-            ZP1Graph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+           MSPCSTATSGraph.Page_Init();
+           MSPCSTATSGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
     </script>
 }

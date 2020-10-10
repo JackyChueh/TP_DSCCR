@@ -12,15 +12,15 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TP_DSCCR.Models.Implement
 {
-    public class MSPCSTATSImplement : EnterpriseLibrary
+    public class MSPCALARSImplement : EnterpriseLibrary
     {
-        public MSPCSTATSImplement(string connectionStringName) : base(connectionStringName) { }
+        public MSPCALARSImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public MSPCSTATSDataRes PaginationRetrieve(MSPCSTATSDataReq req)
+        public MSPCALARSDataRes PaginationRetrieve(MSPCALARSDataReq req)
         {
-            MSPCSTATSDataRes res = new MSPCSTATSDataRes()
+            MSPCALARSDataRes res = new MSPCALARSDataRes()
             {
-                MSPCSTATSData = new List<MSPCSTATSData>(),
+                MSPCALARSData = new List<MSPCALARSData>(),
                 Pagination = new Pagination
                 {
                     PageCount = 0,
@@ -36,11 +36,11 @@ namespace TP_DSCCR.Models.Implement
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_LOCATION',LOCATION,'MSPCSTATS') AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_LOCATION',LOCATION,'MSPCALARS') AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,TP_SCC.dbo.PHRASE_NAME('WATER_TOWER',WATER_TOWER,default) AS WATER_TOWER
     ,{1}
-    FROM MSPCSTATS
+    FROM MSPCALARS
     {2}
     {3}
 ";
@@ -48,15 +48,15 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,0),SEF" + i.ToString("00") + "), default) AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),MSPCALARS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -64,28 +64,28 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "'-' AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCSTATS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCALARS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
                     default:
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,0),SEF" + i.ToString("00") + "), default) AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),MSPCALARS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -135,20 +135,20 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.LOCATION))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCSTATS.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCALARS.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCSTATS.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCALARS.DEVICE_ID);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.WATER_TOWER))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.WATER_TOWER))
                 {
                     where += " AND WATER_TOWER=@WATER_TOWER";
-                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCSTATS.WATER_TOWER);
+                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCALARS.WATER_TOWER);
                 }
                 if (where.Length > 0)
                 {
@@ -172,7 +172,7 @@ SELECT {0} AS CDATE
                     {
                         for (int i = res.Pagination.MinNumber - 1; i < res.Pagination.MaxNumber; i++)
                         {
-                            var row = new MSPCSTATSData
+                            var row = new MSPCALARSData
                             {
                                 //SID = (int)dt.Rows[i]["SID"],
                                 CDATE = dt.Rows[i]["CDATE"] as string,
@@ -181,16 +181,15 @@ SELECT {0} AS CDATE
                                 LOCATION = dt.Rows[i]["LOCATION"] as string,
                                 DEVICE_ID = dt.Rows[i]["DEVICE_ID"] as string,
                                 WATER_TOWER = dt.Rows[i]["WATER_TOWER"] as string,
-                                SEF01 = dt.Rows[i]["SEF01"].ToString(),
-                                SEF02 = dt.Rows[i]["SEF02"].ToString(),
-                                SEF03 = dt.Rows[i]["SEF03"].ToString(),
-                                SEF04 = dt.Rows[i]["SEF04"].ToString(),
-                                SEF05 = dt.Rows[i]["SEF05"].ToString(),
-                                SEF06 = dt.Rows[i]["SEF06"].ToString(),
-                                SEF07 = dt.Rows[i]["SEF07"].ToString(),
-                                SEF08 = dt.Rows[i]["SEF08"].ToString()
+                                SEF09 = dt.Rows[i]["SEF09"].ToString(),
+                                SEF10 = dt.Rows[i]["SEF10"].ToString(),
+                                SEF11 = dt.Rows[i]["SEF11"].ToString(),
+                                SEF12 = dt.Rows[i]["SEF12"].ToString(),
+                                SEF13 = dt.Rows[i]["SEF13"].ToString(),
+                                SEF14 = dt.Rows[i]["SEF14"].ToString(),
+                                SEF15 = dt.Rows[i]["SEF15"].ToString(),
                             };
-                            res.MSPCSTATSData.Add(row);
+                            res.MSPCALARSData.Add(row);
                         }
                     }
                 }
@@ -200,21 +199,21 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        public MemoryStream ExcelRetrieve(MSPCSTATSExcelReq req)
+        public MemoryStream ExcelRetrieve(MSPCALARSExcelReq req)
         {
             MemoryStream ms = new MemoryStream();
 
-            List<MSPCSTATSData> list = new List<MSPCSTATSData>();
+            List<MSPCALARSData> list = new List<MSPCALARSData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_LOCATION',LOCATION,'MSPCSTATS') AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_LOCATION',LOCATION,'MSPCALARS') AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,TP_SCC.dbo.PHRASE_NAME('WATER_TOWER',WATER_TOWER,default) AS WATER_TOWER
     ,{1}
-    FROM MSPCSTATS
+    FROM MSPCALARS
     {2}
     {3}
 ";
@@ -222,15 +221,15 @@ SELECT {0} AS CDATE
                 switch (req.GROUP_BY_DT)
                 {
                     case "DETAIL":
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,0),SEF" + i.ToString("00") + "), default) AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),MSPCALARS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -238,28 +237,28 @@ SELECT {0} AS CDATE
                     case "MONTH":
                     case "DAY":
                     case "HOUR":
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "'-' AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCSTATS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCALARS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
                     default:
-                        for (int i = 1; i < 9; i++)
+                        for (int i = 9; i < 16; i++)
                         {
-                            if (i < 9)
+                            if (i > 8 && i < 16)
                             {
                                 fields += "TP_SCC.dbo.PHRASE_NAME('on_off', CONVERT(DECIMAL(28,0),SEF" + i.ToString("00") + "), default) AS SEF" + i.ToString("00") + ",";
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),MSPCALARS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -309,20 +308,20 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.LOCATION))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCSTATS.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCALARS.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCSTATS.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCALARS.DEVICE_ID);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.WATER_TOWER))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.WATER_TOWER))
                 {
                     where += " AND WATER_TOWER=@WATER_TOWER";
-                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCSTATS.WATER_TOWER);
+                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCALARS.WATER_TOWER);
                 }
                 if (where.Length > 0)
                 {
@@ -337,19 +336,19 @@ SELECT {0} AS CDATE
                 {
                     while (reader.Read())
                     {
-                        var row = new MSPCSTATSData
+                        var row = new MSPCALARSData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
                             WATER_TOWER = reader["WATER_TOWER"] as string,
-                            SEF01 = reader["SEF01"].ToString(),
-                            SEF02 = reader["SEF02"].ToString(),
-                            SEF04 = reader["SEF04"].ToString(),
-                            SEF05 = reader["SEF05"].ToString(),
-                            SEF06 = reader["SEF06"].ToString(),
-                            SEF07 = reader["SEF07"].ToString(),
-                            SEF08 = reader["SEF08"].ToString()
+                            SEF09 = reader["SEF09"].ToString(),
+                            SEF10 = reader["SEF10"].ToString(),
+                            SEF11 = reader["SEF11"].ToString(),
+                            SEF12 = reader["SEF12"].ToString(),
+                            SEF13 = reader["SEF13"].ToString(),
+                            SEF14 = reader["SEF14"].ToString(),
+                            SEF15 = reader["SEF05"].ToString(),
                         };
                         list.Add(row);
                     }
@@ -362,7 +361,7 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        private MemoryStream ExcelProduce(string GroupByDt, List<MSPCSTATSData> List)
+        private MemoryStream ExcelProduce(string GroupByDt, List<MSPCALARSData> List)
         {
             MemoryStream ms = new MemoryStream();
 
@@ -449,7 +448,7 @@ SELECT {0} AS CDATE
                 );
                 sheetData.AppendChild(row);
 
-                foreach (MSPCSTATSData data in List)
+                foreach (MSPCALARSData data in List)
                 {
                     //DateTime dt = DateTime.Parse(data.CDATE);
                     string date = "";
@@ -500,42 +499,37 @@ SELECT {0} AS CDATE
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF01),
+                            CellValue = new CellValue(data.SEF09),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF02),
+                            CellValue = new CellValue(data.SEF10),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF03),
+                            CellValue = new CellValue(data.SEF11),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF04),
+                            CellValue = new CellValue(data.SEF12),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF05),
+                            CellValue = new CellValue(data.SEF13),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF06),
+                            CellValue = new CellValue(data.SEF14),
                             DataType = CellValues.String
                         },
                         new Cell()
                         {
-                            CellValue = new CellValue(data.SEF07),
-                            DataType = CellValues.String
-                        },
-                        new Cell()
-                        {
-                            CellValue = new CellValue(data.SEF08),
+                            CellValue = new CellValue(data.SEF15),
                             DataType = CellValues.String
                         }
                     );
@@ -546,26 +540,26 @@ SELECT {0} AS CDATE
             return ms;
         }
 
-        public MSPCSTATSGraphRes GraphRetrieve(MSPCSTATSGraphReq req)
+        public MSPCALARSGraphRes GraphRetrieve(MSPCALARSGraphReq req)
         {
-            MSPCSTATSGraphRes res = new MSPCSTATSGraphRes();
+            MSPCALARSGraphRes res = new MSPCALARSGraphRes();
 
-            List<MSPCSTATSChartJsData> list = new List<MSPCSTATSChartJsData>();
+            List<MSPCALARSChartJsData> list = new List<MSPCALARSChartJsData>();
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
 SELECT {0} AS CDATE
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_LOCATION',LOCATION,'MSPCSTATS') AS LOCATION
-    ,TP_SCC.dbo.PHRASE_NAME('MSPCSTATS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_LOCATION',LOCATION,'MSPCALARS') AS LOCATION
+    ,TP_SCC.dbo.PHRASE_NAME('MSPCALARS_DEVICE_ID',DEVICE_ID,LOCATION) AS DEVICE_ID
     ,TP_SCC.dbo.PHRASE_NAME('WATER_TOWER',WATER_TOWER,default) AS WATER_TOWER
     ,{1}
-    FROM MSPCSTATS
+    FROM MSPCALARS
     {2}
     {3}
     {4}
 ";
-                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS MSPCSTATS_VALUE", req.FIELD);
+                string field = string.Format("CONVERT(DECIMAL(28,1),AVG({0})) AS MSPCALARS_VALUE", req.FIELD);
 
                 string groupByDT = null;
                 string group = null;
@@ -613,20 +607,20 @@ SELECT {0} AS CDATE
                     where += " AND CDATE<=@EDATE";
                     Db.AddInParameter(cmd, "EDATE", DbType.DateTime, req.EDATE);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.LOCATION))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.LOCATION))
                 {
                     where += " AND LOCATION=@LOCATION";
-                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCSTATS.LOCATION);
+                    Db.AddInParameter(cmd, "LOCATION", DbType.String, req.MSPCALARS.LOCATION);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.DEVICE_ID))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.DEVICE_ID))
                 {
                     where += " AND DEVICE_ID=@DEVICE_ID";
-                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCSTATS.DEVICE_ID);
+                    Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, req.MSPCALARS.DEVICE_ID);
                 }
-                if (!string.IsNullOrEmpty(req.MSPCSTATS.WATER_TOWER))
+                if (!string.IsNullOrEmpty(req.MSPCALARS.WATER_TOWER))
                 {
                     where += " AND WATER_TOWER=@WATER_TOWER";
-                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCSTATS.WATER_TOWER);
+                    Db.AddInParameter(cmd, "WATER_TOWER", DbType.String, req.MSPCALARS.WATER_TOWER);
                 }
                 if (where.Length > 0)
                 {
@@ -647,13 +641,13 @@ SELECT {0} AS CDATE
                 {
                     while (reader.Read())
                     {
-                        var row = new MSPCSTATSChartJsData
+                        var row = new MSPCALARSChartJsData
                         {
                             CDATE = reader["CDATE"] as string,
                             LOCATION = reader["LOCATION"] as string,
                             DEVICE_ID = reader["DEVICE_ID"] as string,
-                            VALUE = reader["MSPCSTATS_VALUE"] as decimal? ?? null
-                            //VALUE = (Decimal)reader["MSPCSTATS_VALUE"]
+                            VALUE = reader["MSPCALARS_VALUE"] as decimal? ?? null
+                            //VALUE = (Decimal)reader["MSPCALARS_VALUE"]
                         };
                         list.Add(row);
                     }
@@ -666,7 +660,7 @@ SELECT {0} AS CDATE
             return res;
         }
 
-        private Chart ChartProduce(string ChartType, List<MSPCSTATSChartJsData> MSPCSTATSChartJsData, string FieldName, string GroupName)
+        private Chart ChartProduce(string ChartType, List<MSPCALARSChartJsData> MSPCALARSChartJsData, string FieldName, string GroupName)
         {
             Chart Chart = new Chart();
 
@@ -678,7 +672,7 @@ SELECT {0} AS CDATE
             TP_DSCCR.ViewModels.Data Data = new TP_DSCCR.ViewModels.Data();
 
             #region chart.data.labels
-            var query = from data in MSPCSTATSChartJsData
+            var query = from data in MSPCALARSChartJsData
                         group data by data.CDATE;
 
             List<string> labels = new List<string>();
@@ -696,12 +690,12 @@ SELECT {0} AS CDATE
             string key = null;
             Dataset ds = null;
             string rgb = null;
-            foreach (MSPCSTATSChartJsData MSPCSTATSChartJS in MSPCSTATSChartJsData)
+            foreach (MSPCALARSChartJsData MSPCALARSChartJS in MSPCALARSChartJsData)
             {
                 if (key == null)
                 {
-                    //key = MSPCSTATSChartJS.LOCATION + "_" + MSPCSTATSChartJS.DEVICE_ID;
-                    key = MSPCSTATSChartJS.DEVICE_ID;
+                    //key = MSPCALARSChartJS.LOCATION + "_" + MSPCALARSChartJS.DEVICE_ID;
+                    key = MSPCALARSChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -712,10 +706,10 @@ SELECT {0} AS CDATE
                         data = new List<Decimal?> { }
                     };
                 }
-                else if (key != MSPCSTATSChartJS.DEVICE_ID)
+                else if (key != MSPCALARSChartJS.DEVICE_ID)
                 {
                     datasets.Add(ds);
-                    key = MSPCSTATSChartJS.DEVICE_ID;
+                    key = MSPCALARSChartJS.DEVICE_ID;
                     rgb = "rgb(" + random.Next(0, 255) + "," + random.Next(0, 255) + "," + random.Next(0, 255) + ")";
                     ds = new Dataset()
                     {
@@ -727,7 +721,7 @@ SELECT {0} AS CDATE
                     };
 
                 }
-                ds.data.Add(MSPCSTATSChartJS.VALUE);
+                ds.data.Add(MSPCALARSChartJS.VALUE);
             }
             datasets.Add(ds);
             Data.datasets = datasets;
