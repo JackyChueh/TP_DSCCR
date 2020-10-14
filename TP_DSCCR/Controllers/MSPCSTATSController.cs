@@ -87,7 +87,7 @@ namespace TP_DSCCR.Controllers
                         MemoryStream.Dispose();
 
                         res.DataId = DataId;
-                        res.FileName = "區域泵.xlsx";
+                        res.FileName = "箱冷狀態.xlsx";
                         res.Result.State = ResultEnum.SUCCESS;
                     }
                     else

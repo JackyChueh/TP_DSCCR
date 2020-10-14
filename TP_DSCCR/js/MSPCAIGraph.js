@@ -1,10 +1,12 @@
-﻿var MSPCALARSData = {
+﻿var MSPCAIGraph = {
     LoginUrl: null,
+    ChartObj: null,
 
     Page_Init: function () {
-        MSPCALARSData.EventBinding();
-        MSPCALARSData.OptionRetrieve();
-        MSPCALARSData.ActionSwitch('R');
+        MSPCAIGraph.EventBinding();
+        MSPCAIGraph.OptionRetrieve();
+        MSPCAIGraph.ActionSwitch('R');
+        $('#FIELD option:nth-child(1)').attr("selected", true);
     },
 
     EventBinding: function () {
@@ -13,25 +15,20 @@
         $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
 
         $('#query').click(function () {
-            MSPCALARSData.MSPCALARSRetrieve();
+            MSPCAIGraph.MSPCAIGraph();
         });
 
-        $('#page_number, #page_size').change(function () {
-            MSPCALARSData.MSPCALARSRetrieve();
+        $('#print').click(function () {
+            MSPCAIGraph.MSPCAIGraphPrint();
         });
 
         $('#LOCATION').change(function () {
-            MSPCALARSData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
-        });
-
-        $('#excel').click(function () {
-            MSPCALARSData.MSPCALARSExcel();
+            MSPCAIGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
         $('#login').click(function () {
-            window.location.href = MSPCALARSData.LoginUrl;
+            window.location.href = MSPCAIGraph.LoginUrl;
         });
-
     },
 
     ActionSwitch: function (action) {
@@ -39,7 +36,7 @@
         $('.card-header button').hide();
         if (action === 'R') {
             $('#query').show();
-            $('#excel').show();
+            $('#print').show();
             $('#section_retrieve').show();
         }
     },
@@ -57,7 +54,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'MSPCALARS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE','WATER_TOWER']
+            PhraseGroup: ['page_size', 'MSPCAI_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE', 'WATER_TOWER']
         };
 
         $.ajax({
@@ -76,7 +73,7 @@
                     });
 
                     $('#LOCATION').append('<option value=""></option>');
-                    $.each(response.ItemList.MSPCALARS_LOCATION, function (idx, row) {
+                    $.each(response.ItemList.MSPCAI_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
                     //$('#LOCATION option:nth-child(2)').attr("selected", true);
@@ -86,6 +83,7 @@
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
                         $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#GROUP_BY_DT option[value="HOUR"]').attr("selected", true);
 
                     //$('#GRAPH_TYPE').append('<option value=""></option>');
                     $.each(response.ItemList.GRAPH_TYPE, function (idx, row) {
@@ -96,7 +94,6 @@
                     $.each(response.ItemList.WATER_TOWER, function (idx, row) {
                         $('#WATER_TOWER').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -108,6 +105,7 @@
                 alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
             },
             complete: function (xhr, status) {
+                //alert('' + xhr.status + ';' + status );
             }
         });
     },
@@ -116,7 +114,7 @@
         if (parentKey) {
             var url = '/Main/SubItemListRetrieve';
             var request = {
-                PhraseGroup: 'MSPCALARS_DEVICE_ID',
+                PhraseGroup: 'MSPCAI_DEVICE_ID',
                 ParentKey: parentKey
             };
 
@@ -151,22 +149,26 @@
         }
         else {
             $(obj).find('option').remove();
+            //$(obj).find('option').not(':first').remove();
+            //$(obj).append('<option value=""></option>');
         }
     },
 
-    MSPCALARSRetrieve: function () {
-        var url = 'MSPCALARSRetrieve';
+    MSPCAIGraph: function () {
+        var url = 'MSPCAIGraph';
         var request = {
-            MSPCALARS: {
+            MSPCAI: {
                 LOCATION: $('#LOCATION').val(),
                 DEVICE_ID: $('#DEVICE_ID').val(),
                 WATER_TOWER: $('#WATER_TOWER').val()
             },
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
+            FIELD: $('#FIELD').val(),
+            FIELD_NAME: $('#FIELD :selected').text(),
             GROUP_BY_DT: $('#GROUP_BY_DT').val(),
-            PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 10
+            GROUP_BY_DT_NAME: $('#GROUP_BY_DT :selected').text(),
+            GRAPH_TYPE: $('#GRAPH_TYPE').val()
         };
 
         $.ajax({
@@ -176,70 +178,16 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                MSPCALARSData.ModalSwitch(response.Result.State);
+                MSPCAIGraph.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
-                    $('#gridview >  tbody').html('');
-                    $('#rows_count').text(response.Pagination.RowCount);
-                    $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
-                    $('#page_number option').remove();
-                    for (var i = 1; i <= response.Pagination.PageCount; i++) {
-                        $('#page_number').append($('<option></option>').attr('value', i).text(i));
-                    }
-                    $('#page_number').val(response.Pagination.PageNumber);
-                    $('#page_count').text(response.Pagination.PageCount);
-                    $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
-
-                    var htmlRow = '';
-                    if (response.Pagination.RowCount > 0) {
-                        $.each(response.MSPCALARSData, function (idx, row) {
-                            htmlRow = '<tr>';
-                            htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
-                            htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
-                            htmlRow += '<td>' + row.LOCATION + '</td>';
-                            htmlRow += '<td>' + row.DEVICE_ID + '</td>';
-                            htmlRow += '<td>' + row.WATER_TOWER + '</td>';
-                            var css = '';
-                            if (row.SEF09 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF09 + '</td>';
-                            css = '';
-                            if (row.SEF10 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF10 + '</td>';
-                            css = '';
-                            if (row.SEF11 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF11 + '</td>';
-                            css = '';
-                            if (row.SEF12 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF12 + '</td>';
-                            css = '';
-                            if (row.SEF13 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF13 + '</td>';
-                            css = '';
-                            if (row.SEF14 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF14 + '</td>';
-                            css = '';
-                            if (row.SEF15 === "警報") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.SEF15 + '</td>';
-                            htmlRow += '</tr>';
-                            $('#gridview >  tbody').append(htmlRow);
-                        });
-                    }
-                    else {
-                        htmlRow = '<tr><td colspan="' + $('#gridview > thead').children('tr').children('th').length +'" style="text-align:center">data not found</td></tr>';
-                        $('#gridview >  tbody').append(htmlRow);
+                    if (response.Chart) {
+                        if (MSPCAIGraph.ChartObj) {
+                            MSPCAIGraph.ChartObj.destroy();
+                        }
+                        var obj;
+                        obj = document.getElementById('chartCanvas').getContext('2d');
+                        MSPCAIGraph.ChartObj = new Chart(obj, response.Chart);
+                        //MSPCAIGraph.ChartObj.resize();
                     }
                 }
                 else {
@@ -258,45 +206,20 @@
         });
     },
 
-    MSPCALARSExcel: function () {
-        var url = 'MSPCALARSExcel';
-        var request = {
-            MSPCALARS: {
-                LOCATION: $('#LOCATION').val(),
-                DEVICE_ID: $('#DEVICE_ID').val(),
-                WATER_TOWER: $('#WATER_TOWER').val()
-            },
-            SDATE: $('#SDATE').val(),
-            EDATE: $('#EDATE').val(),
-            GROUP_BY_DT: $('#GROUP_BY_DT').val()
-        };
-
-        $.ajax({
-            cache: false,
-            type: 'post',
-            url: url,
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                MSPCALARSData.ModalSwitch(response.Result.State);
-                if (response.Result.State === 0) {
-                    window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
-                        + '&FileName=' + response.FileName;
-                }
-                else {
-                    $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-                    $('#modal').modal('show');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
+    MSPCAIGraphPrint: function () {
+        var win = window.open();
+        //win.document.open();
+        win.document.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        win.document.write('<head><title></title>');
+        win.document.write('</head><body style="padding:0;margin-top:0 !important;margin-bottom:0!important;"   onLoad="self.print();self.close();">');
+        //var content_vlue = document.getElementById("chartCanvas").innerHTML;
+        //win.document.write(content_vlue);
+        var canvas = document.getElementById("chartCanvas");
+        win.document.write("<img src='" + canvas.toDataURL("image/png", 1) + "'/>");
+        win.document.write('</body></html>');
+        //document.write(doct + divContent.innerHTML);
+        win.document.close();
+        win.focus();
     }
 
 

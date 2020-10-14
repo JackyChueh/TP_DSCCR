@@ -144,6 +144,7 @@
     <Compile Include="Controllers\ALERT_CONFIGController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HR_CALENDARController.cs" />
+    <Compile Include="Controllers\MSPCAIController.cs" />
     <Compile Include="Controllers\MSPCALARSController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WSDS_PVOIController.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
     <Compile Include="Models\Implement\ALERT_CONFIGImplement.cs" />
     <Compile Include="Models\Implement\HR_CALENDARImplement.cs" />
+    <Compile Include="Models\Implement\MSPCAIImplement.cs" />
     <Compile Include="Models\Implement\MSPCALARSImplement.cs" />
     <Compile Include="Models\Implement\UsersImplement.cs" />
     <Compile Include="Models\Implement\WSDS_PVOIImplement.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="ViewModels\ChartJS.cs" />
     <Compile Include="ViewModels\ALERT_CONFIG.cs" />
     <Compile Include="ViewModels\HR_CALENDAR.cs" />
+    <Compile Include="ViewModels\MSPCAI.cs" />
     <Compile Include="ViewModels\MSPCALARS.cs" />
     <Compile Include="ViewModels\USERS.cs" />
     <Compile Include="ViewModels\WSDS_PVOI.cs" />
@@ -261,7 +264,9 @@
     <Content Include="img\TaiwanPower3.png" />
     <Content Include="js\ALERT_CONFIGIndex.js" />
     <Content Include="js\HR_CALENDARIndex.js" />
+    <Content Include="js\MSPCAIData.js" />
     <Content Include="js\MSPCALARSData.js" />
+    <Content Include="js\MSPCAIGraph.js" />
     <Content Include="js\MSPCALARSGraph.js" />
     <Content Include="js\UsersIndex.js" />
     <Content Include="js\WSDS_PVOIData.js" />
@@ -411,6 +416,8 @@
     <Content Include="Views\MSPCSTATS\Graph.cshtml" />
     <Content Include="Views\MSPCALARS\Data.cshtml" />
     <Content Include="Views\MSPCALARS\Graph.cshtml" />
+    <Content Include="Views\MSPCAI\Data.cshtml" />
+    <Content Include="Views\MSPCAI\Graph.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

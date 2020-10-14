@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "箱冷AI - 統計圖表";
+}
+@section Styles
+{
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+}
+<div class="card">
+    <div class="card-header">
+        <div class="form-inline">
+            <div class="col">
+                <b>@ViewBag.Title</b>
+            </div>
+            <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1 text-primary"></i>查詢</button>
+            <button type="button" id="print" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-print fa-lg mr-1 text-secondary"></i>列印</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!--查詢區塊-->
+        <form id="section_retrieve" style="display: none;">
+            <div class="form-row">
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="SDATE">日期時間(起)</label>
+                    <input type="text" class="form-control form-control-sm" id="SDATE" name="SDATE">
+                </div>
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="EDATE">日期時間(迄)</label>
+                    <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="LOCATION">位置</label>
+                    <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="DEVICE_ID">設備名稱</label>
+                    <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="WATER_TOWER">水塔編號</label>
+                    <select class="form-control form-control-sm" id="WATER_TOWER" name="WATER_TOWER"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="GROUP_BY_DT">時間間隔</label>
+                    <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="FIELD">數據欄位</label>
+                    <select class="form-control form-control-sm  fields" id="FIELD" name="FIELD">
+                        <option value="SEF16">回風溫度</option>
+                        <option value="SEF17">*回風濕度</option>
+                        <option value="SEF18">*溫度設定</option>
+                    </select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="GRAPH_TYPE">圖表類型</label>
+                    <select class="form-control form-control-sm  fields" id="GRAPH_TYPE" name="GRAPH_TYPE"></select>
+                </div>
+            </div>
+        </form>
+        <div class="chart-container card" id="testContent" style="width:auto;height:100vh;">
+            <canvas id="chartCanvas" class="chart-canvas"></canvas>
+        </div>
+        <!--/查詢區塊-->
+    </div>
+</div>
+
+<div class="modal" id="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">訊息標題</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>顯示訊息主體</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                <button type="button" id="login" class="btn btn-secondary" style="display: none;">重新登入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script src="~/js/MSPCAIGraph.js"></script>
+    <script type="text/JavaScript">
+        $(document).ready(function () {
+           MSPCAIGraph.Page_Init();
+           MSPCAIGraph.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+        });
+    </script>
+}

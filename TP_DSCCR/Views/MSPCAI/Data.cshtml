@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "箱冷AI - 數據查詢";
+}
+@section Styles
+{
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+}
+
+<div class="card">
+    <div class="card-header">
+        <div class="form-inline">
+            <div class="col">
+                <b>@ViewBag.Title</b>
+            </div>
+            <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1 text-primary"></i>查詢</button>
+            <button type="button" id="excel" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-file-excel fa-lg mr-1 text-success"></i>匯出</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!--查詢區塊-->
+        <form id="section_retrieve" style="display: none;">
+            <div class="form-row">
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="SDATE">日期時間(起)</label>
+                    <input type="text" class="form-control form-control-sm" id="SDATE" name="SDATE">
+                </div>
+                <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-2">
+                    <label for="EDATE">日期時間(迄)</label>
+                    <input type="text" class="form-control form-control-sm" id="EDATE" name="EDATE">
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="LOCATION">位置</label>
+                    <select class="form-control form-control-sm" id="LOCATION" name="LOCATION"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="DEVICE_ID">設備名稱</label>
+                    <select class="form-control form-control-sm" id="DEVICE_ID" name="DEVICE_ID"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="WATER_TOWER">水塔編號</label>
+                    <select class="form-control form-control-sm" id="WATER_TOWER" name="WATER_TOWER"></select>
+                </div>
+                <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <label for="GROUP_BY_DT">時間間隔</label>
+                    <select class="form-control form-control-sm  fields" id="GROUP_BY_DT" name="GROUP_BY_DT"></select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>時間</th>
+                            <th>位置</th>
+                            <th>設備名稱</th>
+                            <th>水塔編號</th>
+                            <th>回風溫度</th>
+                            <th>*回風濕度</th>
+                            <th>*溫度設定</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="paging_block" class="form-inline">
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">第<i id="interval">0-0</i>筆</span>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text">共<i id="rows_count">0</i>筆</span>
+                        <span class="input-group-text">耗時<i id="time_consuming">0</i>秒</span>
+                    </div>
+                </div>
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">第</span>
+                    </div>
+                    <div class="input-group-append">
+                        <select id="page_number" class="form-control-sm rounded-0"></select>
+                        <span class="input-group-text">頁</span>
+                        <span class="input-group-text">共<i id="page_count">0</i>頁</span>
+                    </div>
+                </div>
+                <div class="input-group input-group-sm mr-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">每頁</span>
+                    </div>
+                    <div class="input-group-append">
+                        <select id="page_size" class="form-control-sm rounded-0"></select>
+                        <span class="input-group-text">筆</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--/查詢區塊-->
+    </div>
+</div>
+
+<div class="modal" id="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">訊息標題</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>顯示訊息主體</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                <button type="button" id="login" class="btn btn-secondary" style="display: none;">重新登入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script src="~/js/MSPCAIData.js"></script>
+    <script type="text/JavaScript">
+        $(document).ready(function () {
+            MSPCAIData.Page_Init();
+            MSPCAIData.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
+        });
+    </script>
+}

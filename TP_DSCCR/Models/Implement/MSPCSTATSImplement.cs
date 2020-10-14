@@ -56,7 +56,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),SEF" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -72,7 +72,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCSTATS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(SEF" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -85,7 +85,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),SEF" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -230,7 +230,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),SEF" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -246,7 +246,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),AVG(MSPCSTATS" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),AVG(SEF" + i.ToString("00") + ")) AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;
@@ -259,7 +259,7 @@ SELECT {0} AS CDATE
                             }
                             else
                             {
-                                fields += "CONVERT(DECIMAL(28,1),MSPCSTATS" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
+                                fields += "CONVERT(DECIMAL(28,1),SEF" + i.ToString("00") + ") AS SEF" + i.ToString("00") + ",";
                             }
                         }
                         break;

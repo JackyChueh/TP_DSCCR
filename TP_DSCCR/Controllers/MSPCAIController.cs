@@ -8,7 +8,7 @@ using TP_DSCCR.Models.Enums;
 
 namespace TP_DSCCR.Controllers
 {
-    public class MSPCALARSController : BaseController
+    public class MSPCAIController : BaseController
     {
         public ActionResult Data()
         {
@@ -29,10 +29,10 @@ namespace TP_DSCCR.Controllers
         }
 
         [AcceptVerbs("POST")]
-        public string MSPCALARSRetrieve()
+        public string MSPCAIRetrieve()
         {
             //System.Threading.Thread.Sleep(2000);
-            MSPCALARSDataRes res = new MSPCALARSDataRes();
+            MSPCAIDataRes res = new MSPCAIDataRes();
             try
             {
                 if (Session["ID"] == null)
@@ -42,11 +42,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("MSPCALARSDataReq=" + input);
-                    MSPCALARSDataReq req = new MSPCALARSDataReq();
+                    Log("MSPCAIDataReq=" + input);
+                    MSPCAIDataReq req = new MSPCAIDataReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new MSPCALARSImplement("TP_DSCCR").PaginationRetrieve(req);
+                    res = new MSPCAIImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
             }
@@ -57,14 +57,14 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("MSPCALARSDataRes=" + json);
+            Log("MSPCAIDataRes=" + json);
             return json;
         }
 
         [AcceptVerbs("POST")]
-        public string MSPCALARSExcel()
+        public string MSPCAIExcel()
         {
-            MSPCALARSExcelRes res = new MSPCALARSExcelRes();
+            MSPCAIExcelRes res = new MSPCAIExcelRes();
             try
             {
                 if (Session["ID"] == null)
@@ -74,11 +74,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("MSPCALARSExcelReq=" + input);
-                    MSPCALARSExcelReq req = new MSPCALARSExcelReq();
+                    Log("MSPCAIExcelReq=" + input);
+                    MSPCAIExcelReq req = new MSPCAIExcelReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    MemoryStream MemoryStream = new MSPCALARSImplement("TP_DSCCR").ExcelRetrieve(req);
+                    MemoryStream MemoryStream = new MSPCAIImplement("TP_DSCCR").ExcelRetrieve(req);
 
                     if (MemoryStream.Length > 0)
                     {
@@ -87,7 +87,7 @@ namespace TP_DSCCR.Controllers
                         MemoryStream.Dispose();
 
                         res.DataId = DataId;
-                        res.FileName = "箱冷警報.xlsx";
+                        res.FileName = "箱冷AI.xlsx";
                         res.Result.State = ResultEnum.SUCCESS;
                     }
                     else
@@ -103,14 +103,14 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("MSPCALARSExcelRes=" + json);
+            Log("MSPCAIExcelRes=" + json);
             return json;
         }
 
         [AcceptVerbs("POST")]
-        public string MSPCALARSGraph()
+        public string MSPCAIGraph()
         {
-            MSPCALARSGraphRes res = new MSPCALARSGraphRes();
+            MSPCAIGraphRes res = new MSPCAIGraphRes();
             try
             {
                 if (Session["ID"] == null)
@@ -120,11 +120,11 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("MSPCALARSGraphReq=" + input);
-                    MSPCALARSGraphReq req = new MSPCALARSGraphReq();
+                    Log("MSPCAIGraphReq=" + input);
+                    MSPCAIGraphReq req = new MSPCAIGraphReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    res = new MSPCALARSImplement("TP_DSCCR").GraphRetrieve(req);
+                    res = new MSPCAIImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)
                     {
                         res.Result.State = ResultEnum.DATA_NOT_FOUND;
@@ -143,7 +143,7 @@ namespace TP_DSCCR.Controllers
                 Log(ex.StackTrace);
             }
             var json = JsonConvert.SerializeObject(res);
-            Log("MSPCALARSGraphRes=" + json);
+            Log("MSPCAIGraphRes=" + json);
             return json;
         }
 
