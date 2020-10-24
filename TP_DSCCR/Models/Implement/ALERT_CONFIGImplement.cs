@@ -70,6 +70,8 @@ SELECT TOP(100) SID,TP_SCC.dbo.PHRASE_NAME('mode',MODE,default) AS MODE, TP_SCC.
 		WHEN [DATA_TYPE]='WSDS_PWLS' AND [DATA_FIELD]='WSDS_PWLS_STATUS' THEN TP_SCC.[dbo].[PHRASE_NAME]('up_down',[MAX_VALUE],DEFAULT) 
 		WHEN [DATA_TYPE]='RRS_PVOI' AND [DATA_FIELD]>='RRS01_PVOI01' AND [DATA_FIELD]<='RRS07_PVOI01' THEN TP_SCC.[dbo].[PHRASE_NAME]('on_off',[MAX_VALUE],DEFAULT) 
 		WHEN [DATA_TYPE]='RRS_PWLS' AND [DATA_FIELD]>='RRS01_PWLS01' AND [DATA_FIELD]<='RRS13_PWLS01' THEN TP_SCC.[dbo].[PHRASE_NAME]('up_down',[MAX_VALUE],DEFAULT) 
+        WHEN [DATA_TYPE]='MSPCSTATS' AND [DATA_FIELD]>='SEF01' AND [DATA_FIELD]<='SEF08' THEN TP_SCC.[dbo].[PHRASE_NAME]('on_off',[MAX_VALUE],DEFAULT) 
+        WHEN [DATA_TYPE]='MSPCALARS' AND [DATA_FIELD]>='SEF09' AND [DATA_FIELD]<='SEF15' THEN TP_SCC.[dbo].[PHRASE_NAME]('alert_onoff',[MAX_VALUE],DEFAULT) 
     ELSE
 	    CONVERT(VARCHAR(8000),[MAX_VALUE])
     END AS MAX_VALUE
@@ -98,6 +100,8 @@ SELECT TOP(100) SID,TP_SCC.dbo.PHRASE_NAME('mode',MODE,default) AS MODE, TP_SCC.
 		WHEN [DATA_TYPE]='WSDS_PWLS' AND [DATA_FIELD]='WSDS_PWLS_STATUS' THEN TP_SCC.[dbo].[PHRASE_NAME]('up_down',[MIN_VALUE],DEFAULT) 
 		WHEN [DATA_TYPE]='RRS_PVOI' AND [DATA_FIELD]>='RRS01_PVOI01' AND [DATA_FIELD]<='RRS07_PVOI01' THEN TP_SCC.[dbo].[PHRASE_NAME]('on_off',[MIN_VALUE],DEFAULT) 
 		WHEN [DATA_TYPE]='RRS_PWLS' AND [DATA_FIELD]>='RRS01_PWLS01' AND [DATA_FIELD]<='RRS13_PWLS01' THEN TP_SCC.[dbo].[PHRASE_NAME]('up_down',[MIN_VALUE],DEFAULT) 
+        WHEN [DATA_TYPE]='MSPCSTATS' AND [DATA_FIELD]>='SEF01' AND [DATA_FIELD]<='SEF08' THEN TP_SCC.[dbo].[PHRASE_NAME]('on_off',[MIN_VALUE],DEFAULT) 
+        WHEN [DATA_TYPE]='MSPCALARS' AND [DATA_FIELD]>='SEF09' AND [DATA_FIELD]<='SEF15' THEN TP_SCC.[dbo].[PHRASE_NAME]('alert_onoff',[MIN_VALUE],DEFAULT) 
     ELSE
 	    CONVERT(VARCHAR(8000),[MIN_VALUE])
     END AS MIN_VALUE
@@ -243,31 +247,31 @@ SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHEC
                             MIN_VALUE = reader["MIN_VALUE"] as Single? ?? null,
                             CHECK_INTERVAL = reader["CHECK_INTERVAL"] as int? ?? null,
                             ALERT_INTERVAL = reader["ALERT_INTERVAL"] as int? ?? null,
-                            SUN = reader["SUN"] as bool? ?? null,
+                            SUN = (Boolean)reader["SUN"],
                             SUN_STIME = reader["SUN_STIME"] as TimeSpan? ?? null,
                             SUN_ETIME = reader["SUN_ETIME"] as TimeSpan? ?? null,
-                            MON = reader["MON"] as bool? ?? null,
+                            MON = (Boolean)reader["MON"],
                             MON_STIME = reader["MON_STIME"] as TimeSpan? ?? null,
                             MON_ETIME = reader["MON_ETIME"] as TimeSpan? ?? null,
-                            TUE = reader["TUE"] as bool? ?? null,
+                            TUE = (Boolean)reader["TUE"],
                             TUE_STIME = reader["TUE_STIME"] as TimeSpan? ?? null,
                             TUE_ETIME = reader["TUE_ETIME"] as TimeSpan? ?? null,
-                            WED = reader["WED"] as bool? ?? null,
+                            WED = (Boolean)reader["WED"],
                             WED_STIME = reader["WED_STIME"] as TimeSpan? ?? null,
                             WED_ETIME = reader["WED_ETIME"] as TimeSpan? ?? null,
-                            THU = reader["THU"] as bool? ?? null,
+                            THU = (Boolean)reader["THU"],
                             THU_STIME = reader["THU_STIME"] as TimeSpan? ?? null,
                             THU_ETIME = reader["THU_ETIME"] as TimeSpan? ?? null,
-                            FRI = reader["FRI"] as bool? ?? null,
+                            FRI = (Boolean)reader["FRI"],
                             FRI_STIME = reader["FRI_STIME"] as TimeSpan? ?? null,
                             FRI_ETIME = reader["FRI_ETIME"] as TimeSpan? ?? null,
-                            STA = reader["STA"] as bool? ?? null,
+                            STA = (Boolean)reader["STA"],
                             STA_STIME = reader["STA_STIME"] as TimeSpan? ?? null,
                             STA_ETIME = reader["STA_ETIME"] as TimeSpan? ?? null,
                             CHECK_DATE = reader["CHECK_DATE"] as DateTime? ?? null,
                             ALERT_DATE = reader["ALERT_DATE"] as DateTime? ?? null,
                             MAIL_TO = reader["MAIL_TO"] as string,
-                            CHECK_HR_CALENDAR = reader["CHECK_HR_CALENDAR"] as bool? ?? null,
+                            CHECK_HR_CALENDAR = (Boolean)reader["CHECK_HR_CALENDAR"],
                             CDATE = reader["CDATE"] as DateTime? ?? null,
                             CUSER = reader["CUSER"] as string,
                             MDATE = reader["MDATE"] as DateTime? ?? null,

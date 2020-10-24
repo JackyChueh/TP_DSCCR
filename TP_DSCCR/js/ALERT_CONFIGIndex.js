@@ -409,6 +409,18 @@
                     $('#spec').show();
                     ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'up_down', '');
                 }
+            } else if (DataType === 'MSPCSTATS') {
+                if (DataField >= 'SEF01' && DataField <= 'SEF08') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'on_off', '');
+                }
+            } else if (DataType === 'MSPCALARS') {
+                if (DataField >= 'SEF09' && DataField <= 'SEF15') {
+                    $('#max,#min').hide();
+                    $('#spec').show();
+                    ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'alert_onoff', '');
+                }
             }
 
         }
