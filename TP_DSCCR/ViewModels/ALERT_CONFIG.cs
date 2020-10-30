@@ -24,13 +24,13 @@ namespace TP_DSCCR.ViewModels
         public string MAX_VALUE { get; set; }
         public string MIN_VALUE { get; set; }
     }
-        public class ALERT_CONFIGRetrieveRes : BaseResponse
+    public class ALERT_CONFIGRetrieveRes : BaseResponse
     {
         public List<ALERT_CONFIG_RETRIEVE> ALERT_CONFIG { get; set; }
         public Pagination Pagination { get; set; }
     }
 
-   public class ALERT_CONFIGModifyReq
+    public class ALERT_CONFIGModifyReq
     {
         public ALERT_CONFIG ALERT_CONFIG { get; set; }
     }

@@ -46,6 +46,19 @@ namespace TP_DSCCR.Controllers
                     WSDS_PVOIDataReq req = new WSDS_PVOIDataReq();
                     JsonConvert.PopulateObject(input, req);
 
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
+
                     res = new WSDS_PVOIImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
@@ -77,6 +90,19 @@ namespace TP_DSCCR.Controllers
                     Log("WSDS_PVOIExcelReq=" + input);
                     WSDS_PVOIExcelReq req = new WSDS_PVOIExcelReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     MemoryStream MemoryStream = new WSDS_PVOIImplement("TP_DSCCR").ExcelRetrieve(req);
 
@@ -123,6 +149,19 @@ namespace TP_DSCCR.Controllers
                     Log("WSDS_PVOIGraphReq=" + input);
                     WSDS_PVOIGraphReq req = new WSDS_PVOIGraphReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     res = new WSDS_PVOIImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)

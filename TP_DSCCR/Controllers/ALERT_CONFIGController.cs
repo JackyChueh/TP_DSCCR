@@ -35,17 +35,6 @@ namespace TP_DSCCR.Controllers
                     ALERT_CONFIGRetrieveReq req = new ALERT_CONFIGRetrieveReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    if (req.HR_DATE_START != null && req.HR_DATE_END != null)
-                    {
-                        DateTime? temp;
-                        if (req.HR_DATE_START > req.HR_DATE_END)
-                        {
-                            temp = req.HR_DATE_START;
-                            req.HR_DATE_START = req.HR_DATE_END;
-                            req.HR_DATE_END = temp;
-                        }
-                    }
-
                     res = new ALERT_CONFIGImplement("TP_ALERT").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }

@@ -141,6 +141,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AHUController.cs" />
+    <Compile Include="Controllers\ALERT_LOGController.cs" />
     <Compile Include="Controllers\ALERT_CONFIGController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HR_CALENDARController.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Models\Data\Main.cs" />
     <Compile Include="Models\Entity\AHU.cs" />
     <Compile Include="Models\Entity\ALERT_CONFIG.cs" />
+    <Compile Include="Models\Entity\ALERT_LOG.cs" />
     <Compile Include="Models\Entity\AUTHORITY.cs" />
     <Compile Include="Models\Entity\GRANTS.cs" />
     <Compile Include="Models\Entity\HR_CALENDAR.cs" />
@@ -186,6 +188,7 @@
     <Compile Include="Models\Enums\ResultEnum.cs" />
     <Compile Include="Models\Help\Logs.cs" />
     <Compile Include="Models\Implement\AHUImplement.cs" />
+    <Compile Include="Models\Implement\ALERT_LOGImplement.cs" />
     <Compile Include="Models\Implement\AuthorityImplement.cs" />
     <Compile Include="Models\Implement\ALERT_CONFIGImplement.cs" />
     <Compile Include="Models\Implement\HR_CALENDARImplement.cs" />
@@ -206,9 +209,10 @@
     <Compile Include="Models\Implement\ItemListImplement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AHU.cs" />
+    <Compile Include="ViewModels\ALERT_CONFIG.cs" />
     <Compile Include="ViewModels\BaseResponse.cs" />
     <Compile Include="ViewModels\ChartJS.cs" />
-    <Compile Include="ViewModels\ALERT_CONFIG.cs" />
+    <Compile Include="ViewModels\ALERT_LOG.cs" />
     <Compile Include="ViewModels\HR_CALENDAR.cs" />
     <Compile Include="ViewModels\MSPCAI.cs" />
     <Compile Include="ViewModels\MSPCALARS.cs" />
@@ -262,6 +266,7 @@
     <Content Include="img\TaiwanPower.png" />
     <Content Include="img\TaiwanPower2.png" />
     <Content Include="img\TaiwanPower3.png" />
+    <Content Include="js\ALERT_LOGIndex.js" />
     <Content Include="js\ALERT_CONFIGIndex.js" />
     <Content Include="js\HR_CALENDARIndex.js" />
     <Content Include="js\MSPCAIData.js" />
@@ -418,6 +423,7 @@
     <Content Include="Views\MSPCALARS\Graph.cshtml" />
     <Content Include="Views\MSPCAI\Data.cshtml" />
     <Content Include="Views\MSPCAI\Graph.cshtml" />
+    <Content Include="Views\ALERT_LOG\ALERT_LOGIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

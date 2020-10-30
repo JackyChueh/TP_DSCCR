@@ -11,8 +11,19 @@
 
     EventBinding: function () {
         var now = new Date();
-        $('#SDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00', value: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0) });
-        $('#EDATE').datetimepicker({ formatTime: 'H', format: 'Y/m/d H:00' });
+        $('#SDATE').datetimepicker({ formatTime: 'H', format: "Y-m-d H:i", value: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0) });
+        $('#EDATE').datetimepicker({
+            formatTime: 'H',
+            format: "Y-m-d H:i",
+            value: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59),
+            onSelectTime: function (value) {
+                var newDate = new Date(value.getFullYear(), value.getMonth(), value.getDate(), value.getHours(), 59);
+                $('#EDATE').datetimepicker({
+                    value: newDate
+                });
+            }
+        });
+
 
         $('#query').click(function () {
             MSPCALARSGraph.MSPCALARSGraph();
@@ -76,8 +87,8 @@
                     $.each(response.ItemList.MSPCALARS_LOCATION, function (idx, row) {
                         $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    //$('#LOCATION option:nth-child(2)').attr("selected", true);
-                    //$("#LOCATION").trigger("change");
+                    $('#LOCATION option:nth-child(2)').attr("selected", true);
+                    $("#LOCATION").trigger("change");
 
                     //$('#GROUP_BY_DT').append('<option value=""></option>');
                     $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {

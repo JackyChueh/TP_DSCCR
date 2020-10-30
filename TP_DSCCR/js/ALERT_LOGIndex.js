@@ -1,10 +1,12 @@
-﻿var WSDS_PWLSData = {
-    LoginUrl: null,
+﻿var ALERT_LOGIndex = {
+    Action: null,
+    ALERT_LOG: null,
+    ConfirmAction: null,
 
     Page_Init: function () {
-        WSDS_PWLSData.EventBinding();
-        WSDS_PWLSData.OptionRetrieve();
-        WSDS_PWLSData.ActionSwitch('R');
+        this.EventBinding();
+        this.OptionRetrieve();
+        this.ActionSwitch('R');
     },
 
     EventBinding: function () {
@@ -22,57 +24,54 @@
             }
         });
 
-
         $('#query').click(function () {
-            WSDS_PWLSData.WSDS_PWLSRetrieve();
+            ALERT_LOGIndex.ALERT_LOGRetrieve('R');
         });
 
         $('#page_number, #page_size').change(function () {
-            WSDS_PWLSData.WSDS_PWLSRetrieve();
+            ALERT_LOGIndex.ALERT_LOGRetrieve('R');
         });
 
-        $('#LOCATION').change(function () {
-            WSDS_PWLSData.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+        var section_retrieve = $('#section_retrieve');
+        section_retrieve.find('select[name=DATA_TYPE]').change(function () {    //監控類別
+            ALERT_LOGIndex.SubOptionRetrieve(section_retrieve.find('select[name=LOCATION]'), $(this).val() + '_LOCATION', $(this).val());
+            ALERT_LOGIndex.SubOptionRetrieve(section_retrieve.find('select[name=DATA_FIELD]'), $(this).val() + '_DATA_FIELD', $(this).val());
+            section_retrieve.find('select[name=DEVICE_ID]').find('option').remove();
         });
-
-        $('#GRAPH_TYPE').change(function () {
-            WSDS_PWLSData.WSDS_PWLSGraph('WSDS_PWLS05', $(this).val());
-        });
-
-        $('#excel').click(function () {
-            WSDS_PWLSData.WSDS_PWLSExcel();
-        });
-
-        $('#login').click(function () {
-            window.location.href = WSDS_PWLSData.LoginUrl;
+        section_retrieve.find('select[name=LOCATION]').change(function () { //位置
+            ALERT_LOGIndex.SubOptionRetrieve(section_retrieve.find('select[name=DEVICE_ID]'), section_retrieve.find('select[name=DATA_TYPE]').val() + '_DEVICE_ID', $(this).val());
         });
 
     },
 
-    ActionSwitch: function (action) {
+    ActionSwitch: function (Action) {
         $('form').hide();
         $('.card-header button').hide();
-        if (action === 'R') {
+        if (Action === 'R') {
             $('#query').show();
-            $('#excel').show();
+            $('#create').show();
             $('#section_retrieve').show();
+        } else if (Action === 'U') {
+            $('#save').show();
+            $('#delete').show();
+            $('#return').show();
+            $('#undo').show();
+            $('#section_modify').show();
+        } else if (Action === 'C') {
+            $('#default').show();
+            $('#save').show();
+            $('#return').show();
+            $('#undo').show();
+            $('#section_modify').show();
         }
-    },
-
-    ModalSwitch: function (state) {
-        $('#close').show();
-        $('#confirm').hide();
-        $('#login').hide();
-        if (state === -8) {
-            $('#login').show();
-        }
+        this.Action = Action;
     },
 
     OptionRetrieve: function () {
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'WSDS_PWLS_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE']
+            PhraseGroup: ['page_size', 'mode', 'DATA_TYPE']
         };
 
         $.ajax({
@@ -85,23 +84,19 @@
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
 
-                    //$('#page_size').append('<option value=""></option>');
                     $.each(response.ItemList.page_size, function (idx, row) {
                         $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#page_size option[value="30"]').attr("selected", true);
 
-                    $('#LOCATION').append('<option value=""></option>');
-                    $.each(response.ItemList.WSDS_PWLS_LOCATION, function (idx, row) {
-                        $('#LOCATION').append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    $("select[name='MODE']").append('<option value=""></option>');
+                    $.each(response.ItemList.mode, function (idx, row) {
+                        $("select[name='MODE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    //$('#LOCATION option:nth-child(2)').attr("selected", true);
-                    //$("#LOCATION").trigger("change");
 
-                    //$('#GROUP_BY_DT').append('<option value=""></option>');
-                    $.each(response.ItemList.GROUP_BY_DT, function (idx, row) {
-                        if (row.Key === 'DETAIL') {
-                            $('#GROUP_BY_DT').append($('<option></option>').attr('value', row.Key).text(row.Value));
-                        }
+                    $("select[name='DATA_TYPE']").append('<option value=""></option>');
+                    $.each(response.ItemList.DATA_TYPE, function (idx, row) {
+                        $("select[name='DATA_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
                 }
@@ -119,11 +114,11 @@
         });
     },
 
-    SubOptionRetrieve: function (obj, parentKey) {
+    SubOptionRetrieve: function (obj, PhraseGroup, parentKey) {
         if (parentKey) {
             var url = '/Main/SubItemListRetrieve';
             var request = {
-                PhraseGroup: 'WSDS_PWLS_DEVICE_ID',
+                PhraseGroup: PhraseGroup,
                 ParentKey: parentKey
             };
 
@@ -160,19 +155,21 @@
             $(obj).find('option').remove();
         }
     },
-
-    WSDS_PWLSRetrieve: function () {
-        var url = 'WSDS_PWLSRetrieve';
+    
+    ALERT_LOGRetrieve: function () {
+        var url = 'ALERT_LOGRetrieve';
+        var section_retrieve = $('#section_retrieve');
         var request = {
-            WSDS_PWLS: {
-                LOCATION: $('#LOCATION').val(),
-                DEVICE_ID: $('#DEVICE_ID').val()
+            ALERT_LOG: {
+                DATA_TYPE: section_retrieve.find('select[name=DATA_TYPE]').val(),
+                LOCATION: section_retrieve.find('select[name=LOCATION]').val(),
+                DEVICE_ID: section_retrieve.find('select[name=DEVICE_ID]').val(),
+                DATA_FIELD: section_retrieve.find('select[name=DATA_FIELD]').val(),
             },
             SDATE: $('#SDATE').val(),
             EDATE: $('#EDATE').val(),
-            GROUP_BY_DT: $('#GROUP_BY_DT').val(),
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
-            PageSize: $('#page_size').val() ? $('#page_size').val() : 10
+            PageSize: $('#page_size').val() ? $('#page_size').val() : 1
         };
 
         $.ajax({
@@ -182,7 +179,6 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
-                WSDS_PWLSData.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -197,23 +193,24 @@
 
                     var htmlRow = '';
                     if (response.Pagination.RowCount > 0) {
-                        $.each(response.WSDS_PWLSData, function (idx, row) {
+                        $.each(response.ALERT_LOG, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td>' + row.CDATE.substr(0, 10) + '</td>';
-                            htmlRow += '<td>' + row.CDATE.substr(11, 5) + '</td>';
+                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_LOGIndex.ALERT_LOGQuery(' + row.SID + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+                            htmlRow += '<td>' + row.SID + '</td>';
+                            htmlRow += '<td>' + row.DATA_TYPE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
                             htmlRow += '<td>' + row.DEVICE_ID + '</td>';
-                            var css = '';
-                            if (row.WSDS_PWLS_STATUS === "發生") {
-                                css = ' class="text-danger"';
-                            }
-                            htmlRow += '<td' + css + '>' + row.WSDS_PWLS_STATUS + '</td>';
+                            htmlRow += '<td>' + row.DATA_FIELD + '</td>';
+                            htmlRow += '<td>' + row.MAX_VALUE + '</td>';
+                            htmlRow += '<td>' + row.MIN_VALUE + '</td>';
+                            htmlRow += '<td>' + row.ALERT_VALUE + '</td>';
+                            htmlRow += '<td>' + row.CHECK_DATE.replace('T', ' ') + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
                         });
                     }
                     else {
-                        htmlRow = '<tr><td colspan="' + $('#gridview > thead').children('tr').children('th').length +'" style="text-align:center">data not found</td></tr>';
+                        htmlRow = '<tr><td colspan="12" style="text-align:center">data not found</td></tr>';
                         $('#gridview >  tbody').append(htmlRow);
                     }
                 }
@@ -232,46 +229,5 @@
             }
         });
     },
-
-    WSDS_PWLSExcel: function () {
-        var url = 'WSDS_PWLSExcel';
-        var request = {
-            WSDS_PWLS: {
-                LOCATION: $('#LOCATION').val(),
-                DEVICE_ID: $('#DEVICE_ID').val()
-            },
-            SDATE: $('#SDATE').val(),
-            EDATE: $('#EDATE').val(),
-            GROUP_BY_DT: $('#GROUP_BY_DT').val()
-        };
-
-        $.ajax({
-            cache: false,
-            type: 'post',
-            url: url,
-            data: JSON.stringify(request),
-            success: function (data) {
-                var response = JSON.parse(data);
-                WSDS_PWLSData.ModalSwitch(response.Result.State);
-                if (response.Result.State === 0) {
-                    window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
-                        + '&FileName=' + response.FileName;
-                }
-                else {
-                    $('#modal .modal-title').text('交易訊息');
-                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
-                    $('#modal').modal('show');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#modal .modal-title').text(ajaxOptions);
-                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
-                $('#modal').modal('show');
-            },
-            complete: function (xhr, status) {
-            }
-        });
-    }
-
 
 };

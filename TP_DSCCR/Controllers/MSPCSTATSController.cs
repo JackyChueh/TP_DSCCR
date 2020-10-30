@@ -46,6 +46,19 @@ namespace TP_DSCCR.Controllers
                     MSPCSTATSDataReq req = new MSPCSTATSDataReq();
                     JsonConvert.PopulateObject(input, req);
 
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
+
                     res = new MSPCSTATSImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
@@ -77,6 +90,19 @@ namespace TP_DSCCR.Controllers
                     Log("MSPCSTATSExcelReq=" + input);
                     MSPCSTATSExcelReq req = new MSPCSTATSExcelReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     MemoryStream MemoryStream = new MSPCSTATSImplement("TP_DSCCR").ExcelRetrieve(req);
 
@@ -123,6 +149,19 @@ namespace TP_DSCCR.Controllers
                     Log("MSPCSTATSGraphReq=" + input);
                     MSPCSTATSGraphReq req = new MSPCSTATSGraphReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     res = new MSPCSTATSImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)

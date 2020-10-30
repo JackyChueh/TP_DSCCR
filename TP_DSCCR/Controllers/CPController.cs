@@ -45,7 +45,18 @@ namespace TP_DSCCR.Controllers
                     Log("CPDataReq=" + input);
                     CPDataReq req = new CPDataReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     res = new CPImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
@@ -77,7 +88,18 @@ namespace TP_DSCCR.Controllers
                     Log("CPExcelReq=" + input);
                     CPExcelReq req = new CPExcelReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     MemoryStream MemoryStream = new CPImplement("TP_DSCCR").ExcelRetrieve(req);
 
                     if (MemoryStream.Length > 0)
@@ -123,7 +145,18 @@ namespace TP_DSCCR.Controllers
                     Log("CPGraphReq=" + input);
                     CPGraphReq req = new CPGraphReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     res = new CPImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)
                     {

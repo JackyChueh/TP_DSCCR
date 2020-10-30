@@ -45,7 +45,18 @@ namespace TP_DSCCR.Controllers
                     Log("ChillerDataReq=" + input);
                     ChillerDataReq req = new ChillerDataReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     res = new ChillerImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
@@ -77,7 +88,18 @@ namespace TP_DSCCR.Controllers
                     Log("ChillerExcelReq=" + input);
                     ChillerExcelReq req = new ChillerExcelReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     MemoryStream MemoryStream = new ChillerImplement("TP_DSCCR").ExcelRetrieve(req);
 
                     if (MemoryStream.Length > 0)
@@ -123,7 +145,18 @@ namespace TP_DSCCR.Controllers
                     Log("ChillerGraphReq=" + input);
                     ChillerGraphReq req = new ChillerGraphReq();
                     JsonConvert.PopulateObject(input, req);
-
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
                     res = new ChillerImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)
                     {

@@ -46,6 +46,19 @@ namespace TP_DSCCR.Controllers
                     RRS_VFLHDataReq req = new RRS_VFLHDataReq();
                     JsonConvert.PopulateObject(input, req);
 
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
+
                     res = new RRS_VFLHImplement("TP_DSCCR").PaginationRetrieve(req);
                     res.Result.State = ResultEnum.SUCCESS;
                 }
@@ -77,6 +90,19 @@ namespace TP_DSCCR.Controllers
                     Log("RRS_VFLHExcelReq=" + input);
                     RRS_VFLHExcelReq req = new RRS_VFLHExcelReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     MemoryStream MemoryStream = new RRS_VFLHImplement("TP_DSCCR").ExcelRetrieve(req);
 
@@ -123,6 +149,19 @@ namespace TP_DSCCR.Controllers
                     Log("RRS_VFLHGraphReq=" + input);
                     RRS_VFLHGraphReq req = new RRS_VFLHGraphReq();
                     JsonConvert.PopulateObject(input, req);
+
+                    DateTime dt;
+                    if (DateTime.TryParse(req.SDATE.ToString(), out dt) && DateTime.TryParse(req.EDATE.ToString(), out dt))
+                    {
+                        DateTime? temp;
+                        if (req.SDATE > req.EDATE)
+                        {
+                            temp = req.SDATE;
+                            req.SDATE = req.EDATE;
+                            req.EDATE = temp;
+                        }
+                        req.EDATE = req.EDATE.Value.AddMinutes(1);
+                    }
 
                     res = new RRS_VFLHImplement("TP_DSCCR").GraphRetrieve(req);
                     if (res.Chart == null)
