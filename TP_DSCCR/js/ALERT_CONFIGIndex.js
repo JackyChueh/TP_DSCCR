@@ -638,7 +638,7 @@
                 if (response.Result.State === 2) {
                     ALERT_CONFIGIndex.ALERT_CONFIGQuery(response.ALERT_CONFIG.SID);
                 } else if (response.Result.State === -10) {
-                    response.Result.Msg = '日期' + request.ALERT_CONFIG.HR_DATE + '已存在，不可重複設定。';
+                    response.Result.Msg = '監控目標已存在，不可重複設定。';
                 }
                 $('#modal .modal-title').text('交易訊息');
                 $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');

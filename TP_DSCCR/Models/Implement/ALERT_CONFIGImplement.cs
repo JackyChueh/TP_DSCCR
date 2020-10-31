@@ -420,13 +420,14 @@ WHERE SID=@SID;
             return count;
         }
 
-        public bool DataDuplicate(ALERT_CONFIGModifyReq Req)
+        public int? DataDuplicate(ALERT_CONFIGModifyReq Req)
         {
-            bool yn = false;
+            //bool yn = false;
+            int? sid = null;
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
             {
                 string sql = @"
-        SELECT 1
+        SELECT SID
             FROM ALERT_CONFIG
             WHERE DATA_TYPE=@DATA_TYPE AND LOCATION=@LOCATION AND DEVICE_ID=@DEVICE_ID AND DATA_FIELD=@DATA_FIELD
                 ";
@@ -434,6 +435,14 @@ WHERE SID=@SID;
                 Db.AddInParameter(cmd, "LOCATION", DbType.String, Req.ALERT_CONFIG.LOCATION);
                 Db.AddInParameter(cmd, "DEVICE_ID", DbType.String, Req.ALERT_CONFIG.DEVICE_ID);
                 Db.AddInParameter(cmd, "DATA_FIELD", DbType.String, Req.ALERT_CONFIG.DATA_FIELD);
+                //string where = "";
+                //if (Req.ALERT_CONFIG.SID != null)
+                //{
+                //    where += " AND SID<>@SID";
+                //    Db.AddInParameter(cmd, "SID", DbType.Int32, Req.ALERT_CONFIG.SID);
+                //}
+
+                //sql = sql + where;
 
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
@@ -441,11 +450,12 @@ WHERE SID=@SID;
                 {
                     if (reader.Read())
                     {
-                        yn = true;
+                        //yn = true;
+                        sid = (int)reader["SID"];
                     }
                 }
             }
-            return yn;
+            return sid;
         }
     }
 }

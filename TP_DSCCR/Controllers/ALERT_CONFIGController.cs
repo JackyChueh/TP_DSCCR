@@ -106,8 +106,8 @@ namespace TP_DSCCR.Controllers
                     ALERT_CONFIGModifyReq req = new ALERT_CONFIGModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    bool yn = new ALERT_CONFIGImplement("TP_ALERT").DataDuplicate(req);
-                    if (yn)
+                    int? sid = new ALERT_CONFIGImplement("TP_ALERT").DataDuplicate(req);
+                    if (sid !=null)
                     {
                         res.Result.State = ResultEnum.DATA_DUPLICATION;
                     }
@@ -157,8 +157,8 @@ namespace TP_DSCCR.Controllers
                     ALERT_CONFIGModifyReq req = new ALERT_CONFIGModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
-                    bool yn = new ALERT_CONFIGImplement("TP_ALERT").DataDuplicate(req);
-                    if (yn)
+                    int? sid = new ALERT_CONFIGImplement("TP_ALERT").DataDuplicate(req);
+                    if (sid !=null && req.ALERT_CONFIG.SID != sid)
                     {
                         res.Result.State = ResultEnum.DATA_DUPLICATION;
                     }
