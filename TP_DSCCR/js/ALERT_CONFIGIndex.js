@@ -777,7 +777,7 @@
     DefaultValue: function (action) {
         var section_modify = $('#section_modify');
         section_modify.find('select[name=MODE]').val('Y');
-        section_modify.find('input[name=CHECK_INTERVAL]').val(5);
+        section_modify.find('input[name=CHECK_INTERVAL]').val(30);
         //section_modify.find('input[name=ALERT_INTERVAL]').val(5);
         section_modify.find('input[name=SUN]').prop('checked', false);
         section_modify.find('input[name=SUN_STIME]').val('00:00');
