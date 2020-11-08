@@ -23,6 +23,7 @@ namespace TP_DSCCR.ViewModels
         public string DATA_FIELD { get; set; }
         public string MAX_VALUE { get; set; }
         public string MIN_VALUE { get; set; }
+        public int CHECK_INTERVAL { get; set; }
     }
     public class ALERT_CONFIGRetrieveRes : BaseResponse
     {

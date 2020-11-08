@@ -61,6 +61,10 @@
             }
         });
 
+        $('#login').click(function () {
+            window.location.href = AHUData.LoginUrl;
+        });
+
         //$('#section_modify #ID').keyup(function () {
         //    $("#section_modify #ID").val($("#section_modify #ID").val().toUpperCase());
         //});
@@ -97,6 +101,15 @@
             $('#section_modify').show();
         }
         this.Action = Action;
+    },
+
+    ModalSwitch: function (state) {
+        $('#close').show();
+        $('#confirm').hide();
+        $('#login').hide();
+        if (state === -8) {
+            $('#login').show();
+        }
     },
 
     OptionRetrieve: function () {
@@ -163,6 +176,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -228,6 +242,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 1) {
                     HR_CALENDARIndex.HR_CALENDARQuery(response.HR_CALENDAR.SN);
                     HR_CALENDARIndex.ActionSwitch('U');
@@ -268,6 +283,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 2) {
                     HR_CALENDARIndex.HR_CALENDARQuery(response.HR_CALENDAR.SN);
                 } else if (response.Result.State === -10) {
@@ -303,6 +319,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 3) {
                     HR_CALENDARIndex.HR_CALENDARRetrieve();
                     HR_CALENDARIndex.ActionSwitch('R');
@@ -337,6 +354,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     var section_modify = $('#section_modify');
                     section_modify.find('input[name=SN]').val(response.HR_CALENDAR.SN);

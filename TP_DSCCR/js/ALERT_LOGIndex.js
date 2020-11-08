@@ -1,4 +1,5 @@
 ﻿var ALERT_LOGIndex = {
+    LoginUrl: null,
     Action: null,
     ALERT_LOG: null,
     ConfirmAction: null,
@@ -32,6 +33,15 @@
             ALERT_LOGIndex.ALERT_LOGRetrieve('R');
         });
 
+        $('#excel').click(function () {
+            ALERT_LOGIndex.ALERT_LOGExcel();
+        });
+
+
+        $('#login').click(function () {
+            window.location.href = ALERT_LOGIndex.LoginUrl;
+        });
+
         var section_retrieve = $('#section_retrieve');
         section_retrieve.find('select[name=DATA_TYPE]').change(function () {    //監控類別
             ALERT_LOGIndex.SubOptionRetrieve(section_retrieve.find('select[name=LOCATION]'), $(this).val() + '_LOCATION', $(this).val());
@@ -49,7 +59,7 @@
         $('.card-header button').hide();
         if (Action === 'R') {
             $('#query').show();
-            $('#create').show();
+            $('#excel').show();
             $('#section_retrieve').show();
         } else if (Action === 'U') {
             $('#save').show();
@@ -66,6 +76,16 @@
         }
         this.Action = Action;
     },
+
+    ModalSwitch: function (state) {
+        $('#close').show();
+        $('#confirm').hide();
+        $('#login').hide();
+        if (state === -8) {
+            $('#login').show();
+        }
+    },
+
 
     OptionRetrieve: function () {
         var url = '/Main/ItemListRetrieve';
@@ -155,7 +175,7 @@
             $(obj).find('option').remove();
         }
     },
-    
+
     ALERT_LOGRetrieve: function () {
         var url = 'ALERT_LOGRetrieve';
         var section_retrieve = $('#section_retrieve');
@@ -179,6 +199,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_LOGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -195,7 +216,7 @@
                     if (response.Pagination.RowCount > 0) {
                         $.each(response.ALERT_LOG, function (idx, row) {
                             htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_LOGIndex.ALERT_LOGQuery(' + row.SID + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
+                            //htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="ALERT_LOGIndex.ALERT_LOGQuery(' + row.SID + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
                             htmlRow += '<td>' + row.SID + '</td>';
                             htmlRow += '<td>' + row.DATA_TYPE + '</td>';
                             htmlRow += '<td>' + row.LOCATION + '</td>';
@@ -229,5 +250,48 @@
             }
         });
     },
+
+    ALERT_LOGExcel: function () {
+        var url = 'ALERT_LOGExcel';
+        var section_retrieve = $('#section_retrieve');
+        var request = {
+            ALERT_LOG: {
+                DATA_TYPE: section_retrieve.find('select[name=DATA_TYPE]').val(),
+                LOCATION: section_retrieve.find('select[name=LOCATION]').val(),
+                DEVICE_ID: section_retrieve.find('select[name=DEVICE_ID]').val(),
+                DATA_FIELD: section_retrieve.find('select[name=DATA_FIELD]').val(),
+            },
+            SDATE: $('#SDATE').val(),
+            EDATE: $('#EDATE').val(),
+        };
+
+        $.ajax({
+            cache: false,
+            type: 'post',
+            url: url,
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                ALERT_LOGIndex.ModalSwitch(response.Result.State);
+                if (response.Result.State === 0) {
+                    window.location.href = '/Main/ExcelDownload?DataId=' + response.DataId
+                        + '&FileName=' + response.FileName;
+                }
+                else {
+                    $('#modal .modal-title').text('交易訊息');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                    $('#modal').modal('show');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#modal .modal-title').text(ajaxOptions);
+                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+                $('#modal').modal('show');
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    }
+
 
 };

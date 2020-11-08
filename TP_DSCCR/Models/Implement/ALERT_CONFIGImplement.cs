@@ -113,7 +113,7 @@ FROM ALERT_CONFIG
                                 DATA_FIELD = dt.Rows[i]["DATA_FIELD"] as string,
                                 MAX_VALUE = dt.Rows[i]["MAX_VALUE"] as string,
                                 MIN_VALUE = dt.Rows[i]["MIN_VALUE"] as string,
-                                //CHECK_INTERVAL = dt.Rows[i]["CHECK_INTERVAL"] as int? ?? null,
+                                CHECK_INTERVAL = (int)dt.Rows[i]["CHECK_INTERVAL"],
                                 //ALERT_INTERVAL = dt.Rows[i]["ALERT_INTERVAL"] as int? ?? null,
                                 //SUN = dt.Rows[i]["SUN"] as bool? ?? null,
                                 //SUN_STIME = dt.Rows[i]["SUN_STIME"] as TimeSpan? ?? null,
@@ -187,8 +187,8 @@ SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHEC
                             DATA_FIELD = reader["DATA_FIELD"] as string,
                             MAX_VALUE = reader["MAX_VALUE"] as Single? ?? null,
                             MIN_VALUE = reader["MIN_VALUE"] as Single? ?? null,
-                            CHECK_INTERVAL = reader["CHECK_INTERVAL"] as int? ?? null,
-                            ALERT_INTERVAL = reader["ALERT_INTERVAL"] as int? ?? null,
+                            CHECK_INTERVAL = (int)reader["CHECK_INTERVAL"],
+                            //ALERT_INTERVAL = reader["ALERT_INTERVAL"] as int? ?? null,
                             SUN = (Boolean)reader["SUN"],
                             SUN_STIME = reader["SUN_STIME"] as TimeSpan? ?? null,
                             SUN_ETIME = reader["SUN_ETIME"] as TimeSpan? ?? null,
@@ -243,7 +243,7 @@ SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHEC
         VALUES (
             @SID,@MODE,@DATA_TYPE,@LOCATION,@DEVICE_ID,@DATA_FIELD,@MAX_VALUE,@MIN_VALUE,@CHECK_INTERVAL,@ALERT_INTERVAL
             ,@SUN,@SUN_STIME,@SUN_ETIME,@MON,@MON_STIME,@MON_ETIME,@TUE,@TUE_STIME,@TUE_ETIME,@WED,@WED_STIME,@WED_ETIME,@THU,@THU_STIME
-            ,@THU_ETIME,@FRI,@FRI_STIME,@FRI_ETIME,@STA,@STA_STIME,@STA_ETIME,GETDATE(),GETDATE(),@MAIL_TO,@CHECK_HR_CALENDAR
+            ,@THU_ETIME,@FRI,@FRI_STIME,@FRI_ETIME,@STA,@STA_STIME,@STA_ETIME,@CHECK_DATE,GETDATE(),@MAIL_TO,@CHECK_HR_CALENDAR
             ,GETDATE(),@CUSER,GETDATE(),@MUSER);
                 ";
 
@@ -292,7 +292,7 @@ SELECT SID,MODE,DATA_TYPE,LOCATION,DEVICE_ID,DATA_FIELD,MAX_VALUE,MIN_VALUE,CHEC
                 Db.AddInParameter(cmd, "STA", DbType.Boolean, req.ALERT_CONFIG.STA);
                 Db.AddInParameter(cmd, "STA_STIME", DbType.Time, req.ALERT_CONFIG.STA_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_STIME.ToString());
                 Db.AddInParameter(cmd, "STA_ETIME", DbType.Time, req.ALERT_CONFIG.STA_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_ETIME.ToString());
-                //Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
+                Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
                 //Db.AddInParameter(cmd, "ALERT_DATE", DbType.Date, req.ALERT_CONFIG.ALERT_DATE);
                 Db.AddInParameter(cmd, "MAIL_TO", DbType.String, req.ALERT_CONFIG.MAIL_TO);
                 Db.AddInParameter(cmd, "CHECK_HR_CALENDAR", DbType.Boolean, req.ALERT_CONFIG.CHECK_HR_CALENDAR);
@@ -346,7 +346,7 @@ UPDATE ALERT_CONFIG
     ,STA=@STA
     ,STA_STIME=@STA_STIME
     ,STA_ETIME=@STA_ETIME
-    ,CHECK_DATE=GETDATE()
+    ,CHECK_DATE=@CHECK_DATE
     ,ALERT_DATE=GETDATE()
     ,MAIL_TO=@MAIL_TO
     ,CHECK_HR_CALENDAR=@CHECK_HR_CALENDAR
@@ -388,7 +388,7 @@ WHERE SID=@SID;
                 Db.AddInParameter(cmd, "STA", DbType.Boolean, req.ALERT_CONFIG.STA);
                 Db.AddInParameter(cmd, "STA_STIME", DbType.Time, req.ALERT_CONFIG.STA_STIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_STIME.ToString());
                 Db.AddInParameter(cmd, "STA_ETIME", DbType.Time, req.ALERT_CONFIG.STA_ETIME == null ? (object)DBNull.Value : req.ALERT_CONFIG.STA_ETIME.ToString());
-                //Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
+                Db.AddInParameter(cmd, "CHECK_DATE", DbType.Date, req.ALERT_CONFIG.CHECK_DATE);
                 //Db.AddInParameter(cmd, "ALERT_DATE", DbType.Date, req.ALERT_CONFIG.ALERT_DATE);
                 Db.AddInParameter(cmd, "MAIL_TO", DbType.String, req.ALERT_CONFIG.MAIL_TO);
                 Db.AddInParameter(cmd, "CHECK_HR_CALENDAR", DbType.Boolean, req.ALERT_CONFIG.CHECK_HR_CALENDAR);

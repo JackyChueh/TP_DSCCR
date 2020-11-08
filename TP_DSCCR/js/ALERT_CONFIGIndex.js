@@ -40,6 +40,10 @@
             ALERT_CONFIGIndex.ValueRecover(ALERT_CONFIGIndex.Action);
         });
 
+        $('#login').click(function () {
+            window.location.href = AHUData.LoginUrl;
+        });
+
         $('#delete').click(function () {
             $('#modal_action .modal-title').text('提示訊息');
             $('#modal_action .modal-body').html('<p>確定要刪除該筆資料?</p>');
@@ -159,6 +163,15 @@
             $('#section_modify').show();
         }
         this.Action = Action;
+    },
+
+    ModalSwitch: function (state) {
+        $('#close').show();
+        $('#confirm').hide();
+        $('#login').hide();
+        if (state === -8) {
+            $('#login').show();
+        }
     },
 
     OptionRetrieve: function () {
@@ -384,7 +397,7 @@
                     $('#max,#min').hide();
                     $('#spec').show();
                     ALERT_CONFIGIndex.SpecRetrieve($('#SPEC_VALUE'), 'switch_status', '');
-                } 
+                }
             } else if (DataType === 'WSDS_PVOI') {
                 if (DataField === 'WSDS_PVOI_STATUS') {
                     $('#max,#min').hide();
@@ -429,7 +442,7 @@
         }
 
     },
-    
+
     ALERT_CONFIGRetrieve: function () {
         var url = 'ALERT_CONFIGRetrieve';
         var section_retrieve = $('#section_retrieve');
@@ -452,6 +465,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_CONFIGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     $('#gridview >  tbody').html('');
                     $('#rows_count').text(response.Pagination.RowCount);
@@ -476,6 +490,7 @@
                             htmlRow += '<td>' + row.DATA_FIELD + '</td>';
                             htmlRow += '<td>' + row.MAX_VALUE + '</td>';
                             htmlRow += '<td>' + row.MIN_VALUE + '</td>';
+                            htmlRow += '<td>' + row.CHECK_INTERVAL + '</td>';
                             htmlRow += '<td>' + row.MODE + '</td>';
                             htmlRow += '</tr>';
                             $('#gridview >  tbody').append(htmlRow);
@@ -559,6 +574,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_CONFIGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 1) {
                     ALERT_CONFIGIndex.ALERT_CONFIGQuery(response.ALERT_CONFIG.SID);
                     ALERT_CONFIGIndex.ActionSwitch('U');
@@ -635,6 +651,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_CONFIGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 2) {
                     ALERT_CONFIGIndex.ALERT_CONFIGQuery(response.ALERT_CONFIG.SID);
                 } else if (response.Result.State === -10) {
@@ -670,6 +687,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_CONFIGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 3) {
                     ALERT_CONFIGIndex.ALERT_CONFIGRetrieve();
                     ALERT_CONFIGIndex.ActionSwitch('R');
@@ -704,6 +722,7 @@
             data: JSON.stringify(request),
             success: function (data) {
                 var response = JSON.parse(data);
+                ALERT_CONFIGIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
                     var section_modify = $('#section_modify');
                     section_modify.find('input[name=SID]').val(response.ALERT_CONFIG.SID);
@@ -743,7 +762,7 @@
                     section_modify.find('input[name=STA_ETIME]').val(response.ALERT_CONFIG.STA_ETIME ? response.ALERT_CONFIG.STA_ETIME.substr(0, 5) : '');
                     //section_modify.find('input[name=CHECK_DATE]').val(response.ALERT_CONFIG.CHECK_DATE);
                     //section_modify.find('input[name=ALERT_DATE]').val(response.ALERT_CONFIG.ALERT_DATE);
-//                    section_modify.find('input[name=MAIL_TO]').val(response.ALERT_CONFIG.MAIL_TO);
+                    //                    section_modify.find('input[name=MAIL_TO]').val(response.ALERT_CONFIG.MAIL_TO);
                     $('#MAIL_TO').empty();
                     if (response.ALERT_CONFIG.MAIL_TO) {
                         var arrMail = response.ALERT_CONFIG.MAIL_TO.split(';');
@@ -779,7 +798,7 @@
         section_modify.find('select[name=MODE]').val('Y');
         section_modify.find('input[name=CHECK_INTERVAL]').val(30);
         //section_modify.find('input[name=ALERT_INTERVAL]').val(5);
-        section_modify.find('input[name=SUN]').prop('checked', false);
+        section_modify.find('input[name=SUN]').prop('checked', true);
         section_modify.find('input[name=SUN_STIME]').val('00:00');
         section_modify.find('input[name=SUN_ETIME]').val('23:59');
         section_modify.find('input[name=MON]').prop('checked', true);
@@ -797,11 +816,22 @@
         section_modify.find('input[name=FRI]').prop('checked', true);
         section_modify.find('input[name=FRI_STIME]').val('00:00');
         section_modify.find('input[name=FRI_ETIME]').val('23:59');
-        section_modify.find('input[name=STA]').prop('checked', false);
+        section_modify.find('input[name=STA]').prop('checked', true);
         section_modify.find('input[name=STA_STIME]').val('00:00');
         section_modify.find('input[name=STA_ETIME]').val('23:59');
 
-        var mail = 'u777110@taipower.com.tw';
+        var mail = null;
+        mail = 'u161075@taipower.com.tw';
+        $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
+        $("#MAIL_TO option").each(function (idx, val) { //去重複
+            $(this).siblings("[value='" + $(this).val() + "']").remove();
+        });
+        mail = 'u382325@taipower.com.tw';
+        $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
+        $("#MAIL_TO option").each(function (idx, val) { //去重複
+            $(this).siblings("[value='" + $(this).val() + "']").remove();
+        });
+        mail = 'u777110@taipower.com.tw';
         $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
         $("#MAIL_TO option").each(function (idx, val) { //去重複
             $(this).siblings("[value='" + $(this).val() + "']").remove();
@@ -887,7 +917,12 @@
         }
 
         if (request.ALERT_CONFIG.CHECK_INTERVAL) {
-            if (!ALERT_CONFIGIndex.MinuteValidate(request.ALERT_CONFIG.CHECK_INTERVAL)) {
+            if (ALERT_CONFIGIndex.MinuteValidate(request.ALERT_CONFIG.CHECK_INTERVAL)) {
+                if (request.ALERT_CONFIG.CHECK_INTERVAL < 1) {
+                    error += '檢查間隔時間(分)必需大於0<br />';
+                }
+            }
+            else {
                 error += '檢查間隔時間(分)輸入錯誤<br />';
             }
         }

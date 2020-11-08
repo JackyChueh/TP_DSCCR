@@ -116,6 +116,8 @@ namespace TP_DSCCR.Controllers
                         req.ALERT_CONFIG.CUSER = Session["ID"].ToString();
                         req.ALERT_CONFIG.MUSER = Session["ID"].ToString();
 
+                        req.ALERT_CONFIG.CHECK_DATE = DateTime.Now.AddMinutes(-(req.ALERT_CONFIG.CHECK_INTERVAL + 1));
+
                         bool success = new ALERT_CONFIGImplement("TP_ALERT").DataCreate(req);
                         if (success)
                         {
@@ -165,6 +167,7 @@ namespace TP_DSCCR.Controllers
                     else
                     {
                         req.ALERT_CONFIG.MUSER = Session["ID"].ToString();
+                        req.ALERT_CONFIG.CHECK_DATE = DateTime.Now.AddMinutes(-(req.ALERT_CONFIG.CHECK_INTERVAL + 1));
 
                         bool success = new ALERT_CONFIGImplement("TP_ALERT").DataUpdate(req);
                         if (success)

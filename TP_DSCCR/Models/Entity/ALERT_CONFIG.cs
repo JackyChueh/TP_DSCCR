@@ -12,7 +12,7 @@ namespace TP_DSCCR.Models.Entity
         public string DATA_FIELD { get; set; }
         public Single? MAX_VALUE { get; set; }
         public Single? MIN_VALUE { get; set; }
-        public int? CHECK_INTERVAL { get; set; }
+        public int CHECK_INTERVAL { get; set; }
         public int? ALERT_INTERVAL { get; set; }
         public bool SUN { get; set; }
         public TimeSpan? SUN_STIME { get; set; }
