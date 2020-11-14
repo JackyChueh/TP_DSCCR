@@ -217,6 +217,7 @@
     <Compile Include="ViewModels\MSPCAI.cs" />
     <Compile Include="ViewModels\MSPCALARS.cs" />
     <Compile Include="ViewModels\USERS.cs" />
+    <Compile Include="ViewModels\WaterTowerSubItemListRetrieve.cs" />
     <Compile Include="ViewModels\WSDS_PVOI.cs" />
     <Compile Include="ViewModels\WSDS_PWLS.cs" />
     <Compile Include="ViewModels\RRS_PWLS.cs" />

@@ -42,7 +42,7 @@ SELECT {0} AS CDATE
     FROM Chiller
     {2}
     {3}
-    ODER BY CDATE
+    ORDER BY CDATE
 ";
                 string fields = "";
                 switch (req.GROUP_BY_DT)
@@ -236,7 +236,7 @@ SELECT {0} AS CDATE
     FROM Chiller
     {2}
     {3}
-    ODER BY CDATE
+    ORDER BY CDATE
 ";
                 string fields = "";
                 switch (req.GROUP_BY_DT)

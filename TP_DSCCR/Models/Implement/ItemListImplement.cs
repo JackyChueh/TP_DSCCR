@@ -157,5 +157,87 @@ SELECT PHRASE_GROUP,PHRASE_KEY,PHRASE_VALUE,PHRASE_DESC
             return list;
         }
 
+        public List<WaterTowerSubItemList> WaterTowerSubItemListQuery(string PhraseGroup, string WaterTowerKey)
+        {
+            List<WaterTowerSubItemList> list = new List<WaterTowerSubItemList>();
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+                string sql = @"
+SELECT PHRASE_GROUP,PHRASE_KEY,PHRASE_VALUE,PHRASE_DESC
+    FROM PHRASE 
+        WHERE PHRASE_GROUP = @PHRASE_GROUP AND WATER_TOWER_KEY = @WATER_TOWER_KEY AND MODE='Y'
+    ORDER BY SORT
+";
+                Db.AddInParameter(cmd, "PHRASE_GROUP", DbType.String, PhraseGroup);
+                Db.AddInParameter(cmd, "WATER_TOWER_KEY", DbType.String, WaterTowerKey);
+
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+                using (IDataReader reader = Db.ExecuteReader(cmd))
+                {
+                    while (reader.Read())
+                    {
+                        WaterTowerSubItemList row = new WaterTowerSubItemList
+                        {
+                            Key = reader["PHRASE_KEY"].ToString(),
+                            Value = reader["PHRASE_VALUE"].ToString(),
+                            Desc = reader["PHRASE_DESC"].ToString()
+                        };
+                        list.Add(row);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+//        public List<SubItemList> MultiSubItemListQuery(string PhraseGroup, string ParentKey, string WaterTowerKey)
+//        {
+//            List<SubItemList> list = new List<SubItemList>();
+
+//            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+//            {
+//                string sql = @"
+//SELECT PHRASE_GROUP,PHRASE_KEY,PHRASE_VALUE,PARENT_KEY,WATER_TOWER_KEY,PHRASE_DESC
+//    FROM PHRASE 
+//        {0}
+//    ORDER BY SORT
+//";
+
+//                string where = "WHERE PHRASE_GROUP = @PHRASE_GROUP";
+//                Db.AddInParameter(cmd, "PHRASE_GROUP", DbType.String, PhraseGroup);
+
+//                if (!string.IsNullOrEmpty(ParentKey))
+//                {
+//                    where += " AND PARENT_KEY=@PARENT_KEY";
+//                    Db.AddInParameter(cmd, "PARENT_KEY", DbType.String, ParentKey);
+//                }
+//                if (!string.IsNullOrEmpty(WaterTowerKey))
+//                {
+//                    where += " AND WATER_TOWER_KEY=@WATER_TOWER_KEY";
+//                    Db.AddInParameter(cmd, "WATER_TOWER_KEY", DbType.String, WaterTowerKey);
+//                }
+
+//                sql = string.Format(sql, where);
+//                cmd.CommandType = CommandType.Text;
+//                cmd.CommandText = sql;
+//                using (IDataReader reader = Db.ExecuteReader(cmd))
+//                {
+//                    while (reader.Read())
+//                    {
+//                        SubItemList row = new SubItemList
+//                        {
+//                            Key = reader["PHRASE_KEY"].ToString(),
+//                            Value = reader["PHRASE_VALUE"].ToString(),
+//                            Desc = reader["PHRASE_DESC"].ToString()
+//                        };
+//                        list.Add(row);
+//                    }
+//                }
+//            }
+
+//            return list;
+//        }
     }
 }

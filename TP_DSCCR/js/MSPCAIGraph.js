@@ -33,7 +33,13 @@
         });
 
         $('#LOCATION').change(function () {
+            $('#WATER_TOWER').val('');
             MSPCAIGraph.SubOptionRetrieve($('#DEVICE_ID'), $(this).val());
+        });
+
+        $('#WATER_TOWER').change(function () {
+            $('#LOCATION').val('');
+            MSPCAIGraph.WaterTowerSubOptionRetrieve($('#DEVICE_ID'), $(this).val());
         });
 
         $('#login').click(function () {
@@ -64,7 +70,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'MSPCAI_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE', 'WATER_TOWER']
+            PhraseGroup: ['page_size', 'MSPCAI_LOCATION', 'GROUP_BY_DT', 'GRAPH_TYPE', 'MSPCAI_WATER_TOWER']
         };
 
         $.ajax({
@@ -101,7 +107,7 @@
                     });
 
                     $('#WATER_TOWER').append('<option value=""></option>');
-                    $.each(response.ItemList.WATER_TOWER, function (idx, row) {
+                    $.each(response.ItemList.MSPCAI_WATER_TOWER, function (idx, row) {
                         $('#WATER_TOWER').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
                 }
@@ -161,6 +167,48 @@
             $(obj).find('option').remove();
             //$(obj).find('option').not(':first').remove();
             //$(obj).append('<option value=""></option>');
+        }
+    },
+
+    WaterTowerSubOptionRetrieve: function (obj, waterTowerKey) {
+        if (waterTowerKey) {
+            var url = '/Main/WaterTowerSubItemListRetrieve';
+            var request = {
+                PhraseGroup: 'MSPCAI_DEVICE_ID',
+                WaterTowerKey: waterTowerKey
+            };
+
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify(request),
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Result.State === 0) {
+                        $(obj).find('option').remove();
+                        $(obj).append('<option value=""></option>');
+                        $.each(response.SubItemList, function (idx, row) {
+                            $(obj).append($('<option></option>').attr('value', row.Key).text(row.Value));
+                        });
+                    }
+                    else {
+                        $('#modal .modal-title').text('交易訊息');
+                        $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                        $('#modal').modal('show');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+                },
+                complete: function (xhr, status) {
+                    //alert('' + xhr.status + ';' + status );
+                }
+            });
+        }
+        else {
+            $(obj).find('option').remove();
         }
     },
 

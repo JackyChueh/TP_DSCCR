@@ -130,6 +130,44 @@ namespace TP_DSCCR.Controllers
             return json;
         }
 
+        public string WaterTowerSubItemListRetrieve(WaterTowerSubItemListRetrieveReq req)
+        {
+            WaterTowerSubItemListRetrieveRes res = new WaterTowerSubItemListRetrieveRes();
+            try
+            {
+                res.SubItemList = new ItemListImplement("TP_SCC").WaterTowerSubItemListQuery(req.PhraseGroup, req.WaterTowerKey);
+                res.Result.State = ResultEnum.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+                res.Result.State = ResultEnum.FAIL;
+            }
+            var json = JsonConvert.SerializeObject(res);
+            Log("Res=" + json);
+            return json;
+        }
+
+        //public string MultiSubItemListRetrieve(MultiSubItemListRetrieveReq req)
+        //{
+        //    MultiSubItemListRetrieveRes res = new MultiSubItemListRetrieveRes();
+        //    try
+        //    {
+        //        res.SubItemList = new ItemListImplement("TP_SCC").MultiSubItemListQuery(req.PhraseGroup, req.ParentKey,req.WaterTowerKey);
+        //        res.Result.State = ResultEnum.SUCCESS;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log("Err=" + ex.Message);
+        //        Log(ex.StackTrace);
+        //        res.Result.State = ResultEnum.FAIL;
+        //    }
+        //    var json = JsonConvert.SerializeObject(res);
+        //    Log("Res=" + json);
+        //    return json;
+        //}
+
         [HttpGet]
         public ActionResult ExcelDownload(string DataId, string FileName)
         {

@@ -1,4 +1,5 @@
 ﻿var ALERT_CONFIGIndex = {
+    LoginUrl: null,
     Action: null,
     ALERT_CONFIG: null,
     ConfirmAction: null,
@@ -41,7 +42,7 @@
         });
 
         $('#login').click(function () {
-            window.location.href = AHUData.LoginUrl;
+            window.location.href = ALERT_CONFIGIndex.LoginUrl;
         });
 
         $('#delete').click(function () {

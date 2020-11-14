@@ -1,4 +1,5 @@
 ﻿var HR_CALENDARIndex = {
+    LoginUrl:null,
     Action: null,
     HR_CALENDAR: null,
     ConfirmAction: null,
@@ -55,14 +56,14 @@
         $('#modal_action #confirm').click(function () {
             $('#confirm').hide();
             $('#modal_action').modal('hide');
-            console.log(HR_CALENDARIndex.ConfirmAction);
+            //console.log(HR_CALENDARIndex.ConfirmAction);
             if (HR_CALENDARIndex.ConfirmAction === 'delete') {
                 HR_CALENDARIndex.HR_CALENDARDelete();
             }
         });
 
         $('#login').click(function () {
-            window.location.href = AHUData.LoginUrl;
+            window.location.href = HR_CALENDARIndex.LoginUrl;
         });
 
         //$('#section_modify #ID').keyup(function () {
@@ -104,6 +105,9 @@
     },
 
     ModalSwitch: function (state) {
+        console.log(state);
+
+
         $('#close').show();
         $('#confirm').hide();
         $('#login').hide();
