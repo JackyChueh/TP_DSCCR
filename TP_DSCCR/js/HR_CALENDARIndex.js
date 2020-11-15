@@ -1,5 +1,5 @@
 ﻿var HR_CALENDARIndex = {
-    LoginUrl:null,
+    LoginUrl: null,
     Action: null,
     HR_CALENDAR: null,
     ConfirmAction: null,
@@ -24,12 +24,19 @@
             HR_CALENDARIndex.ActionSwitch('C');
         });
 
+        $('#create-year').click(function () {
+            HR_CALENDARIndex.ActionSwitch('Y');
+        });
+
+
         $('#save').click(function () {
             if (HR_CALENDARIndex.DataValidate()) {
                 if (HR_CALENDARIndex.Action === 'C') {
                     HR_CALENDARIndex.HR_CALENDARCreate();
                 } else if (HR_CALENDARIndex.Action === 'U') {
                     HR_CALENDARIndex.HR_CALENDARUpdate();
+                } else if (HR_CALENDARIndex.Action === 'Y') {
+                    HR_CALENDARIndex.HR_CALENDARCreateYear();
                 }
             }
         });
@@ -78,7 +85,7 @@
 
         var section_retrieve = $('#section_retrieve');
         var today = new Date();
-        section_retrieve.find('input[name=HR_DATE_START]').datetimepicker({ timepicker: false, format: 'Y-m-d', value: new Date(today.getFullYear(),0,1) });
+        section_retrieve.find('input[name=HR_DATE_START]').datetimepicker({ timepicker: false, format: 'Y-m-d', value: new Date(today.getFullYear(), 0, 1) });
         section_retrieve.find('input[name=HR_DATE_END]').datetimepicker({ timepicker: false, format: 'Y-m-d', value: new Date(today.getFullYear(), 11, 31) });
     },
 
@@ -88,6 +95,7 @@
         if (Action === 'R') {
             $('#query').show();
             $('#create').show();
+            $('#create-year').show();
             $('#section_retrieve').show();
         } else if (Action === 'U') {
             $('#save').show();
@@ -100,14 +108,17 @@
             $('#return').show();
             $('#undo').show();
             $('#section_modify').show();
+        } else if (Action === 'Y') {
+            $('#save').show();
+            $('#return').show();
+            $('#undo').show();
+            $('#section_year').show();
         }
+
         this.Action = Action;
     },
 
     ModalSwitch: function (state) {
-        console.log(state);
-
-
         $('#close').show();
         $('#confirm').hide();
         $('#login').hide();
@@ -119,8 +130,8 @@
     OptionRetrieve: function () {
         var url = '/Main/ItemListRetrieve';
         var request = {
-            //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'DATE_TYPE']
+            TableItem: ['YearList'],
+            //PhraseGroup: []
         };
 
         $.ajax({
@@ -133,16 +144,22 @@
                 var response = JSON.parse(data);
                 if (response.Result.State === 0) {
 
-                    $.each(response.ItemList.page_size, function (idx, row) {
-                        $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
-                    });
-                    $('#page_size option[value="30"]').attr("selected", true);
+                    //$.each(response.ItemList.page_size, function (idx, row) {
+                    //    $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    //});
+                    //$('#page_size option[value="30"]').attr("selected", true);
 
                     //var section_retrieve = $('#section_retrieve');
                     //section_retrieve.find("select[name='DATE_TYPE']").append('<option value=""></option>');
-                    $("select[name='DATE_TYPE']").append('<option value=""></option>');
-                    $.each(response.ItemList.DATE_TYPE, function (idx, row) {
-                        $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    //$("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    //$.each(response.ItemList.DATE_TYPE, function (idx, row) {
+                    //    $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
+                    //});
+
+                    var section_retrieve = $('#section_retrieve');
+                    //section_retrieve.find("select[name='YEAR']").append('<option value=""></option>');
+                    $.each(response.ItemList.YearList, function (idx, row) {
+                        section_retrieve.find("select[name='YEAR']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
                 }
@@ -165,10 +182,11 @@
         var section_retrieve = $('#section_retrieve');
         var request = {
             HR_CALENDAR: {
-                DATE_TYPE: section_retrieve.find('select[name=DATE_TYPE]').val()
+                //DATE_TYPE: section_retrieve.find('select[name=DATE_TYPE]').val()
             },
-            HR_DATE_START: section_retrieve.find('input[name=HR_DATE_START]').val(),
-            HR_DATE_END: section_retrieve.find('input[name=HR_DATE_END]').val(),
+            YEAR: section_retrieve.find('select[name=YEAR]').val(),
+            //HR_DATE_START: section_retrieve.find('input[name=HR_DATE_START]').val(),
+            //HR_DATE_END: section_retrieve.find('input[name=HR_DATE_END]').val(),
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
             PageSize: $('#page_size').val() ? $('#page_size').val() : 1
         };
@@ -182,41 +200,221 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
-                    $('#gridview >  tbody').html('');
-                    $('#rows_count').text(response.Pagination.RowCount);
-                    $('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
-                    $('#page_number option').remove();
-                    for (var i = 1; i <= response.Pagination.PageCount; i++) {
-                        $('#page_number').append($('<option></option>').attr('value', i).text(i));
-                    }
-                    $('#page_number').val(response.Pagination.PageNumber);
-                    $('#page_count').text(response.Pagination.PageCount);
-                    $('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
+                    $('#table-calendar').html('');
+                    //$('#rows_count').text(response.Pagination.RowCount);
+                    //$('#interval').text(response.Pagination.MinNumber + '-' + response.Pagination.MaxNumber);
+                    //$('#page_number option').remove();
+                    //for (var i = 1; i <= response.Pagination.PageCount; i++) {
+                    //    $('#page_number').append($('<option></option>').attr('value', i).text(i));
+                    //}
+                    //$('#page_number').val(response.Pagination.PageNumber);
+                    //$('#page_count').text(response.Pagination.PageCount);
+                    //$('#time_consuming').text((Date.parse(response.Pagination.EndTime) - Date.parse(response.Pagination.StartTime)) / 1000);
 
+                    var html = '';
                     var htmlRow = '';
-                    if (response.Pagination.RowCount > 0) {
-                        $.each(response.HR_CALENDAR, function (idx, row) {
-                            htmlRow = '<tr>';
-                            htmlRow += '<td><a class="fa fa-edit fa-lg" onclick="HR_CALENDARIndex.HR_CALENDARQuery(' + row.SN + ');" data-toggle="tooltip" data-placement="right" title="修改"></a></td>';
-                            htmlRow += '<td>' + row.HR_DATE.substr(0, 10) + '</td>';
-                            htmlRow += '<td>' + row.DATE_TYPE + '</td>';
-                            htmlRow += '<td>' + (row.MEMO ? row.MEMO : '') + '</td>';
-                            htmlRow += '<td>' + row.MDATE.replace('T', ' ') + '</td>';
-                            htmlRow += '<td>' + row.MUSER + '</td>';
-                            htmlRow += '</tr>';
-                            $('#gridview >  tbody').append(htmlRow);
-                        });
-                    }
-                    else {
-                        htmlRow = '<tr><td colspan="12" style="text-align:center">data not found</td></tr>';
-                        $('#gridview >  tbody').append(htmlRow);
-                    }
+                    //if (response.Pagination.RowCount > 0) {
+                    var month = '';
+                    var date = null;
+                    var currentMonth = null;
+                    var day = null;
+
+                    var firstDate = null;
+                    var tr = 0;
+                    var td = 0;
+                    $.each(response.HR_CALENDAR, function (idx, row) {
+                        date = row.HR_DATE.substr(0, 10);
+                        currentMonth = date.substr(5, 2);
+                        day = date.substr(8, 2);
+                        if (currentMonth !== month) {
+                            if (month !== '') {
+                                //bottom1 = month + '月End';
+                                //$('#table-calendar').append(bottom1 + '<br/>');
+                                
+                                html = '</tbody>';
+                                html += '</table>';
+                                html += '</div>';
+                                html += '</div>';
+                                html += '</div>';
+                                $('#table-calendar').append(html);
+                            }
+                            //month = date.substr(5, 2);
+                            //header1 = currentMonth + '月Start1';
+                            //$('#table-calendar').append(header1 + '<br/>');
+
+                            html = '<div class="col-xl-6">';
+                            html += '<div class="card">';
+                            html += '<div class="card-header">';
+                            html += parseInt(currentMonth)+'月';
+                            html += '</div>';
+                            html += '<div class="card-body">';
+                            html += '<table class="table table-sm table-bordered table-hover table-striped hr-month">';
+                            html += '<thead>';
+                            html += '<tr>';
+                            html += '<th>日</th>';
+                            html += '<th>一</th>';
+                            html += '<th>二</th>';
+                            html += '<th>三</th>';
+                            html += '<th>四</th>';
+                            html += '<th>五</th>';
+                            html += '<th>六</th>';
+                            html += '</tr>';
+                            html += '</thead>';
+                            html += '<tbody>';
+                            html += '<tr>';
+                            
+
+                            html += '<td>1</td>'
+                            html += '<td>2</td>'
+                            html += '<td>3</td>'
+                            html += '<td>4</td>'
+                            html += '<td>5</td>'
+                            html += '<td>6</td>'
+                            html += '<td>7</td>'
+                            html += '<tr/>';
+                            $('#table-calendar').append(html);
+
+
+                            //html = '<td onclick="HR_CALENDARIndex.HR_CALENDARQueryByDate("' + date + '");"><div class="tl">'+ day + '</div><div class="br">' + row.DATE_TYPE + '</div></td>';
+                            html = '<td>1</td>'
+                            html += '<td>2</td>'
+                            html += '<td>3</td>'
+                            html += '<td>4</td>'
+                            html += '<td>5</td>'
+                            html += '<td>6</td>'
+                            html += '<td>7</td>'
+                            html += '<tr/>';
+                            //$('#table-calendar').append(html);
+
+                            
+
+                            firstDate = new Date(request.YEAR, parseInt(currentMonth)-1, 1);
+                            month = currentMonth;
+                        }
+                        //day = date.substr(8, 2);
+                        //htmlRow = day + '日';
+
+                        var objDate = new Date(date);
+
+                        //console.log(objDate);
+                        //var weekDay = objDate.getDay();
+                        //console.log(weekDay);
+
+                        //if (day === '01') {
+                        //    htmlRow = '<tr>';
+                        //    $('#table-calendar').append(htmlRow);
+                        //}
+
+                        //debugger;
+
+                        //if (td === 0) {
+                        //    htmlRow = '<tr>';
+                        //    //$('#table-calendar').append(htmlRow);
+                        //}
+
+                        //if (tr === 0 && td===0) { //加空白的日期方塊
+                        //    var weekDay = firstDate.getDay();
+                        //    if (weekDay !== 0) {
+                        //        for (i = 0; i < weekDay; i++) {
+                        //            htmlRow += '<td><td/>';
+                        //            //$('#table-calendar').append(htmlRow);
+                        //            td++;
+                        //        }
+                        //    }
+                        //}
+
+                        //htmlRow = '<td onclick="HR_CALENDARIndex.HR_CALENDARQueryByDate("' + date + '");"><div class="tl">' + day + '</div><div class="br">' + row.DATE_TYPE + '</div></td>';
+                        //$('#table-calendar').append(htmlRow);
+                        //td++;
+
+                        //if (td === 6) {
+                        //    htmlRow = '<tr/>';
+                        //    $('#table-calendar').append(htmlRow);
+                        //    td = 0;
+                        //    tr++;
+                        //}
+
+                        //if (tr === 4) {
+                        //    tr = 0;
+                        //}
+                        //htmlRow = '<td onclick="HR_CALENDARIndex.HR_CALENDARQueryByDate("' + date + '");"><div class="tl">'+ day + '</div><div class="br">' + row.DATE_TYPE + '</div></td>';
+                        //htmlRow += '<td>2</td>'
+                        //htmlRow += '<td>3</td>'
+                        //htmlRow += '<td>4</td>'
+                        //htmlRow += '<td>5</td>'
+                        //htmlRow += '<td>6</td>'
+                        //htmlRow += '<td>7</td>'
+                        //$('#table-calendar').append(htmlRow);
+
+                        //if (day === '28') {
+                        //    htmlRow = '</tr>';
+                        //    $('#table-calendar').append(htmlRow);
+                        //}
+                        
+
+                        
+
+                        //if (currentMonth !== month) {
+                        //    month = currentMonth;
+                        //    htmlRow = month + '月';
+                        //    $('#table-calendar').append(htmlRow + '<br/>');
+                        //}
+                    });
+                    //bottom1 = month + '月End';
+                    //$('#table-calendar').append(bottom1 + '<br/>');
+
+                    //}
+                    //else {
+                    //    htmlRow = '<tr><td colspan="12" style="text-align:center">data not found</td></tr>';
+                    //    $('#gridview >  tbody').append(htmlRow);
+                    //}
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
                     $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
                     $('#modal').modal('show');
                 }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#modal .modal-title').text(ajaxOptions);
+                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+                $('#modal').modal('show');
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    },
+
+    HR_CALENDARCreateYear: function () {
+        var url = 'HR_CALENDARCreateYear';
+        var section_modify = $('#section_modify');
+        var section_year = $('#section_year');
+        var request = {
+            HR_CALENDAR: {
+                HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+                DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
+                MEMO: section_modify.find('textarea[name=MEMO]').val()
+            },
+            YEAR: section_year.find('input[name=YEAR]').val(),
+        };
+
+        $.ajax({
+            type: 'post',
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
+                if (response.Result.State === 1) {
+                    HR_CALENDARIndex.ActionSwitch('R');
+                } else if (response.Result.State === -10) {
+                    response.Result.Msg = request.YEAR + '年行事曆內，至少有一個日期已存在，不可重複設定。';
+                }
+
+                $('#modal .modal-title').text('交易訊息');
+                $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
+                $('#modal').modal('show');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 $('#modal .modal-title').text(ajaxOptions);
@@ -277,7 +475,7 @@
                 HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
                 DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
                 MEMO: section_modify.find('textarea[name=MEMO]').val()
-            }         
+            }
         };
 
         $.ajax({
@@ -343,6 +541,54 @@
         });
     },
 
+    HR_CALENDARQueryByDate: function (date) {
+        var url = 'HR_CALENDARQuery';
+        var request = {
+            HR_CALENDAR: {
+                HR_DATE: date
+            }
+        };
+
+        $.ajax({
+            type: 'post',
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
+                var section_modify = $('#section_modify');
+                if (response.Result.State === 0) {
+                    section_modify.find('input[name=SN]').val(response.HR_CALENDAR.SN);
+                    section_modify.find('input[name=HR_DATE]').val(response.HR_CALENDAR.HR_DATE.substr(0, 10));
+                    section_modify.find('select[name=DATE_TYPE]').val(response.HR_CALENDAR.DATE_TYPE);
+                    section_modify.find('textarea[name=MEMO]').val(response.HR_CALENDAR.MEMO);
+                    section_modify.find('input[name=CDATE]').val(response.HR_CALENDAR.CDATE.replace('T', ' '));
+                    section_modify.find('input[name=CUSER]').val(response.HR_CALENDAR.CUSER);
+                    section_modify.find('input[name=MDATE]').val(response.HR_CALENDAR.MDATE.replace('T', ' '));
+                    section_modify.find('input[name=MUSER]').val(response.HR_CALENDAR.MUSER);
+
+                    HR_CALENDARIndex.HR_CALENDAR = response.HR_CALENDAR;
+                    HR_CALENDARIndex.ActionSwitch('U');
+                }
+                else if (response.Result.State === -6) {
+                    section_modify.find('input[name=HR_DATE]').val(date);
+                    HR_CALENDARIndex.ActionSwitch('C');
+                }
+                else {
+                    $('#modal .modal-title').text('交易訊息');
+                    $('#modal .modal-body').html('<p>交易代碼:' + response.Result.State + '<br/>交易說明:' + response.Result.Msg + '</p>');
+                    $('#modal').modal('show');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('' + xhr.status + ';' + ajaxOptions + ';' + thrownError);
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    },
+
     HR_CALENDARQuery: function (SN) {
         var url = 'HR_CALENDARQuery';
         var request = {
@@ -390,20 +636,32 @@
     DataValidate: function () {
         var error = '';
         var section_modify = $('#section_modify');
+        var section_year = $('#section_year');
 
-        var HR_CALENDAR = {
-            HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
-            DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
-            MEMO: section_modify.find('textarea[name=MEMO]').val()
+        var request = {
+            HR_CALENDAR: {
+                HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+                DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
+                MEMO: section_modify.find('textarea[name=MEMO]').val()
+            },
+            YEAR: section_year.find('input[name=YEAR]').val(),
         };
 
-        if (!HR_CALENDAR.HR_DATE) {
-            error += '日期不可空白<br />';
+        if (HR_CALENDARIndex.Action === 'C' || HR_CALENDARIndex.Action === 'U') {
+            if (!request.HR_CALENDAR.HR_DATE) {
+                error += '日期不可空白<br />';
+            }
+            if (!request.HR_CALENDAR.DATE_TYPE) {
+                error += '類別不可空白<br />';
+            }
         }
-        if (!HR_CALENDAR.DATE_TYPE) {
-            error += '類別不可空白<br />';
+
+        if (HR_CALENDARIndex.Action === 'Y') {
+            console.log(request.YEAR)
+            if (!request.YEAR) {
+                error += '年份不可空白<br />';
+            }
         }
-       
         if (error.length > 0) {
             $('#modal .modal-title').text('提示訊息');
             $('#modal .modal-body').html('<p>' + error + '</p>');
@@ -418,6 +676,9 @@
                 $('.modify').each(function (index, value) {
                     if (value.id === 'CDATE' || value.id === 'MDATE') {
                         $(value).val(HR_CALENDARIndex.HR_CALENDAR[value.id].replace('T', ' '));
+                    }
+                    else if (value.id === 'HR_DATE') {
+                        $(value).val(HR_CALENDARIndex.HR_CALENDAR[value.id].substr(0, 10));
                     }
                     else {
                         $(value).val(HR_CALENDARIndex.HR_CALENDAR[value.id]);

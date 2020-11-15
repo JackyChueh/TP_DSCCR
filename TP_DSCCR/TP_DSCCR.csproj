@@ -419,9 +419,7 @@
     <Content Include="Views\HR_CALENDAR\HR_CALENDARIndex.cshtml" />
     <Content Include="Views\ALERT_CONFIG\ALERT_CONFIGIndex.cshtml" />
     <Content Include="Views\MSPCSTATS\Data.cshtml" />
-    <Content Include="Views\MSPCSTATS\Graph.cshtml" />
     <Content Include="Views\MSPCALARS\Data.cshtml" />
-    <Content Include="Views\MSPCALARS\Graph.cshtml" />
     <Content Include="Views\MSPCAI\Data.cshtml" />
     <Content Include="Views\MSPCAI\Graph.cshtml" />
     <Content Include="Views\ALERT_LOG\ALERT_LOGIndex.cshtml" />

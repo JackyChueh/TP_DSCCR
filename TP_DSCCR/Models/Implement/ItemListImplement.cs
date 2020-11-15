@@ -14,6 +14,7 @@ namespace TP_DSCCR.Models.Implement
         private const string userName = "SELECT ID AS ITEM_KEY,ID AS ITEM_VALUE FROM USERS ORDER BY SN DESC";
         private const string UserIdName = "SELECT SN AS ITEM_KEY,ID + ' ' + NAME AS ITEM_VALUE FROM USERS ORDER BY SN DESC";
         private const string RolesName = "SELECT SN AS ITEM_KEY,NAME AS ITEM_VALUE FROM ROLES ORDER BY SN DESC";
+        private const string YearList = "SELECT YYYY AS ITEM_KEY, YYYY AS ITEM_VALUE FROM (SELECT DATEPART(yyyy,HR_DATE) AS YYYY FROM TP_ALERT.dbo.HR_CALENDAR GROUP BY DATEPART(yyyy,HR_DATE)) A ORDER BY YYYY DESC";
         private Dictionary<string, string> sql = new Dictionary<string, string>();
 
         public ItemListImplement(string connectionStringName) : base(connectionStringName)
@@ -22,6 +23,7 @@ namespace TP_DSCCR.Models.Implement
             sql.Add("userName", userName);
             sql.Add("UserIdName", UserIdName);
             sql.Add("RolesName", RolesName);
+            sql.Add("YearList", YearList);
         }
 
         private Dictionary<string, object> pharse = new Dictionary<string, object>();

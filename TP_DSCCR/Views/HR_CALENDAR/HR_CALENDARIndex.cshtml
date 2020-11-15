@@ -6,6 +6,29 @@
 @section Styles
 {
     <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    <style>
+        .hr-month thead th {
+            text-align: center;
+        }
+
+        .hr-month tbody td {
+            height: 100px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .hr-month .tl {
+            position: absolute;
+            top: 8px;
+            left: 16px;
+        }
+
+        .hr-month .br {
+            position: absolute;
+            bottom: 8px;
+            right: 16px;
+        }
+    </style>
 }
 
 <div class="card">
@@ -13,7 +36,8 @@
         <div class="form-inline">
             <div class="col">行事曆設定</div>
             <button type="button" id="query" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-search fa-lg mr-1 text-primary"></i>查詢</button>
-            <button type="button" id="create" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-plus-square fa-lg mr-1 text-warning"></i>新增</button>
+            <button type="button" id="create-year" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-calendar-alt fa-lg mr-1 text-warning"></i>年度新增</button>
+            <button type="button" id="create" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-plus-square fa-lg mr-1 text-warning"></i>單日新增</button>
             <button type="button" id="save" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-save fa-lg mr-1 text-success"></i>存檔</button>
             <button type="button" id="undo" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-undo fa-lg mr-1"></i>復原</button>
             <button type="button" id="delete" class="btn btn-sm btn-outline-dark ml-1" style="display:none;"><i class="fa fa-trash fa-lg mr-1 text-danger"></i>刪除</button>
@@ -24,64 +48,141 @@
         <form id="section_retrieve" style="display: none;">
             <div class="form-row">
                 <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-                    <label for="HR_DATE_START">日期(起)</label>
-                    <input type="text" class="form-control form-control-sm" name="HR_DATE_START">
+                    <label for="YEAR">年份</label>
+                    <select class="form-control form-control-sm" name="YEAR"></select>
                 </div>
-                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-                    <label for="HR_DATE_START">日期(迄)</label>
-                    <input type="text" class="form-control form-control-sm" name="HR_DATE_END">
-                </div>
-                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
-                    <label for="DATE_TYPE">日期型態</label>
-                    <select class="form-control form-control-sm" name="DATE_TYPE"></select>
-                </div>
+                @*<div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                <label for="HR_DATE_START">日期(起)</label>
+                <input type="text" class="form-control form-control-sm" name="HR_DATE_START">
+            </div>
+            <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                <label for="HR_DATE_START">日期(迄)</label>
+                <input type="text" class="form-control form-control-sm" name="HR_DATE_END">
+            </div>
+            <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                <label for="DATE_TYPE">日期型態</label>
+                <select class="form-control form-control-sm" name="DATE_TYPE"></select>
+            </div>*@
             </div>
 
-            <div class="table-responsive">
-                <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>日期</th>
-                            <th>日期型態</th>
-                            <th>備註</th>
-                            <th>修改時間</th>
-                            <th>修改人員</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            @*<div class="table-responsive">
+            <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>日期</th>
+                        <th>日期型態</th>
+                        <th>備註</th>
+                        <th>修改時間</th>
+                        <th>修改人員</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>*@
+            <div id="table-calendar" class="form-row">
+                <div class="col-xl-6">
+                    <div class="card">
+                        <div class="card-header">
+                            十一月
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-bordered table-hover table-striped hr-month">
+                                <thead>
+                                    <tr>
+                                        <th>日</th>
+                                        <th>一</th>
+                                        <th>二</th>
+                                        <th>三</th>
+                                        <th>四</th>
+                                        <th>五</th>
+                                        <th>六</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td onclick="HR_CALENDARIndex.HR_CALENDARQueryByDate('2020-11-01');"><div class="tl">1</div><div class="br">休假</div></td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                        <td>6</td>
+                                        <td>7</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-            <div id="paging_block" class="form-inline">
-                <div class="input-group input-group-sm mr-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">第<i id="interval">0-0</i>筆</span>
-                    </div>
-                    <div class="input-group-append">
-                        <span class="input-group-text">共<i id="rows_count">0</i>筆</span>
-                        <span class="input-group-text">耗時<i id="time_consuming">0</i>秒</span>
-                    </div>
+            </div>
+            @*<div class="card">
+            <div class="card-header">
+                <div class="form-row">
+                    十一月
                 </div>
-                <div class="input-group input-group-sm mr-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">第</span>
-                    </div>
-                    <div class="input-group-append">
-                        <select id="page_number" class="form-control-sm rounded-0"></select>
-                        <span class="input-group-text">頁</span>
-                        <span class="input-group-text">共<i id="page_count">0</i>頁</span>
-                    </div>
+            </div>
+            <div class="card-body">
+                    <table id="gridview" class="table table-sm table-bordered table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>日</th>
+                                <th>一</th>
+                                <th>二</th>
+                                <th>三</th>
+                                <th>四</th>
+                                <th>五</th>
+                                <th>六</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="input-group input-group-sm mr-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">每頁</span>
-                    </div>
-                    <div class="input-group-append">
-                        <select id="page_size" class="form-control-sm rounded-0"></select>
-                        <span class="input-group-text">筆</span>
-                    </div>
+        </div>*@
+
+            @*<div id="paging_block" class="form-inline">
+            <div class="input-group input-group-sm mr-1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">第<i id="interval">0-0</i>筆</span>
                 </div>
+                <div class="input-group-append">
+                    <span class="input-group-text">共<i id="rows_count">0</i>筆</span>
+                    <span class="input-group-text">耗時<i id="time_consuming">0</i>秒</span>
+                </div>
+            </div>
+            <div class="input-group input-group-sm mr-1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">第</span>
+                </div>
+                <div class="input-group-append">
+                    <select id="page_number" class="form-control-sm rounded-0"></select>
+                    <span class="input-group-text">頁</span>
+                    <span class="input-group-text">共<i id="page_count">0</i>頁</span>
+                </div>
+            </div>
+            <div class="input-group input-group-sm mr-1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">每頁</span>
+                </div>
+                <div class="input-group-append">
+                    <select id="page_size" class="form-control-sm rounded-0"></select>
+                    <span class="input-group-text">筆</span>
+                </div>
+            </div>
+        </div>*@
+
+        </form>
+
+        <form id="section_year" style="display: none;">
+            <div class="form-row">
+                <div class="form-group col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+                    <span class="text-danger">*</span>
+                    <label for="YEAR">年份</label>
+                    <input type="text" class="form-control form-control-sm modify" id="YEAR" name="YEAR">
+                </div>
+                <div class="w-100"></div>
             </div>
         </form>
 

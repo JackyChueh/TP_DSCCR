@@ -14,20 +14,11 @@ namespace TP_DSCCR.Models.Implement
     {
         public HR_CALENDARImplement(string connectionStringName) : base(connectionStringName) { }
 
-        public HR_CALENDARRetrieveRes PaginationRetrieve(HR_CALENDARRetrieveReq Req)
+        public HR_CALENDARRetrieveRes PaginationRetrieve(DateTime StartDate, DateTime EndDate)
         {
             HR_CALENDARRetrieveRes res = new HR_CALENDARRetrieveRes()
             {
                 HR_CALENDAR = new List<HR_CALENDAR>(),
-                Pagination = new Pagination
-                {
-                    PageCount = 0,
-                    RowCount = 0,
-                    PageNumber = 0,
-                    MinNumber = 0,
-                    MaxNumber = 0,
-                    StartTime = DateTime.Now
-                }
             };
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
@@ -35,30 +26,15 @@ namespace TP_DSCCR.Models.Implement
                 string sql = @"
 SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default) AS DATE_TYPE,MEMO,CDATE,CUSER,MDATE,MUSER
     FROM HR_CALENDAR
-    {0}
-    ORDER BY HR_DATE DESC
+    WHERE HR_DATE>=@HR_DATE_START AND HR_DATE<@HR_DATE_END
+    ORDER BY HR_DATE
 ";
-
                 //Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
-
                 string where = "";
                 Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
-
-                if (Req.HR_DATE_START !=null)
-                {
-                    where += " AND HR_DATE>=@HR_DATE_START";
-                    Db.AddInParameter(cmd, "HR_DATE_START", DbType.Date, Req.HR_DATE_START);
-                }
-                if (Req.HR_DATE_END != null)
-                {
-                    where += " AND HR_DATE<=@HR_DATE_END";
-                    Db.AddInParameter(cmd, "HR_DATE_END", DbType.Date, Req.HR_DATE_END);
-                }
-                if (!string.IsNullOrEmpty(Req.HR_CALENDAR.DATE_TYPE))
-                {
-                    where += " AND DATE_TYPE=@DATE_TYPE";
-                    Db.AddInParameter(cmd, "DATE_TYPE", DbType.String, Req.HR_CALENDAR.DATE_TYPE);
-                }
+                Db.AddInParameter(cmd, "HR_DATE_START", DbType.Date, StartDate);
+                Db.AddInParameter(cmd, "HR_DATE_END", DbType.Date, EndDate);
+              
                 if (where.Length > 0)
                 {
                     where = " WHERE" + where.Substring(4);
@@ -69,17 +45,9 @@ SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default
                 cmd.CommandText = sql;
                 using (DataTable dt = Db.ExecuteDataSet(cmd).Tables[0])
                 {
-                    res.Pagination.RowCount = dt.Rows.Count;
-                    res.Pagination.PageCount = Convert.ToInt32(Math.Ceiling(1.0 * res.Pagination.RowCount / Req.PageSize));
-                    res.Pagination.PageNumber = Req.PageNumber < 1 ? 1 : Req.PageNumber;
-                    res.Pagination.PageNumber = Req.PageNumber > res.Pagination.PageCount ? res.Pagination.PageCount : res.Pagination.PageNumber;
-                    res.Pagination.MinNumber = (res.Pagination.PageNumber - 1) * Req.PageSize + 1;
-                    res.Pagination.MaxNumber = res.Pagination.PageNumber * Req.PageSize;
-                    res.Pagination.MaxNumber = res.Pagination.MaxNumber > res.Pagination.RowCount ? res.Pagination.RowCount : res.Pagination.MaxNumber;
-
                     if (dt.Rows.Count > 0)
                     {
-                        for (int i = res.Pagination.MinNumber - 1; i < res.Pagination.MaxNumber; i++)
+                        for (int i = 0; i < dt.Rows.Count; i++)
                         {
                             var row = new HR_CALENDAR
                             {
@@ -97,7 +65,6 @@ SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default
                     }
                 }
             }
-            res.Pagination.EndTime = DateTime.Now;
 
             return res;
         }
@@ -111,10 +78,22 @@ SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default
                 string sql = @"
 SELECT SN,HR_DATE,DATE_TYPE,MEMO,CDATE,CUSER,MDATE,MUSER
     FROM HR_CALENDAR
-    WHERE SN=@SN
+    WHERE {0}
         ";
-                Db.AddInParameter(cmd, "SN", DbType.Int32, Req.HR_CALENDAR.SN);
+                string where = "";
+                if (Req.HR_CALENDAR.SN != null)
+                {
+                    where += " AND SN = @SN";
+                    Db.AddInParameter(cmd, "SN", DbType.Int32, Req.HR_CALENDAR.SN);
+                }
 
+                if (Req.HR_CALENDAR.HR_DATE != null)
+                {
+                    where += " AND HR_DATE = @HR_DATE";
+                    Db.AddInParameter(cmd, "HR_DATE", DbType.Date, Req.HR_CALENDAR.HR_DATE);
+                }
+                where = where.Substring(4);
+                sql = string.Format(sql, where);
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
                 using (IDataReader reader = Db.ExecuteReader(cmd))
@@ -138,6 +117,50 @@ SELECT SN,HR_DATE,DATE_TYPE,MEMO,CDATE,CUSER,MDATE,MUSER
             }
 
             return res;
+        }
+
+        public bool DataCreateYear(DateTime StartDate, DateTime EndDate, string UserId)
+        {
+            int effect = 0;
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+
+                string sql = @"
+SET @SN = NEXT VALUE FOR [HR_CALENDAR_SEQ]
+INSERT HR_CALENDAR (SN,HR_DATE,DATE_TYPE,CDATE,CUSER,MDATE,MUSER)
+    VALUES (@SN,@HR_DATE,@DATE_TYPE,GETDATE(),@CUSER,GETDATE(),@MUSER);
+        ";
+                Db.AddInParameter(cmd, "HR_DATE", DbType.Date);
+                Db.AddInParameter(cmd, "DATE_TYPE", DbType.String);
+                Db.AddInParameter(cmd, "CUSER", DbType.String, UserId);
+                Db.AddInParameter(cmd, "MUSER", DbType.String, UserId);
+                Db.AddOutParameter(cmd, "SN", DbType.Int32, 1);
+
+                while (StartDate < EndDate)
+                {
+                    if (StartDate.DayOfWeek == DayOfWeek.Sunday || StartDate.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        Db.SetParameterValue(cmd, "HR_DATE", StartDate);
+                        Db.SetParameterValue(cmd, "DATE_TYPE", 'H');
+
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+                        effect += Db.ExecuteNonQuery(cmd);
+                    }
+                    else
+                    {
+                        Db.SetParameterValue(cmd, "HR_DATE", StartDate);
+                        Db.SetParameterValue(cmd, "DATE_TYPE", 'W');
+
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+                        effect += Db.ExecuteNonQuery(cmd);
+                    }
+                    StartDate = StartDate.AddDays(1);
+                }
+                return true;
+            }
         }
 
         public bool DataCreate(HR_CALENDARModifyReq req)
@@ -208,6 +231,33 @@ DELETE FROM HR_CALENDAR
                 count = Db.ExecuteNonQuery(cmd);
             }
             return count;
+        }
+
+        public bool DataDuplicateYear(DateTime StartDate, DateTime EndDate)
+        {
+            bool yn = false;
+
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+                string sql = @"
+SELECT 1
+    FROM HR_CALENDAR
+    WHERE HR_DATE>=@SDATE AND HR_DATE<@EDATE
+        ";
+                Db.AddInParameter(cmd, "SDATE", DbType.Date, StartDate);
+                Db.AddInParameter(cmd, "EDATE", DbType.Date, EndDate);
+
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+                using (IDataReader reader = Db.ExecuteReader(cmd))
+                {
+                    if (reader.Read())
+                    {
+                        yn = true;
+                    }
+                }
+            }
+            return yn;
         }
 
         public bool DataDuplicate(HR_CALENDARModifyReq Req)

@@ -3,13 +3,13 @@ namespace TP_DSCCR.ViewModels
 {
     public class Pagination
     {
-        public int PageNumber;
-        public int PageCount;
-        public int RowCount;
-        public int MinNumber;
-        public int MaxNumber;
+        public int PageNumber { get;set; }
+        public int PageCount { get; set; }
+        public int RowCount { get; set; }
+        public int MinNumber { get; set; }
+        public int MaxNumber { get; set; }
         //public object Data;
-        public DateTime? StartTime;
-        public DateTime? EndTime;
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
     }
 }
