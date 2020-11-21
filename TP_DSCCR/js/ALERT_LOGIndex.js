@@ -107,7 +107,7 @@
                     $.each(response.ItemList.page_size, function (idx, row) {
                         $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
-                    $('#page_size option[value="30"]').attr("selected", true);
+                    $('#page_size option[value="100"]').attr("selected", true);
 
                     $("select[name='MODE']").append('<option value=""></option>');
                     $.each(response.ItemList.mode, function (idx, row) {

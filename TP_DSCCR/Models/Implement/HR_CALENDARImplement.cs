@@ -18,7 +18,7 @@ namespace TP_DSCCR.Models.Implement
         {
             HR_CALENDARRetrieveRes res = new HR_CALENDARRetrieveRes()
             {
-                HR_CALENDAR = new List<HR_CALENDAR>(),
+                HR_MONTHS = new List<HR_MONTHS>(),
             };
 
             using (DbCommand cmd = Db.CreateConnection().CreateCommand())
@@ -34,7 +34,7 @@ SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default
                 Db.AddInParameter(cmd, "TOP", DbType.Int32, 1000);
                 Db.AddInParameter(cmd, "HR_DATE_START", DbType.Date, StartDate);
                 Db.AddInParameter(cmd, "HR_DATE_END", DbType.Date, EndDate);
-              
+
                 if (where.Length > 0)
                 {
                     where = " WHERE" + where.Substring(4);
@@ -43,25 +43,33 @@ SELECT TOP(@TOP) SN,HR_DATE,TP_SCC.dbo.PHRASE_NAME('DATE_TYPE',DATE_TYPE,default
                 sql = String.Format(sql, where);
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sql;
-                using (DataTable dt = Db.ExecuteDataSet(cmd).Tables[0])
+
+                using (IDataReader reader = Db.ExecuteReader(cmd))
                 {
-                    if (dt.Rows.Count > 0)
+                    int currentMonth = 0;
+                    List<HR_CALENDAR> daysContainer = null;
+                    while (reader.Read())
                     {
-                        for (int i = 0; i < dt.Rows.Count; i++)
+                        HR_CALENDAR HR_CALENDAR = new HR_CALENDAR
                         {
-                            var row = new HR_CALENDAR
-                            {
-                                SN = (int)dt.Rows[i]["SN"],
-                                HR_DATE = (DateTime)dt.Rows[i]["HR_DATE"],
-                                DATE_TYPE = dt.Rows[i]["DATE_TYPE"] as string,
-                                MEMO = dt.Rows[i]["MEMO"] as string,
-                                CDATE = dt.Rows[i]["CDATE"] as DateTime? ?? null,
-                                CUSER = dt.Rows[i]["CUSER"] as string,
-                                MDATE = dt.Rows[i]["MDATE"] as DateTime? ?? null,
-                                MUSER = dt.Rows[i]["MUSER"] as string,
-                            };
-                            res.HR_CALENDAR.Add(row);
+                            SN = (int)reader["SN"],
+                            HR_DATE = reader["HR_DATE"] as DateTime?,
+                            DATE_TYPE = reader["DATE_TYPE"] as string,
+                            MEMO = reader["MEMO"] as string,
+                            CDATE = reader["CDATE"] as DateTime?,
+                            CUSER = reader["CUSER"] as string,
+                            MDATE = reader["MDATE"] as DateTime?,
+                            MUSER = reader["MUSER"] as string
+                        };
+
+                        int rowMonth = ((DateTime)HR_CALENDAR.HR_DATE).Month;
+                        if (rowMonth != currentMonth)
+                        {
+                            daysContainer = new List<HR_CALENDAR>();
+                            res.HR_MONTHS.Add(new HR_MONTHS { Month = rowMonth, HR_CALENDARS = daysContainer });
+                            currentMonth = rowMonth;
                         }
+                        daysContainer.Add(HR_CALENDAR);
                     }
                 }
             }
@@ -214,6 +222,24 @@ UPDATE HR_CALENDAR
             }
 
             return effect == 1;
+        }
+
+        public int DataDeleteYear(DateTime StartDate, DateTime EndDate, string UserId)
+        {
+            int count = 0;
+            using (DbCommand cmd = Db.CreateConnection().CreateCommand())
+            {
+                string sql = @"
+DELETE FROM HR_CALENDAR
+    WHERE HR_DATE>=@SDATE AND HR_DATE<@EDATE;
+";
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+                Db.AddInParameter(cmd, "SDATE", DbType.Date, StartDate);
+                Db.AddInParameter(cmd, "EDATE", DbType.Date, EndDate);
+                count = Db.ExecuteNonQuery(cmd);
+            }
+            return count;
         }
 
         public int DataDelete(HR_CALENDARModifyReq req)

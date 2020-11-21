@@ -8,16 +8,17 @@
         this.EventBinding();
         this.OptionRetrieve();
         this.ActionSwitch('R');
+        HR_CALENDARIndex.HR_CALENDARRetrieve();
     },
 
     EventBinding: function () {
 
         $('#query').click(function () {
-            HR_CALENDARIndex.HR_CALENDARRetrieve('R');
+            HR_CALENDARIndex.HR_CALENDARRetrieve();
         });
 
         $('#page_number, #page_size').change(function () {
-            HR_CALENDARIndex.HR_CALENDARRetrieve('R');
+            HR_CALENDARIndex.HR_CALENDARRetrieve();
         });
 
         $('#create').click(function () {
@@ -38,6 +39,7 @@
                 } else if (HR_CALENDARIndex.Action === 'Y') {
                     HR_CALENDARIndex.HR_CALENDARCreateYear();
                 }
+                HR_CALENDARIndex.OptionRetrieve();
             }
         });
 
@@ -46,18 +48,29 @@
         });
 
         $('#delete').click(function () {
+            if (HR_CALENDARIndex.Action === 'Y') {
+                if (!HR_CALENDARIndex.DataValidate()) {
+                    return false;
+                }
+                HR_CALENDARIndex.ConfirmAction = 'delete-year';
+            }
+            if (HR_CALENDARIndex.Action === 'U') {
+                HR_CALENDARIndex.ConfirmAction = 'delete';
+            }
             $('#modal_action .modal-title').text('提示訊息');
             $('#modal_action .modal-body').html('<p>確定要刪除該筆資料?</p>');
             //$('#confirm').attr('data-action', 'delete');
-            HR_CALENDARIndex.ConfirmAction = 'delete';
+            
             $('#modal_action #confirm').show();
             $('#modal_action').modal('show');
+
         });
 
         $('#return').click(function () {
             HR_CALENDARIndex.ActionSwitch('R');
             HR_CALENDARIndex.ValueRecover();
             HR_CALENDARIndex.HR_CALENDARRetrieve();
+
         });
 
         $('#modal_action #confirm').click(function () {
@@ -66,6 +79,9 @@
             //console.log(HR_CALENDARIndex.ConfirmAction);
             if (HR_CALENDARIndex.ConfirmAction === 'delete') {
                 HR_CALENDARIndex.HR_CALENDARDelete();
+            }
+            if (HR_CALENDARIndex.ConfirmAction === 'delete-year') {
+                HR_CALENDARIndex.HR_CALENDARDeleteYear();
             }
         });
 
@@ -110,6 +126,7 @@
             $('#section_modify').show();
         } else if (Action === 'Y') {
             $('#save').show();
+            $('#delete').show();
             $('#return').show();
             $('#undo').show();
             $('#section_year').show();
@@ -147,17 +164,20 @@
                     //$.each(response.ItemList.page_size, function (idx, row) {
                     //    $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     //});
-                    //$('#page_size option[value="30"]').attr("selected", true);
+                    //$('#page_size option[value="100"]').attr("selected", true);
 
                     //var section_modify = $('#section_modify');
                     //section_modify.find("select[name='DATE_TYPE']").append('<option value=""></option>');
+                    $("select[name='DATE_TYPE']").find('option').remove();
                     $("select[name='DATE_TYPE']").append('<option value=""></option>');
                     $.each(response.ItemList.DATE_TYPE, function (idx, row) {
                         $("select[name='DATE_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    
 
                     var section_retrieve = $('#section_retrieve');
                     //section_retrieve.find("select[name='YEAR']").append('<option value=""></option>');
+                    section_retrieve.find("select[name='YEAR']").find('option').remove();
                     $.each(response.ItemList.YearList, function (idx, row) {
                         section_retrieve.find("select[name='YEAR']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
@@ -190,6 +210,9 @@
             PageNumber: $('#page_number').val() ? $('#page_number').val() : 1,
             PageSize: $('#page_size').val() ? $('#page_size').val() : 1
         };
+        
+        var table_calendar = $('#table-calendar');
+        table_calendar.html('');
 
         $.ajax({
             type: 'post',
@@ -200,125 +223,153 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 0) {
-                    var table_calendar = $('#table-calendar');
-                    table_calendar.html('');
+               
 
-                    var month = -1;
-                    var tbody,tr,td;
-                    var cols, rows;
-                    $.each(response.HR_CALENDAR, function (idx, row) {
-                        var hr_date = new Date(row.HR_DATE.substr(0, 10));
-                        if (hr_date.getMonth() !== month) {
-                            //RWD最外層單元
-                            var unit = $('<div/>', {
-                                'class': 'col-xl-6',
-                                appendTo: $(table_calendar)
-                            });
+                    var firstDay, lastDay;
+                    $.each(response.HR_MONTHS, function (idx, rowMonth) {
 
-                            //card元件
-                            var card = $('<div/>', {
-                                'class': 'card',
-                                appendTo: $(unit)
-                            });
+                        firstDay = new Date(request.YEAR, rowMonth.Month - 1, 1);
+                        lastDay = new Date(request.YEAR, rowMonth.Month - 1, 1);
+                        lastDay.setMonth(lastDay.getMonth() + 1);
+                        lastDay.setDate(lastDay.getDate() - 1);
 
-                            //card表頭
-                            var card_header = $('<div/>', {
-                                'class': 'card-header',
-                                css: {
-                                    textAlign: 'center'
-                                },
-                                html: (hr_date.getMonth() + 1) + '月',
-                                appendTo: $(card)
-                            });
+                        //RWD最外層單元
+                        var unit = $('<div/>', {
+                            'class': 'col-xl-6',
+                            appendTo: $(table_calendar)
+                        });
 
-                            //card表身
-                            var card_body = $('<div/>', {
-                                'class': 'card-body',
-                                appendTo: $(card)
-                            });
+                        //card元件
+                        var card = $('<div/>', {
+                            'class': 'card',
+                            appendTo: $(unit)
+                        });
 
-                            //card表身底下的月曆元件
-                            var card_body_table = $('<table/>', {
-                                'class': 'table table-sm table-bordered table-hover table-striped hr-month',
-                                appendTo: $(card_body)
-                            });
+                        //card表頭
+                        var card_header = $('<div/>', {
+                            'class': 'card-header font-weight-bold',
+                            css: {
+                                textAlign: 'center'
+                            },
+                            html: rowMonth.Month + '月',
+                            appendTo: $(card)
+                        });
 
-                            //table底下thead
-                            var thead = $('<thead/>', {
-                                html: '<tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr>',
-                                appendTo: $(card_body_table)
-                            });
-                            //$(thead).addClass('test test1 test3');
+                        //card表身
+                        var card_body = $('<div/>', {
+                            'class': 'card-body',
+                            appendTo: $(card)
+                        });
 
-                            //table底下tbody
-                            tbody = $('<tbody/>', {
-                                //html: '<tr><td onclick=\'HR_CALENDARIndex.HR_CALENDARQueryByDate("2020-11-01");\'"><div class="tl">1</div><div class="br">休假</div></td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>',
-                                appendTo: $(card_body_table)
-                            });
+                        //card表身底下的月曆元件
+                        var card_body_table = $('<table/>', {
+                            'class': 'table table-sm table-bordered table-hover table-striped hr-month',
+                            appendTo: $(card_body)
+                        });
 
-                            month = hr_date.getMonth();
-                            cols = 0;
-                            rows = 0;
-                        }
+                        //table底下thead
+                        var thead = $('<thead/>', {
+                            html: '<tr><th class="text-danger">日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th class="text-danger">六</th></tr>',
+                            appendTo: $(card_body_table)
+                        });
 
-                          //    //if (tr === 0 && td===0) { //加空白的日期方塊
-                    //    //    var weekDay = firstDate.getDay();
-                    //    //    if (weekDay !== 0) {
-                    //    //        for (i = 0; i < weekDay; i++) {
-                    //    //            htmlRow += '<td><td/>';
-                    //    //            //$('#table-calendar').append(htmlRow);
-                    //    //            td++;
-                    //    //        }
-                    //    //    }
-                    //    //}
+                        //table底下tbody
+                        tbody = $('<tbody/>', {
+                            appendTo: $(card_body_table)
+                        });
 
-                   
+                        //tbody底下tr & td
+                        var tr, td;
+                        var cols = 0, rows = 0, field = 1, day;
+                        $.each(rowMonth.HR_CALENDARS, function (idx, row) {
 
-                        //if (rows === 0 && cols === 0) {
-                        //    if (hr_date.getDay() !== 0) {
-                        //        for (i = 0; i < hr_date.getDay(); i++) {
-                        //            td = $('<td/>', {
-                        //                click: function () {
-                        //                    HR_CALENDARIndex.HR_CALENDARQueryByDate(row.HR_DATE.substr(0, 10));
-                        //                },
-                        //                html: '<div class="tl">' + hr_date.getDate() + '</div><div class="br">' + row.DATE_TYPE + '</div>',
-                        //                appendTo: $(tr)
-                        //            });
-                        //            cols++;
-                        //        }
-                        //    }
-                        //}
+                            if (cols === 7) {
+                                cols = 0;
+                                rows++;
+                            }
 
-                        if (cols === 7) {
-                            cols = 0;
-                            rows++;
-                        }
+                            if (cols === 0) {
+                                tr = $('<tr/>', {
+                                    appendTo: $(tbody)
+                                });
 
-                        if (cols === 0) {
-                            tr = $('<tr/>', {
-                                appendTo: $(tbody)
-                            });
+                                if (rows === 0) {
+                                    if (firstDay.getDay() !== 0) {
+                                        for (i = 0; i < firstDay.getDay(); i++) {
+                                            td = $('<td/>', {
+                                                appendTo: $(tr)
+                                            });
+                                            cols++;
 
-                            if (rows === 0) {
-                                if (hr_date.getDay() !== 0) {
-                                    for (i = 0; i < hr_date.getDay(); i++) {
-                                        td = $('<td/>', {
-                                            appendTo: $(tr)
-                                        });
-                                        cols++;
+                                            if (cols === 7) {
+                                                cols = 0;
+                                                rows++;
+                                                if (cols === 0) {
+                                                    tr = $('<tr/>', {
+                                                        appendTo: $(tbody)
+                                                    });
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        td = $('<td/>', {
-                            click: function () {
-                                HR_CALENDARIndex.HR_CALENDARQueryByDate(row.HR_DATE.substr(0, 10));
-                            },
-                            html: '<div class="pr' + ((row.DATE_TYPE === '休假日') ? ' text-danger' : '') + '"><div class="tl">' + hr_date.getDate() + '</div><div class="br">' + row.DATE_TYPE + '</div></div>',
-                            appendTo: $(tr)
+                            day = parseInt(row.HR_DATE.substr(8, 2));
+                            while (field < day) {
+                                
+                                td = $('<td />', {
+                                    html: '<div onclick="HR_CALENDARIndex.HR_CALENDARAppendByDate(\'' + request.YEAR + '-' + ('00' + rowMonth.Month).substr(('00' + rowMonth.Month).length - 2) + '-' + ('00' + field).substr(('00' + field).length - 2) + '\')" class="pr"><div class="tl">' + field + '</div><div class="br"></div></div>',
+                                    appendTo: $(tr)
+                                });
+
+                                field++;
+                                cols++;
+
+                                if (cols === 7) {
+                                    cols = 0;
+                                    rows++;
+                                    if (cols === 0) {
+                                        tr = $('<tr/>', {
+                                            appendTo: $(tbody)
+                                        });
+                                    }
+                                }
+                            }
+
+                            td = $('<td/>', {
+                                click: function () {
+                                    HR_CALENDARIndex.HR_CALENDARQueryByDate(row.HR_DATE.substr(0, 10));
+                                },
+                                html: '<div class="pr' + ((row.DATE_TYPE === '休假日') ? ' text-danger' : '') + '"><div class="tl">' + field + '</div><div class="br">' + row.DATE_TYPE + '</div></div>',
+                                appendTo: $(tr)
+                            });
+                            field++;
+                            cols++;
+
                         });
-                        cols++;
+
+                        //當月後半段沒資料
+                        while (field <= lastDay.getDate()) {
+
+                            if (cols === 7) {
+                                cols = 0;
+                                rows++;
+                                if (cols === 0) {
+                                    tr = $('<tr/>', {
+                                        appendTo: $(tbody)
+                                    });
+                                }
+                            }
+
+                            td = $('<td />', {
+                                html: '<div onclick="HR_CALENDARIndex.HR_CALENDARAppendByDate(\'' + request.YEAR + '-' + ('00' + rowMonth.Month).substr(('00' + rowMonth.Month).length - 2) + '-' + ('00' + field).substr(('00' + field).length - 2) + '\')" class="pr"><div class="tl">' + field + '</div><div class="br"></div></div>',
+                                appendTo: $(tr)
+                            });
+                            field++;
+                            cols++;
+
+                        }
 
                     });
 
@@ -341,13 +392,13 @@
 
     HR_CALENDARCreateYear: function () {
         var url = 'HR_CALENDARCreateYear';
-        var section_modify = $('#section_modify');
+        //var section_modify = $('#section_modify');
         var section_year = $('#section_year');
         var request = {
             HR_CALENDAR: {
-                HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
-                DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
-                MEMO: section_modify.find('textarea[name=MEMO]').val()
+                //HR_DATE: section_modify.find('input[name=HR_DATE]').val(),
+                //DATE_TYPE: section_modify.find('select[name=DATE_TYPE]').val(),
+                //MEMO: section_modify.find('textarea[name=MEMO]').val()
             },
             YEAR: section_year.find('input[name=YEAR]').val(),
         };
@@ -361,7 +412,9 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 1) {
+                    HR_CALENDARIndex.HR_CALENDARRetrieve();
                     HR_CALENDARIndex.ActionSwitch('R');
+                    HR_CALENDARIndex.ValueRecover();
                 } else if (response.Result.State === -10) {
                     response.Result.Msg = request.YEAR + '年行事曆內，至少有一個日期已存在，不可重複設定。';
                 }
@@ -459,6 +512,43 @@
         });
     },
 
+    HR_CALENDARDeleteYear: function () {
+        var url = 'HR_CALENDARDeleteYear';
+        var section_year = $('#section_year');
+        var request = {
+            HR_CALENDAR: {
+            },
+            YEAR: section_year.find('input[name=YEAR]').val(),
+        };
+
+        $.ajax({
+            type: 'post',
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (data) {
+                var response = JSON.parse(data);
+                HR_CALENDARIndex.ModalSwitch(response.Result.State);
+                if (response.Result.State === 3) {
+                    HR_CALENDARIndex.OptionRetrieve();
+                    HR_CALENDARIndex.ActionSwitch('R');
+                    HR_CALENDARIndex.ValueRecover();
+                    HR_CALENDARIndex.HR_CALENDARRetrieve();
+                }
+                $('#modal .modal-title').text('交易訊息');
+                $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
+                $('#modal').modal('show');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#modal .modal-title').text(ajaxOptions);
+                $('#modal .modal-body').html('<p>' + xhr.status + ' ' + thrownError + '</p>');
+                $('#modal').modal('show');
+            },
+            complete: function (xhr, status) {
+            }
+        });
+    },
+
     HR_CALENDARDelete: function () {
         var url = 'HR_CALENDARDelete';
         var section_modify = $('#section_modify');
@@ -477,9 +567,10 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 3) {
-                    HR_CALENDARIndex.HR_CALENDARRetrieve();
+                    HR_CALENDARIndex.OptionRetrieve();
                     HR_CALENDARIndex.ActionSwitch('R');
                     HR_CALENDARIndex.ValueRecover();
+                    HR_CALENDARIndex.HR_CALENDARRetrieve();
                 }
                 $('#modal .modal-title').text('交易訊息');
                 $('#modal .modal-body').html('<p>交易說明:' + response.Result.Msg + '<br /> 交易代碼:' + response.Result.State + '</p>');
@@ -493,6 +584,12 @@
             complete: function (xhr, status) {
             }
         });
+    },
+
+    HR_CALENDARAppendByDate: function (date) {
+        var section_modify = $('#section_modify');
+        section_modify.find('input[name=HR_DATE]').val(date);
+        HR_CALENDARIndex.ActionSwitch('C');
     },
 
     HR_CALENDARQueryByDate: function (date) {

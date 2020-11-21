@@ -90,6 +90,8 @@
                     $.each(response.ItemList.page_size, function (idx, row) {
                         $('#page_size').append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
+                    $('#page_size option[value="100"]').attr("selected", true);
+
 
                     $('#LOCATION').append('<option value=""></option>');
                     $.each(response.ItemList.AHU_LOCATION, function (idx, row) {

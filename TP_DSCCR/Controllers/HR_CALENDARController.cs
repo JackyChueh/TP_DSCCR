@@ -34,12 +34,18 @@ namespace TP_DSCCR.Controllers
                     Log("HR_CALENDARRetrieveReq=" + input);
                     HR_CALENDARRetrieveReq req = new HR_CALENDARRetrieveReq();
                     JsonConvert.PopulateObject(input, req);
+                    if (string.IsNullOrEmpty(req.YEAR))
+                    {
+                        res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    }
+                    else
+                    {
+                        DateTime sDate = DateTime.Parse(req.YEAR + "-01-01");
+                        DateTime eDate = sDate.AddYears(1);
 
-                    DateTime sDate = DateTime.Parse(req.YEAR + "-01-01");
-                    DateTime eDate = sDate.AddYears(1);
-
-                    res = new HR_CALENDARImplement("TP_ALERT").PaginationRetrieve(sDate, eDate);
-                    res.Result.State = ResultEnum.SUCCESS;
+                        res = new HR_CALENDARImplement("TP_ALERT").PaginationRetrieve(sDate, eDate);
+                        res.Result.State = ResultEnum.SUCCESS;
+                    }
                 }
             }
             catch (Exception ex)
@@ -105,7 +111,7 @@ namespace TP_DSCCR.Controllers
                 else
                 {
                     string input = RequestData();
-                    Log("HR_CALENDARCreateReq=" + input);
+                    Log("HR_CALENDARCreateYearReq=" + input);
                     HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
                     JsonConvert.PopulateObject(input, req);
 
@@ -142,7 +148,7 @@ namespace TP_DSCCR.Controllers
             }
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Log("HR_CALENDARCreateRes=" + json);
+            Log("HR_CALENDARCreateYearRes=" + json);
             return json;
         }
 
@@ -244,6 +250,50 @@ namespace TP_DSCCR.Controllers
             var json = JsonConvert.SerializeObject(res, Formatting.None,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Log("HR_CALENDARUpdateRes=" + json);
+            return json;
+        }
+
+        public string HR_CALENDARDeleteYear()
+        {
+            HR_CALENDARModifyRes res = new HR_CALENDARModifyRes();
+            try
+            {
+                if (Session["ID"] == null)
+                {
+                    res.Result.State = ResultEnum.SESSION_TIMEOUT;
+                }
+                else
+                {
+                    string input = RequestData();
+                    Log("HR_CALENDARDeleteYearReq=" + input);
+                    HR_CALENDARModifyReq req = new HR_CALENDARModifyReq();
+                    JsonConvert.PopulateObject(input, req);
+
+                    DateTime sDate = DateTime.Parse(req.YEAR + "-01-01");
+                    DateTime eDate = sDate.AddYears(1);
+
+                    //req.HR_CALENDAR.MUSER = Session["ID"].ToString();
+
+                    int effect = new HR_CALENDARImplement("TP_ALERT").DataDeleteYear(sDate, eDate, Session["ID"].ToString());
+                    if (effect > 0)
+                    {
+                        res.Result.State = ResultEnum.DELETE_SUCCESS;
+                    }
+                    else
+                    {
+                        res.Result.State = ResultEnum.DATA_NOT_FOUND;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result.State = ResultEnum.EXCEPTION_ERROR;
+                Log("Err=" + ex.Message);
+                Log(ex.StackTrace);
+            }
+            var json = JsonConvert.SerializeObject(res, Formatting.None,
+                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            Log("HR_CALENDARDeleteYearRes=" + json);
             return json;
         }
 
