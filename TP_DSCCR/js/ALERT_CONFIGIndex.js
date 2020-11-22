@@ -121,26 +121,26 @@
             $('#MIN_VALUE').val($(this).val());
         });
 
-        $('#mail_add').click(function () {  //加入-郵件通知清單
-            $('#modal_mail').modal('show');
-        });
+        //$('#mail_add').click(function () {  //加入-郵件通知清單
+        //    $('#modal_mail').modal('show');
+        //});
 
-        $('#modal_mail #confirm').click(function () {
-            $('#modal_mail').modal('hide');
-            if (ALERT_CONFIGIndex.MailValidate()) {
-                var option = $('<option></option>').attr('value', $('#EMAIL').val()).text($('#EMAIL').val());
-                $("#MAIL_TO").prepend(option);  //加入時放在第一個
-                $("#MAIL_TO option").each(function (idx, val) { //去重複
-                    $(this).siblings("[value='" + $(this).val() + "']").remove();
-                });
-                $('#EMAIL').val('');
-            }
-        });
+        //$('#modal_mail #confirm').click(function () {
+        //    $('#modal_mail').modal('hide');
+        //    if (ALERT_CONFIGIndex.MailValidate()) {
+        //        var option = $('<option></option>').attr('value', $('#EMAIL').val()).text($('#EMAIL').val());
+        //        $("#MAIL_TO").prepend(option);  //加入時放在第一個
+        //        $("#MAIL_TO option").each(function (idx, val) { //去重複
+        //            $(this).siblings("[value='" + $(this).val() + "']").remove();
+        //        });
+        //        $('#EMAIL').val('');
+        //    }
+        //});
 
-        $('#mail_delete').click(function () {   //移除-郵件通知清單
-            var options = $('#MAIL_TO option:selected');
-            options.remove();
-        });
+        //$('#mail_delete').click(function () {   //移除-郵件通知清單
+        //    var options = $('#MAIL_TO option:selected');
+        //    options.remove();
+        //});
     },
 
     ActionSwitch: function (Action) {
@@ -179,7 +179,7 @@
         var url = '/Main/ItemListRetrieve';
         var request = {
             //TableItem: ['userName'],
-            PhraseGroup: ['page_size', 'mode', 'DATA_TYPE']
+            PhraseGroup: ['page_size', 'mode', 'DATA_TYPE','MAIL_LIST']
         };
 
         $.ajax({
@@ -207,6 +207,16 @@
                         $("select[name='DATA_TYPE']").append($('<option></option>').attr('value', row.Key).text(row.Value));
                     });
 
+
+                    $('#MAIL_LIST').html('');
+                    var html;
+                    $.each(response.ItemList.MAIL_LIST, function (idx, row) {
+                        html = '<div class="form-check form-check-inline">';
+                        html += '<input class="form-check-input ml-3 mail-list" type="checkbox" value="' + row.Value + '" id="MT' + idx + '">';
+                        html += '<label class="form-check-label" for="MT' + idx + '">' + row.Key + '</label></div>';
+                        $('#MAIL_LIST').append(html);
+                    });
+                   
                 }
                 else {
                     $('#modal .modal-title').text('交易訊息');
@@ -523,9 +533,12 @@
         var section_modify = $('#section_modify');
 
         var optionValues = [];
-        $('#MAIL_TO option').each(function () {
-            optionValues.push($(this).val());
-        });
+        //$('#MAIL_TO option').each(function () {
+        //    optionValues.push($(this).val());
+        //});
+        optionValues = $(".mail-list:checked").map(function () {
+            return $(this).val();
+        }).get();
         var mail = optionValues.join(';');
 
         var request = {
@@ -600,9 +613,12 @@
         var section_modify = $('#section_modify');
 
         var optionValues = [];
-        $('#MAIL_TO option').each(function () {
-            optionValues.push($(this).val());
-        });
+        //$('#MAIL_TO option').each(function () {
+        //    optionValues.push($(this).val());
+        //});
+        optionValues = $(".mail-list:checked").map(function () {
+            return $(this).val();
+        }).get();
         var mail = optionValues.join(';');
 
         var request = {
@@ -763,12 +779,14 @@
                     section_modify.find('input[name=STA_ETIME]').val(response.ALERT_CONFIG.STA_ETIME ? response.ALERT_CONFIG.STA_ETIME.substr(0, 5) : '');
                     //section_modify.find('input[name=CHECK_DATE]').val(response.ALERT_CONFIG.CHECK_DATE);
                     //section_modify.find('input[name=ALERT_DATE]').val(response.ALERT_CONFIG.ALERT_DATE);
-                    //                    section_modify.find('input[name=MAIL_TO]').val(response.ALERT_CONFIG.MAIL_TO);
-                    $('#MAIL_TO').empty();
+                    //section_modify.find('input[name=MAIL_TO]').val(response.ALERT_CONFIG.MAIL_TO);
+
+                    //$('#MAIL_TO').empty();
                     if (response.ALERT_CONFIG.MAIL_TO) {
                         var arrMail = response.ALERT_CONFIG.MAIL_TO.split(';');
                         $.each(arrMail, function (idx, val) {
-                            $("#MAIL_TO").append(new Option(val, val));
+                            //$("#MAIL_TO").append(new Option(val, val));
+                            $('.mail-list[value="' + val + '"]').prop('checked', true);
                         });
                     }
                     section_modify.find('input[name=CHECK_HR_CALENDAR]').prop('checked', response.ALERT_CONFIG.CHECK_HR_CALENDAR);
@@ -821,27 +839,28 @@
         section_modify.find('input[name=STA_STIME]').val('00:00');
         section_modify.find('input[name=STA_ETIME]').val('23:59');
 
-        var mail = null;
-        mail = 'u161075@taipower.com.tw';
-        $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
-        $("#MAIL_TO option").each(function (idx, val) { //去重複
-            $(this).siblings("[value='" + $(this).val() + "']").remove();
-        });
-        mail = 'u382325@taipower.com.tw';
-        $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
-        $("#MAIL_TO option").each(function (idx, val) { //去重複
-            $(this).siblings("[value='" + $(this).val() + "']").remove();
-        });
-        mail = 'u777110@taipower.com.tw';
-        $("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
-        $("#MAIL_TO option").each(function (idx, val) { //去重複
-            $(this).siblings("[value='" + $(this).val() + "']").remove();
-        });
+        //var mail = null;
+        //mail = 'u161075@taipower.com.tw';
+        //$("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
+        //$("#MAIL_TO option").each(function (idx, val) { //去重複
+        //    $(this).siblings("[value='" + $(this).val() + "']").remove();
+        //});
+        //mail = 'u382325@taipower.com.tw';
+        //$("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
+        //$("#MAIL_TO option").each(function (idx, val) { //去重複
+        //    $(this).siblings("[value='" + $(this).val() + "']").remove();
+        //});
+        //mail = 'u777110@taipower.com.tw';
+        //$("#MAIL_TO").prepend(new Option(mail, mail));  //加入時放在第一個
+        //$("#MAIL_TO option").each(function (idx, val) { //去重複
+        //    $(this).siblings("[value='" + $(this).val() + "']").remove();
+        //});
 
 
         section_modify.find('input[name=CHECK_HR_CALENDAR]').prop('checked', true);
 
     },
+       
     DataValidate: function () {
         var error = '';
         var section_modify = $('#section_modify');
@@ -1119,7 +1138,13 @@
             }
         }
 
-        if ($('#MAIL_TO option').length === 0) {
+        //if ($('#MAIL_TO option').length === 0) {
+        //    error += '郵件通知清單不可空白<br />';
+        //}
+        var options = $(".mail-list:checked").map(function () {
+            return $(this).val();
+        }).get();
+        if (options.length === 0) {
             error += '郵件通知清單不可空白<br />';
         }
 
@@ -1170,13 +1195,16 @@
                 section_modify.find('input[name=STA]').prop('checked', ALERT_CONFIGIndex.ALERT_CONFIG.STA);
                 section_modify.find('input[name=STA_STIME]').val(ALERT_CONFIGIndex.ALERT_CONFIG.STA_STIME ? ALERT_CONFIGIndex.ALERT_CONFIG.STA_STIME.substr(0, 5) : '');
                 section_modify.find('input[name=STA_ETIME]').val(ALERT_CONFIGIndex.ALERT_CONFIG.STA_ETIME ? ALERT_CONFIGIndex.ALERT_CONFIG.STA_ETIME.substr(0, 5) : '');
-                $('#MAIL_TO').empty();
+                //$('#MAIL_TO').empty();
+                $('.mail-list').prop('checked', false);
                 if (ALERT_CONFIGIndex.ALERT_CONFIG.MAIL_TO) {
                     var arrMail = ALERT_CONFIGIndex.ALERT_CONFIG.MAIL_TO.split(';');
                     $.each(arrMail, function (idx, val) {
-                        $("#MAIL_TO").append(new Option(val, val));
+                        //$("#MAIL_TO").append(new Option(val, val));
+                        $('.mail-list[value="' + val + '"]').prop('checked', true);
                     });
                 }
+
                 section_modify.find('input[name=CHECK_HR_CALENDAR]').prop('checked', ALERT_CONFIGIndex.ALERT_CONFIG.CHECK_HR_CALENDAR);
                 section_modify.find('input[name=CDATE]').val(ALERT_CONFIGIndex.ALERT_CONFIG.CDATE.replace('T', ' '));
                 section_modify.find('input[name=CUSER]').val(ALERT_CONFIGIndex.ALERT_CONFIG.CUSER);
@@ -1200,34 +1228,35 @@
             $('#FRI').prop('checked', false);
             $('#STA').prop('checked', false);
             $('#CHECK_HR_CALENDAR').prop('checked', false);
-            $('#MAIL_TO').empty();
+            //$('#MAIL_TO').empty();
+            $('.mail-list').prop('checked', false);
         }
     },
 
-    MailValidate: function () {
-        var error = '';
+    //MailValidate: function () {
+    //    var error = '';
 
-        var MAIL = {
-            EMAIL: $('input[name=EMAIL]').val()
-        };
+    //    var MAIL = {
+    //        EMAIL: $('input[name=EMAIL]').val()
+    //    };
 
-        if (!MAIL.EMAIL) {
-            error += '收件不可空白<br />';
-        }
-        else {
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (!re.test(MAIL.EMAIL)) {
-                error += '電子郵件格式輸入錯誤<br />';
-            }
-        }
+    //    if (!MAIL.EMAIL) {
+    //        error += '收件不可空白<br />';
+    //    }
+    //    else {
+    //        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //        if (!re.test(MAIL.EMAIL)) {
+    //            error += '電子郵件格式輸入錯誤<br />';
+    //        }
+    //    }
 
-        if (error.length > 0) {
-            $('#modal .modal-title').text('提示訊息');
-            $('#modal .modal-body').html('<p>' + error + '</p>');
-            $('#modal').modal('show');
-        }
-        return error.length === 0;
-    },
+    //    if (error.length > 0) {
+    //        $('#modal .modal-title').text('提示訊息');
+    //        $('#modal .modal-body').html('<p>' + error + '</p>');
+    //        $('#modal').modal('show');
+    //    }
+    //    return error.length === 0;
+    //},
 
     TimeValidate: function (time) {
         var valid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(time);
@@ -1243,7 +1272,5 @@
         var valid = /^\d+$/.test(minute);
         return valid;
     }
-
-
 
 };

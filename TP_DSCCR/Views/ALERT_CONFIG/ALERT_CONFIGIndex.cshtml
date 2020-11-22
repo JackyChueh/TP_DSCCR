@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "語音卡警報參數設定";
+    ViewBag.Title = "警報參數設定";
 }
 
 @section Styles
@@ -243,15 +243,38 @@
                     <input type="text" class="form-control form-control-sm modify" id="STA_ETIME" name="STA_ETIME">
                 </div>
                 <div class="w-100"></div>
-                <div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <div class="form-group col-12">
                     <span class="text-danger">*</span>
-                    <label for="MAIL_TO">
-                        郵件通知清單
-                        <button type="button" id="mail_add" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-user-plus fa-lg mr-1 text-primary"></i>加入</button>
-                        <button type="button" id="mail_delete" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-user-times fa-lg mr-1 text-danger"></i>移除</button>
-                    </label>
-                    <select multiple class="form-control modify" id="MAIL_TO" name="MAIL_TO" size="6"></select>
+                    <label for="">郵件通知名單</label>
+                    <div class="form-group" id="MAIL_LIST">
+                        @*<div class="form-check form-check-inline">
+                            <input class="form-check-input ml-3 mail-list" type="checkbox" value="黃敬斌 <u161075@taipower.com.tw>" id="MT1">
+                            <label class="form-check-label" for="MT1">黃敬斌</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input ml-3 mail-list" type="checkbox" value="邱泳棠 <u777110@taipower.com.tw>" id="MT2">
+                            <label class="form-check-label" for="MT2">邱泳棠</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input ml-3 mail-list" type="checkbox" value="黃才淇 <u382325@taipower.com.tw>" id="MT3">
+                            <label class="form-check-label" for="MT3">黃才淇</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input ml-3 mail-list" type="checkbox" value="林煒哲 <u969067@taipower.com.tw>" id="MT4">
+                            <label class="form-check-label" for="MT4">林煒哲</label>
+                        </div>*@
+                    </div>
                 </div>
+                <div class="w-100"></div>
+                @*<div class="form-group col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                        <span class="text-danger">*</span>
+                        <label for="MAIL_TO">
+                            郵件通知清單
+                            <button type="button" id="mail_add" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-user-plus fa-lg mr-1 text-primary"></i>加入</button>
+                            <button type="button" id="mail_delete" class="btn btn-sm btn-outline-dark ml-1"><i class="fa fa-user-times fa-lg mr-1 text-danger"></i>移除</button>
+                        </label>
+                        <select multiple class="form-control modify" id="MAIL_TO" name="MAIL_TO" size="6"></select>
+                    </div>*@
                 <div class="w-100"></div>
                 <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <label for="CDATE">建檔時間</label>
@@ -272,79 +295,78 @@
             </div>
         </form>
     </div>
-</div>
 
-<div class="modal" id="modal" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">訊息標題</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>顯示訊息主體</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
-                <button type="button" id="login" class="btn btn-secondary" style="display: none;">重新登入</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="modal_action" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">訊息標題</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>顯示訊息主體</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" id="modal_mail" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">郵件通知清單</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-row">
-                    <div class="form-group col-12">
-                        <label for="EMAIL">收件者</label>
-                        <input type="text" class="form-control form-control-sm modify" id="EMAIL" name="EMAIL" />
-                    </div>
+    <div class="modal" id="modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">訊息標題</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>顯示訊息主體</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                    <button type="button" id="login" class="btn btn-secondary" style="display: none;">重新登入</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                <button type="button" id="confirm" class="btn btn-secondary">加入</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal_action" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">訊息標題</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>顯示訊息主體</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" id="confirm" class="btn btn-secondary" style="display: none;">確定</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-@section Scripts{
-    <script src="~/Scripts/jquery.datetimepicker.js"></script>
-    <script src="~/js/ALERT_CONFIGIndex.js"></script>
-    <script type="text/JavaScript">
+    <div class="modal" id="modal_mail" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">郵件通知清單</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="EMAIL">收件者</label>
+                            <input type="text" class="form-control form-control-sm modify" id="EMAIL" name="EMAIL" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" id="confirm" class="btn btn-secondary">加入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts{
+        <script src="~/Scripts/jquery.datetimepicker.js"></script>
+        <script src="~/js/ALERT_CONFIGIndex.js"></script>
+        <script type="text/JavaScript">
         $(document).ready(function () {
             ALERT_CONFIGIndex.Page_Init();
             ALERT_CONFIGIndex.LoginUrl = '@(Url.Action("Login", "Main", null, Request.Url.Scheme))';
         });
-    </script>
-}
+        </script>
+    }

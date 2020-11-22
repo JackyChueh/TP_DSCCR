@@ -76,7 +76,6 @@
         $('#modal_action #confirm').click(function () {
             $('#confirm').hide();
             $('#modal_action').modal('hide');
-            //console.log(HR_CALENDARIndex.ConfirmAction);
             if (HR_CALENDARIndex.ConfirmAction === 'delete') {
                 HR_CALENDARIndex.HR_CALENDARDelete();
             }
@@ -708,9 +707,11 @@
         }
 
         if (HR_CALENDARIndex.Action === 'Y') {
-            console.log(request.YEAR)
             if (!request.YEAR) {
                 error += '年份不可空白<br />';
+            }
+            else if (!HR_CALENDARIndex.YearValidate(request.YEAR) || request.YEAR < 1753) {
+                error += '年份輸入錯誤<br />';
             }
         }
         if (error.length > 0) {
@@ -742,6 +743,10 @@
                 $(value).val('');
             });
         }
-    }
+    },
 
+    YearValidate: function (year) {
+        var valid = /^\d{4}$/.test(year);
+        return valid;
+    }
 };
