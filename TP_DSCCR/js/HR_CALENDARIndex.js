@@ -39,7 +39,6 @@
                 } else if (HR_CALENDARIndex.Action === 'Y') {
                     HR_CALENDARIndex.HR_CALENDARCreateYear();
                 }
-                HR_CALENDARIndex.OptionRetrieve();
             }
         });
 
@@ -411,6 +410,7 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 1) {
+                    HR_CALENDARIndex.OptionRetrieve();
                     HR_CALENDARIndex.HR_CALENDARRetrieve();
                     HR_CALENDARIndex.ActionSwitch('R');
                     HR_CALENDARIndex.ValueRecover();
@@ -452,6 +452,7 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 1) {
+                    HR_CALENDARIndex.OptionRetrieve();
                     HR_CALENDARIndex.HR_CALENDARQuery(response.HR_CALENDAR.SN);
                     HR_CALENDARIndex.ActionSwitch('U');
                 } else if (response.Result.State === -10) {
@@ -493,6 +494,7 @@
                 var response = JSON.parse(data);
                 HR_CALENDARIndex.ModalSwitch(response.Result.State);
                 if (response.Result.State === 2) {
+                    HR_CALENDARIndex.OptionRetrieve();
                     HR_CALENDARIndex.HR_CALENDARQuery(response.HR_CALENDAR.SN);
                 } else if (response.Result.State === -10) {
                     response.Result.Msg = '日期' + request.HR_CALENDAR.HR_DATE + '已存在，不可重複設定。';
